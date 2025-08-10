@@ -1,0 +1,85 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/obj/Debug/net8.0/scopedcss/projectbundle/ChatSeat2.0.bundle.scp.css",
+      "PackagePath": "staticwebassets/ChatSeat2.0.bundle.scp.css"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/asset-manifest.json",
+      "PackagePath": "staticwebassets/asset-manifest.json"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/favicon.ico",
+      "PackagePath": "staticwebassets/favicon.ico"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/index.html",
+      "PackagePath": "staticwebassets/index.html"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/logo192.png",
+      "PackagePath": "staticwebassets/logo192.png"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/logo512.png",
+      "PackagePath": "staticwebassets/logo512.png"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/manifest.json",
+      "PackagePath": "staticwebassets/manifest.json"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/robots.txt",
+      "PackagePath": "staticwebassets/robots.txt"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/static/css/main.f855e6bc.css",
+      "PackagePath": "staticwebassets/static/css/main.f855e6bc.css"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/static/css/main.f855e6bc.css.map",
+      "PackagePath": "staticwebassets/static/css/main.f855e6bc.css.map"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/static/js/453.315c0e33.chunk.js",
+      "PackagePath": "staticwebassets/static/js/453.315c0e33.chunk.js"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/static/js/453.315c0e33.chunk.js.map",
+      "PackagePath": "staticwebassets/static/js/453.315c0e33.chunk.js.map"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/static/js/main.97de04be.js",
+      "PackagePath": "staticwebassets/static/js/main.97de04be.js"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/static/js/main.97de04be.js.LICENSE.txt",
+      "PackagePath": "staticwebassets/static/js/main.97de04be.js.LICENSE.txt"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/static/js/main.97de04be.js.map",
+      "PackagePath": "staticwebassets/static/js/main.97de04be.js.map"
+    },
+    {
+      "Id": "/Users/dudu/Projects/ChatSeat2.0/ChatSeat2.0/wwwroot/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+      "PackagePath": "staticwebassets/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ChatSeat2.0.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.ChatSeat2.0.props",
+      "PackagePath": "build\\ChatSeat2.0.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.ChatSeat2.0.props",
+      "PackagePath": "buildMultiTargeting\\ChatSeat2.0.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.ChatSeat2.0.props",
+      "PackagePath": "buildTransitive\\ChatSeat2.0.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

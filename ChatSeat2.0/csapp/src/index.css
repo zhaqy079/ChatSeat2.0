@@ -1,0 +1,46 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+/*Nav bar css */
+.navbar.custom-navbar {
+    background-color: #003366 !important;
+}
+.btn.custom-btn {
+    background-color: #A8E4F2;
+    color: #003366;
+    border: none;
+    border-radius: 9999px;
+}
+
+.btn.custom-btn:hover {
+    background-color: white;
+}
+/*Container css */
+h2.intro-title, h3.intro-title, p.intro-title {
+    color: #003366;
+}
+/*Login page */
+.login-page {
+    background-color: #A8E4F2;
+    width: 100%;
+
+}
+.btn.login-btn {
+    background-color: #003366;
+}
+.btn.back-btn {
+    color:#003366;
+}
+.btn.signup-btn {
+    color: #003366;
+}
