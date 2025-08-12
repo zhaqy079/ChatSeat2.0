@@ -4,6 +4,8 @@ import { ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Login from "./components/Login";
+
+import AdminDashboard from "./components/Admin/AdminDashboard";
 //import Venues from "./components/Venues";
 
 /*Placeholder, need one teammate done (I think TO Jordon ^^ cause Callum will do supabase stuff)
@@ -30,6 +32,7 @@ export default function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/venues" element={<Venues />} />
+                <Route path="/admindashboard" element={<AdminDashboard />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
