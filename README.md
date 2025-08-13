@@ -1,4 +1,4 @@
-# HI GUYS, Sorry for late update template 
+NOTES
 I leave some notes at react folder csapp( for task allocate) 
 
 In casr you havent set up your react well: 
