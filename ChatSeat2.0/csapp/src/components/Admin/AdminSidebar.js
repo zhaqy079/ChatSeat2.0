@@ -27,8 +27,9 @@ export default function AdminSidebar({ userName = "" }) {
                 <Link to="/admindashboard" className={getActiveLink("/admindashboard")}>
                     Dashboard
                 </Link>
-                {/* testing other link colour */ }
-                <Link className={getActiveLink("hi")}>Dashboard</Link>
+                <Link to="/adminSchedulingSetting" className={getActiveLink("/adminSchedulingSetting")}>
+                    Scheduling Setting
+                </Link>
             </div>
 
             <div className="mt-3">
