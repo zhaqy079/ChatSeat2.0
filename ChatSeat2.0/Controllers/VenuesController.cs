@@ -13,12 +13,11 @@ namespace ChatSeat2._0.Controllers
         {
             var venue = new Venues
             {
-                Id = "venue1",
                 Name = "Campbelltown Library",
                 Location = "171 Montacute Rd, Newton SA 5074",
                 UpcomingSlots = new List<Slots>
                 {
-                    new Slots { Date = "Monday", Time = "10:00"},
+                    new Slots { Date = "Monday", Time = "10:00" },
                     new Slots { Date = "Monday", Time = "11:00" },
                     new Slots { Date = "Tuesday", Time = "10:00" },
                     new Slots { Date = "Wednesday", Time = "10:00" },

@@ -58,6 +58,18 @@ export default function Login() {
 
             // Navigation for specfic user role
             // TO BE COMPLETED
+            localStorage.setItem("userRole", profileData.role);
+
+            // Redirect based on role
+            if (profileData.role === "admin") {
+                navigate("/admindashboard");
+            } else if (profileData.role === "coordinator") {
+                navigate("/coordinatordashboard");
+            } else if (profileData.role === "listener") {
+                navigate("/listenerdashboard");
+            } else {
+                navigate("/"); 
+            }
 
         } catch {
             toast.error("Login failed");

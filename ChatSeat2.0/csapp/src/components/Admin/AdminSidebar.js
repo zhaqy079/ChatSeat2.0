@@ -14,7 +14,8 @@ export default function AdminSidebar({ userName = "" }) {
 
     const handleLogout = () => {
         // Add logout logic here
-        navigate("/login");
+        //navigate("/login");
+        navigate("/");
     };
 
     return (
