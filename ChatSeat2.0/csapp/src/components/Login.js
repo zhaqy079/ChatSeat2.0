@@ -1,32 +1,64 @@
-﻿import { useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Navbar from "./Navbar"; 
+
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+    process.env.REACT_APP_SUPABASE_URL,
+    process.env.REACT_APP_SUPABASE_ANON_KEY
+);
+
 
 export default function Login() {
     const navigate = useNavigate();
+    const [user, setUser] = useState({ email: "", password: ""}); // Combined to make more practical and streamlined
     const [email, setEmail] = useState("");
-    const [pwd, setPwd] = useState("");
+    const [password, setPassword] = useState("");
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // mock validation
-        if (!email || !pwd) {
+        // Pop up for incomplete fields
+        if (!email || !password) {
             toast.warn("Please enter email and password.");
             return;
         }
 
         setLoading(true);
         try {
-            // Need update supabase(TO Callum ^^ please create a branch name : feature/login-supabase ? or someelse better one 
-            await new Promise((r) => setTimeout(r, 600));
+            // Sign in with Supabase authentication
+            const { data: authData, error: authError } =
+                await supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                });
+            console.log('authData:', authData);
+            if (authError) throw authError;
 
-            toast.success("Login successful (mock)");
-            
-            navigate("/"); // based on account info allocate page or other logic 
+            // Retrieve user data for redirection via role
+            const { data: profileData, error: profileError } = await supabase
+                .from("profiles")
+                .select("*")
+                .eq("id", authData.user.id)
+                .single();
+
+            if (profileError) throw profileError;
+
+            // Store user session info for protected routes
+            localStorage.setItem("userRole", profileData.role);
+
+            if (profileData.role !== "pending") { 
+                toast.success("Login successful!");
+            } else {
+                toast.warning("Awaiting approval");
+            }
+
+            // Navigation for specfic user role
+            // TO BE COMPLETED
+
         } catch {
             toast.error("Login failed");
         } finally {
@@ -34,12 +66,17 @@ export default function Login() {
         }
     };
 
+    const [profiles, setProfiles] = useState([]);
+
+
+
+
     return (
         <div className="min-vh-100 d-flex flex-column">
             <div className="flex-grow-1 d-flex align-items-center justify-content-center login-page">
                 <div className="bg-white shadow p-4 p-md-5 rounded-3">
                     <h2 className="fw-bold text-center mb-4 intro-title">
-                        Login
+                        Log In
                     </h2>
 
                     <form onSubmit={handleSubmit} noValidate>
@@ -63,8 +100,8 @@ export default function Login() {
                                     type={show ? "text" : "password"}
                                     className="form-control pe-5"
                                     placeholder="Enter your password"
-                                    value={pwd}
-                                    onChange={(e) => setPwd(e.target.value)}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     autoComplete="current-password"
                                     required
                                 />
