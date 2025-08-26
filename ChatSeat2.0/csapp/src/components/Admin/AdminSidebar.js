@@ -31,6 +31,9 @@ export default function AdminSidebar({ userName = "" }) {
                 <Link to="/adminSchedulingSetting" className={getActiveLink("/adminSchedulingSetting")}>
                     Scheduling Setting
                 </Link>
+                <Link to="/adminViewUsers" className={getActiveLink("/adminViewUsers")}>
+                    View All Users
+                </Link>
             </div>
 
             <div className="mt-3">
