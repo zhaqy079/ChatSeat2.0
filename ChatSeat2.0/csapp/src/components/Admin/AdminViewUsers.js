@@ -8,8 +8,7 @@ const supabase = createClient(
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-console.log("SUPABASE URL", process.env.REACT_APP_SUPABASE_URL);
-console.log("SUPABASE ANON KEY", process.env.REACT_APP_SUPABASE_ANON_KEY);
+
 // Requests a list of all users from the database
 export const fetchAllUsers = async () => {
     const { data, error } = await supabase.from("user_profiles").select("*");
