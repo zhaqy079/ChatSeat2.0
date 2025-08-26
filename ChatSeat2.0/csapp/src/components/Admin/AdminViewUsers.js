@@ -17,7 +17,6 @@ export const fetchAllUsers = async () => {
         throw new Error("Failed to fetch users:" + error.message);
     }
 
-    console.log("fetchAllUsers data: ", data)
     return data;
 };
 
@@ -38,7 +37,6 @@ export default function AdminSchedulingSetting() {
         getUsers(); 
     }, []);
 
-    console.log("getUsers data: ", userlist)
 
     return (
         <div>
