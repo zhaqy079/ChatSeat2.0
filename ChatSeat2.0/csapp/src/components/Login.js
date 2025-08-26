@@ -13,8 +13,6 @@ const supabase = createClient(
 export default function Login() {
     const navigate = useNavigate();
     const [user, setUser] = useState({ email: "", password: ""}); // Combined to make more practical and streamlined
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -22,7 +20,10 @@ export default function Login() {
         e.preventDefault();
 
         // Pop up for incomplete fields
-        if (!email || !password) {
+        console.log(user)
+        console.log(supabase)
+        console.log(process.env)
+        if (!user.email || !user.password) {
             toast.warn("Please enter email and password.");
             return;
         }
@@ -32,44 +33,47 @@ export default function Login() {
             // Sign in with Supabase authentication
             const { data: authData, error: authError } =
                 await supabase.auth.signInWithPassword({
-                    email,
-                    password,
+                    email: user.email,
+                    password: user.password
                 });
             console.log('authData:', authData);
+            console.log('authData:', authError);
             if (authError) throw authError;
 
-            // Retrieve user data for redirection via role
-            const { data: profileData, error: profileError } = await supabase
-                .from("profiles")
-                .select("*")
-                .eq("id", authData.user.id)
-                .single();
+            navigate("/admindashboard");
 
-            if (profileError) throw profileError;
+            //// Retrieve user data for redirection via role
+            //const { data: profileData, error: profileError } = await supabase
+            //    .from("profiles")
+            //    .select("*")
+            //    .eq("id", authData.user.id)
+            //    .single();
 
-            // Store user session info for protected routes
-            localStorage.setItem("userRole", profileData.role);
+            //if (profileError) throw profileError;
 
-            if (profileData.role !== "pending") { 
-                toast.success("Login successful!");
-            } else {
-                toast.warning("Awaiting approval");
-            }
+            //// Store user session info for protected routes
+            //localStorage.setItem("userRole", profileData.role);
 
-            // Navigation for specfic user role
-            // TO BE COMPLETED
-            localStorage.setItem("userRole", profileData.role);
+            //if (profileData.role !== "pending") { 
+            //    toast.success("Login successful!");
+            //} else {
+            //    toast.warning("Awaiting approval");
+            //}
 
-            // Redirect based on role
-            if (profileData.role === "admin") {
-                navigate("/admindashboard");
-            } else if (profileData.role === "coordinator") {
-                navigate("/coordinatordashboard");
-            } else if (profileData.role === "listener") {
-                navigate("/listenerdashboard");
-            } else {
-                navigate("/"); 
-            }
+            //// Navigation for specfic user role
+            //// TO BE COMPLETED
+            //localStorage.setItem("userRole", profileData.role);
+
+            //// Redirect based on role
+            //if (profileData.role === "admin") {
+            //    navigate("/admindashboard");
+            //} else if (profileData.role === "coordinator") {
+            //    navigate("/coordinatordashboard");
+            //} else if (profileData.role === "listener") {
+            //    navigate("/listenerdashboard");
+            //} else {
+            //    navigate("/"); 
+            //}
 
         } catch {
             toast.error("Login failed");
@@ -98,8 +102,8 @@ export default function Login() {
                                 type="email"
                                 className="form-control"
                                 placeholder="Enter your email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={user.email}
+                                onChange={(e) => setUser({ ...user, email: e.target.value })}
                                 autoComplete="email"
                                 required
                             />
@@ -112,8 +116,8 @@ export default function Login() {
                                     type={show ? "text" : "password"}
                                     className="form-control pe-5"
                                     placeholder="Enter your password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    value={user.password}
+                                    onChange={(e) => setUser({ ...user, password: e.target.value })}
                                     autoComplete="current-password"
                                     required
                                 />
