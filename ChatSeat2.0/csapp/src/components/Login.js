@@ -20,9 +20,6 @@ export default function Login() {
         e.preventDefault();
 
         // Pop up for incomplete fields
-        console.log(user)
-        console.log(supabase)
-        console.log(process.env)
         if (!user.email || !user.password) {
             toast.warn("Please enter email and password.");
             return;
@@ -37,7 +34,7 @@ export default function Login() {
                     password: user.password
                 });
             console.log('authData:', authData);
-            console.log('authData:', authError);
+
             if (authError) throw authError;
 
             navigate("/admindashboard");
