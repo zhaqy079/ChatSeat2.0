@@ -53,19 +53,38 @@ export default function AdminSchedulingSetting() {
                                 <tr className="text-left">
                                     <th className="p-3">Name</th>
                                     <th className="p-3">Email</th>
+                                    <th className="p-3">Phone</th>
+                                    <th className="p-3">Approved By</th>
+                                    <th className="p-3">Inactive</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {userlist.length > 0 ? (
-                                    userlist.map((user) => (
-                                        <tr key={user.id} className="border-t">
-                                            <td className="p-3">
-                                                {user.first_name} {user.last_name}
-                                            </td>
-                                            <td className="p-3">{user.email}</td>
-                                            <td className="p-3">{user.phone_number}</td>
-                                        </tr>
-                                    ))
+                                    userlist.map((user) => { 
+                                        const approver = userlist.find(u => u.profile_id === user.approved_by);
+
+                                        return (
+                                            <tr key={user.id} className="border-t">
+                                                <td className="p-3">{user.first_name} {user.last_name}</td>
+                                                <td className="p-3">{user.email}</td>
+                                                <td className="p-3">{user.phone_number}</td>
+                                                <td className="p-3">
+                                                    {user.approved_by && approver
+                                                        ? `${approver.first_name} ${approver.last_name}`
+                                                        : <div>NULL</div>}
+                                                </td>
+                                                <td className="p-3">
+                                                    {user.inactive_at === null
+                                                        ? "active"
+                                                        : new Date(user.inactive_at).toLocaleDateString("en-AU", {
+                                                            year: "numeric",
+                                                            month: "short",
+                                                            day: "numeric",
+                                                        })}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
                                 ) : (
                                     // If no users are found for the selected role, show a message
                                     <tr>
