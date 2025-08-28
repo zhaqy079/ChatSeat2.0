@@ -9,6 +9,10 @@ import interactionPlugin from "@fullcalendar/interaction";
 // if you get an error for packages of fullcalendar not installed, run this command in terminal
 // npm install @fullcalendar/react @fullcalendar/timegrid @fullcalendar/interaction
 
+//Note areas where api logic needed to be added will have (HELP) next to it
+//If there is any confusion about anything please come and ask me
+
+
 export default function AdminSchedulingSetting() {
     const [locations, setLocations] = useState([]);
     const [newLocation, setNewLocation] = useState("");
@@ -34,6 +38,8 @@ export default function AdminSchedulingSetting() {
             const firstDayOfWeek = new Date(year, 0, 1 + (week - 1) * 7);
             calendarRef.current.getApi().gotoDate(firstDayOfWeek);
         }
+
+        // this is where the api logic will need to fetch the location from the db for location and events (HELP)
     }, [selectedWeek]);
 
     const handleAddLocation = () => {
@@ -51,6 +57,8 @@ export default function AdminSchedulingSetting() {
         const newLoc = { id: tempId, name: newLocation };
         setLocations([...locations, newLoc]);
         setNewLocation("");
+
+        // add api logic here to save new added location here to the db (HELP)
     };
 
     const handleDeleteLocation = (id) => {
@@ -220,6 +228,7 @@ export default function AdminSchedulingSetting() {
         // remove the original event for the new eddited event
         setEvents((prev) => [...prev.filter((ev) => ev.id !== selectedEvent), ...newEvents]);
 
+
         setModalOpen(false);
         setSelectedEvent(null);
         setBlockFullDay(false);
@@ -232,10 +241,20 @@ export default function AdminSchedulingSetting() {
     const handleDeleteEvent = () => {
         if (window.confirm("Are you sure you want to delete this event?")) {
             setEvents(events.filter((ev) => ev.id !== selectedEvent));
+
+            // in this section to add api where selected event is deleted from the DB - bit unsure how to do this (HELP)
+
             setModalOpen(false);
             setSelectedEvent(null);
             setIsRecurring(false);
         }
+    };
+
+    const handleSaveAllEvents = () => {
+        // in this section i was going to allow the api to go and save all events that were saved in this array const [events, setEvents] = useState([]);
+        // (HELP)
+        console.log("Saving all events to DB:", events);
+        alert("All events saved (stub, no API logic yet).");
     };
 
     return (
@@ -311,14 +330,8 @@ export default function AdminSchedulingSetting() {
                                     />
 
                                     <div className="d-flex justify-content-start mt-3">
-                                        <button
-                                            className="btn btn-primary"
-                                            onClick={() => {
-                                                console.log("Save button clicked. Events:", events);
-                                                alert("Events saved (stub, no API logic yet).");
-                                            }}
-                                        >
-                                            Save
+                                        <button className="btn btn-primary" onClick={handleSaveAllEvents}>
+                                            Save All Events
                                         </button>
                                     </div>
                                 </div>
