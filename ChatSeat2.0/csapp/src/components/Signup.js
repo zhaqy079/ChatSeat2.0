@@ -49,7 +49,7 @@ export default function Signup() {
     // Function to handle form submission and it will be called when the form is submitted
     const onSubmit = async (data) => {
         try {
-            await signupUser(data);
+           
             toast.success("Signup successful!");
             navigate("/Login");
         } catch (err) {
@@ -57,4 +57,106 @@ export default function Signup() {
             toast.error("Signup failed:" + err.message);
         }
     };
-};
+    return (
+    // Signup Page Form Page, keep same design with Login page
+        <div className="min-vh-100 d-flex flex-column">
+            <div className="flex-grow-1 d-flex align-items-center justify-content-center login-page">
+                <div className="bg-white shadow p-4 p-md-5 rounded-3">
+                    <h2 className="fw-bold text-center mb-4 intro-title">
+                        Create an Account 
+                    </h2>
+
+                    <form onSubmit={handleSubmit} noValidate>
+                        <div className="mb-3">
+                            <label className="form-label fw-semibold">First Name</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                {...register("firstName")}
+                            />
+                            <p className="text-danger small">{errors.firstName?.message}</p>
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label fw-semibold">Last Name</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                {...register("lastName")}
+                            />
+                            <p className="text-danger small">{errors.lastName?.message}</p>
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label fw-semibold">Email Address</label>
+                            <input
+                                type="email"
+                                className="form-control"
+                                {...register("email")}
+                            />
+                            <p className="text-danger small">{errors.email?.message}</p>
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label fw-semibold">Phone Number</label>
+                            <input
+                                type="tel"
+                                className="form-control"
+                                {...register("phoneNumber")}
+                            />
+                            <p className="text-danger small">{errors.phoneNumber?.message}</p>
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label fw-semibold">Password</label>
+                            <div className="position-relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    className="form-control pe-5"
+                                    {...register("password")}
+                                />
+                                <button
+                                    type="button"
+                                    className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0"
+                                    style={{ color: "#003366", textDecoration: "none" }}
+                                    onClick={() => setShowPassword((s) => !s)}
+                                >
+                                    {showPassword ? "Hide" : "Show"}
+                                </button>
+                            </div>
+                            <p className="text-danger small">{errors.password?.message}</p>
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="btn w-100 fw-bold text-white mb-3 login-btn"
+                        >
+                            Sign Up
+                        </button>
+
+                        <div className="d-flex flex-column gap-2 mt-3 ">
+                            <button
+                                type="button"
+                                className="btn btn-link p-0 back-btn"
+                                onClick={() => navigate("/")}
+                            >
+                                Back to Home
+                            </button>
+                            
+                            
+                            <button
+                                type="button"
+                                className="btn btn-link p-0"
+                                onClick={() => navigate("/login")}
+                            >
+                                Already have an account?
+                                 Log In
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+
+}
