@@ -1,23 +1,36 @@
-﻿import { NavLink } from "react-router-dom";
+﻿import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 export default function ListenerSidebar() {
-    const linkCls = ({ isActive }) =>
-        "list-group-item list-group-item-action rounded-pill mb-2 text-center " +
-        (isActive ? "active" : "");
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const getActiveLink = (url) =>
+        location.pathname === url
+            ? "admin-sidebar__link active"
+            : "admin-sidebar__link";
+
+    const handleLogout = () => {
+        // Add logout logic here
+        //navigate("/login");
+        navigate("/");
+    };
 
     return (
-        <aside className="p-3" style={{ width: 260, background: "#A8E4F2" }}>
-            <div className="list-group border-0">
-                <NavLink to="/coordinatorslistinlistener" className={linkCls}>
+        <div className="admin-sidebar">
+            <div className="admin-sidebar__nav">
+                <div className="admin-sidebar__greeting">
+                    Dashboard
+                </div>
+                <NavLink to="/coordinatorslistinlistener" className={getActiveLink("/coordinatorslistinlistener")}>
                     List of Coordinators
                 </NavLink>
-                <NavLink to="/listenerscheduling" className={linkCls}>
+            <NavLink to="/listenerscheduling" className={getActiveLink("/listenerscheduling")}>
                     Scheduling
                 </NavLink>
-                <NavLink to="/listenerchatroom" className={linkCls}>
+            <NavLink to="/listenerchatroom" className={getActiveLink("/listenerchatroom")}>
                     Let’s Talk
                 </NavLink>
             </div>
-        </aside>
+       </div>
     );
 }
