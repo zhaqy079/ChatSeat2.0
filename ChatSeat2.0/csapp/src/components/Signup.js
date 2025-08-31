@@ -30,7 +30,7 @@ const schema = Yup.object().shape({
     password: Yup.string()
         .matches(
             /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}/,
-            "Password must be 8+ chars, include uppercase, lowercase, number, special char"
+            "Password must:\n- Be 8+ characters\n- Include uppercase & lowercase\n- Include number & special char (e.g. * & @ ?)"
         )
         .required("Password is required"),
 });
@@ -66,7 +66,7 @@ export default function Signup() {
                         Create an Account 
                     </h2>
 
-                    <form onSubmit={handleSubmit} noValidate>
+                    <form onSubmit={handleSubmit(onSubmit)} noValidate> 
                         <div className="mb-3">
                             <label className="form-label fw-semibold">First Name</label>
                             <input
@@ -124,7 +124,9 @@ export default function Signup() {
                                     {showPassword ? "Hide" : "Show"}
                                 </button>
                             </div>
-                            <p className="text-danger small">{errors.password?.message}</p>
+                            <p className="text-danger small">{errors.password?.message?.split("\n").map((line, idx) => (
+                                <div key={idx}>{line}</div>
+                            ))}</p>
                         </div>
 
                         <button
