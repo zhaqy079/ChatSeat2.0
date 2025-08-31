@@ -147,7 +147,7 @@ export default function Login() {
                         </div>
 
                         <div className="text-center mt-3">
-                            <button type="button" className="btn btn-link p-0" onClick={() => navigate("/resetpassword")} >
+                            <button type="button" className="btn btn-link p-0" onClick={() => navigate("/resetrequest")} >
                                 Forgot Password?
                             </button>
                         </div>
