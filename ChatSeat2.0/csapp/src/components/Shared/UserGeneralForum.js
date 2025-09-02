@@ -1,0 +1,70 @@
+import AdminNavbar from "../Admin/AdminNavbar";
+import AdminSidebar from "../Admin/AdminSidebar";
+import { useState, useEffect, useRef } from "react";
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+    process.env.REACT_APP_SUPABASE_URL,
+    process.env.REACT_APP_SUPABASE_ANON_KEY
+);
+
+
+// Requests a list of all general forum posts from the database
+export const fetchAllGeneralForumPosts = async () => {
+    const { data, error } = await supabase.from("general_forum")
+        .select(`*`);
+
+    if (error) {
+        throw new Error("Failed to fetch general forum:" + error.message);
+    }
+
+    return data;
+};
+
+export default function UserGeneralForum() {
+    const [generalforumlist, setGeneralforumlist] = useState([]);
+
+    // Stores the list of general forum posts from the database
+    useEffect(() => {
+        const getGeneralForumPosts = async () => {
+            try {
+                const data = await fetchAllGeneralForumPosts();
+                setGeneralforumlist(data);
+            } catch (err) {
+                console.error("Error fetching general forum posts:", err);
+            }
+        };
+
+        getGeneralForumPosts(); 
+    }, []);
+
+
+    return (
+        <div>
+            <AdminNavbar title="Display Users" />
+            <div className="d-flex">
+
+                <AdminSidebar userName="userName" />
+                <div className="p-4 flex-grow-1">
+                    <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
+
+                    {generalforumlist.length > 0 ? (
+                        generalforumlist.map((post) => (
+                            <div key={post.user_id} className="card">
+                                <div className="card-body">
+                                    <h5 className="card-title">{post.user_id} </h5>
+                                    <p className="card-text">{post.content}</p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        // If no posts are found, show a message
+                        <div colSpan="6" className="p-4 text-center text-gray-500">
+                            No posts found.
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}

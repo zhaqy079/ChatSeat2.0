@@ -37,6 +37,9 @@ export default function AdminSidebar({ userName = "" }) {
                 <Link to="/adminManageLocations" className={getActiveLink("/adminManageLocations")}>
                     Manage Locations
                 </Link>
+                <Link to="/userGeneralForums" className={getActiveLink("/userGeneralForums")}>
+                    General Forum
+                </Link>
             </div>
 
             <div className="mt-3">
