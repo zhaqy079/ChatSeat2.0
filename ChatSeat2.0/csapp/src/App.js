@@ -13,6 +13,7 @@ import CoordinatorDashboard from "./components/Coordinator/CoordinatorDashboard"
 import AdminViewUsers from "./components/Admin/AdminViewUsers";
 import AdminManageLocations from "./components/Admin/AdminManageLocations";
 import UserGeneralForum from "./components/Shared/UserGeneralForum";
+import AdminFeedback from "./components/Admin/AdminFeedback";
 
 
 
@@ -33,6 +34,7 @@ export default function App() {
                 <Route path="/adminViewUsers" element={<AdminViewUsers />} />
                 <Route path="/adminManageLocations" element={<AdminManageLocations />} />
                 <Route path="/userGeneralForums" element={<UserGeneralForum />} />
+                <Route path="/adminFeedback" element={<AdminFeedback />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

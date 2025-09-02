@@ -64,7 +64,7 @@ export default function AdminSchedulingSetting() {
                                         const approver = userlist.find(u => u.profile_id === user.approved_by);
 
                                         return (
-                                            <tr key={user.id} className="border-t">
+                                            <tr key={user.profile_id} className="border-t">
                                                 <td className="p-3">{user.first_name} {user.last_name}</td>
                                                 <td className="p-3">{user.email}</td>
                                                 <td className="p-3">{user.phone_number}</td>

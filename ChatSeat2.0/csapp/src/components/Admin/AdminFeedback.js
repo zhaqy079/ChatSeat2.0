@@ -9,47 +9,47 @@ const supabase = createClient(
 );
 
 
-// Requests a list of all general forum posts from the database
-export const fetchAllGeneralForumPosts = async () => {
-    const { data, error } = await supabase.from("general_forum")
+// Requests a list of all feedback posts from the database
+export const fetchAllFeedbackPosts = async () => {
+    const { data, error } = await supabase.from("feedback_forum")
         .select(`*`);
 
     if (error) {
-        throw new Error("Failed to fetch general forum:" + error.message);
+        throw new Error("Failed to fetch feedback forum:" + error.message);
     }
 
     return data;
 };
 
-export default function UserGeneralForum() {
-    const [generalforumlist, setGeneralforumlist] = useState([]);
+export default function AdminFeedback() {
+    const [feedbacklist, setFeedbacklist] = useState([]);
 
-    // Stores the list of general forum posts from the database
+    // Stores the list of feedback posts from the database
     useEffect(() => {
-        const getGeneralForumPosts = async () => {
+        const getFeedbackPosts = async () => {
             try {
-                const data = await fetchAllGeneralForumPosts();
-                setGeneralforumlist(data);
+                const data = await fetchAllFeedbackPosts();
+                setFeedbacklist(data);
             } catch (err) {
-                console.error("Error fetching general forum posts:", err);
+                console.error("Error fetching feedback posts:", err);
             }
         };
 
-        getGeneralForumPosts(); 
+        getFeedbackPosts(); 
     }, []);
 
 
     return (
         <div>
-            <AdminNavbar title="General Forum" />
+            <AdminNavbar title="Feedback" />
             <div className="d-flex">
 
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
 
-                    {generalforumlist.length > 0 ? (
-                        generalforumlist.map((post) => (
+                    {feedbacklist.length > 0 ? (
+                        feedbacklist.map((post) => (
                             <div key={post.user_id} className="card">
                                 <div className="card-body">
                                     <h5 className="card-title">{post.user_id} </h5>

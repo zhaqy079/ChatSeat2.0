@@ -40,6 +40,9 @@ export default function AdminSidebar({ userName = "" }) {
                 <Link to="/userGeneralForums" className={getActiveLink("/userGeneralForums")}>
                     General Forum
                 </Link>
+                <Link to="/adminFeedback" className={getActiveLink("/adminFeedback")}>
+                    Feedback
+                </Link>
             </div>
 
             <div className="mt-3">
