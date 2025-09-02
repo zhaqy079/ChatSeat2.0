@@ -9,6 +9,7 @@ import ResetRequest from "./components/ResetRequest"
 import Venues from "./components/Venues";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminSchedulingSetting from "./components/Admin/AdminSchedulingSetting";
+import CoordinatorDashboard from "./components/Coordinator/CoordinatorDashboard";
 import AdminViewUsers from "./components/Admin/AdminViewUsers";
 import AdminManageLocations from "./components/Admin/AdminManageLocations";
 import UserGeneralForum from "./components/Shared/UserGeneralForum";
@@ -28,6 +29,7 @@ export default function App() {
                 <Route path="/venues" element={<Venues />} />
                 <Route path="/admindashboard" element={<AdminDashboard />} />
                 <Route path="/adminSchedulingSetting" element={<AdminSchedulingSetting />} />
+                <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
                 <Route path="/adminViewUsers" element={<AdminViewUsers />} />
                 <Route path="/adminManageLocations" element={<AdminManageLocations />} />
                 <Route path="/userGeneralForums" element={<UserGeneralForum />} />
