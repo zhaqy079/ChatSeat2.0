@@ -60,6 +60,13 @@ values ('<uuid from auth.users>', 'admin@chatseat.com', 'admin');
 ```
 
 # Sprint 2
+# Dev
+```
+cd csapp
+npm install react-redux @reduxjs/toolkit
+npm start
+
+```
 ## Database Merge
 New connection, use the new keys. Is different database so we're not affecting live database and to test new database structure.
 
