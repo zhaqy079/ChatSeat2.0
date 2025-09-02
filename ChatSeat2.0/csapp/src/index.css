@@ -115,3 +115,45 @@ h2.intro-title, h3.intro-title, p.intro-title {
 .admin-sidebar__logout:hover {
     background-color: #d9eefe;
 }
+
+/*coordinator sidebar */
+.coordinator-sidebar {
+    width: 225px;
+    height: 55vh;
+    margin-left: 50px;
+    margin-top: 50px;
+    background-color: #D9EAFD;
+}
+
+.coordinator-sidebar .links-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+    justify-content: space-around; 
+}
+
+.sidebar-link {
+    width: 100%;
+    color: #1E3A8A;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    outline: none;
+    text-decoration: none;
+    display: block;
+    background-color: white;
+}
+
+.sidebar-link.active {
+    background-color: #003366;
+    color: white;
+    font-weight: 600;
+}
+
+.coordinator-card .card-body {
+    background-color: #D9EAFD;
+}
