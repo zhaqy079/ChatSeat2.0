@@ -7,13 +7,13 @@ export default function ListenerDashboard() {
     return (
         <div className="d-flex">
             <ListenerSideBar />
-            <main className="flex-grow-1 p-4">
+            <container className="flex-grow-1 p-4">
                 <h2 className="fw-bold text-primary mb-3">
-                    Welcome{user?.first_name ? `, ${user.first_name}` : ""}! 
+                    Welcome{user?.firstName ? `, ${user.firsttName}` : ""}! 
                 </h2>
 
                 {/* will edit upcoming bookings soon*/}
-            </main>
+            </container>
         </div>
     );
 }

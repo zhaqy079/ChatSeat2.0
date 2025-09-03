@@ -11,8 +11,9 @@ import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminSchedulingSetting from "./components/Admin/AdminSchedulingSetting";
 import AdminViewUsers from "./components/Admin/AdminViewUsers";
 import AdminManageLocations from "./components/Admin/AdminManageLocations";
-
-
+import ListenerDashboard from "./components/Listener/ListenerDashboard";
+import ListenerScheduling from "./components/Listener/ListenerScheduling";
+import ListenerSidebar from "./components/Listener/ListenerSideBar";
 
 export default function App() {
     return (
@@ -29,6 +30,9 @@ export default function App() {
                 <Route path="/adminSchedulingSetting" element={<AdminSchedulingSetting />} />
                 <Route path="/adminViewUsers" element={<AdminViewUsers />} />
                 <Route path="/adminManageLocations" element={<AdminManageLocations />} />
+                <Route path="/listenerdashboard" element={<ListenerDashboard />} />
+                <Route path="/listenerscheduling" element={<ListenerScheduling />} />
+               
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
