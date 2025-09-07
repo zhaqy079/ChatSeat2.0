@@ -5,13 +5,19 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
+import { createClient } from '@supabase/supabase-js';
+
 
 // if you get an error for packages of fullcalendar not installed, run this command in terminal
 // npm install @fullcalendar/react @fullcalendar/timegrid @fullcalendar/interaction
 
-//Note areas where api logic needed to be added will have (HELP) next to it
-//If there is any confusion about anything please come and ask me
+// NOTE for callum, i think i got most of it working i just need to fix blocking full day events to save to the db
+// however if there is something you think can be improved or changed please let me know
 
+const supabase = createClient(
+    "https://nuarimunhutwzmcknhwj.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51YXJpbXVuaHV0d3ptY2tuaHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTk2MjIsImV4cCI6MjA3MTIzNTYyMn0.fwdTA0n_vSrT_kUqlExIPdDpPrHo_fRIkOUcd5aHi0c"
+);
 
 export default function AdminSchedulingSetting() {
     const [locations, setLocations] = useState([]);
@@ -31,6 +37,8 @@ export default function AdminSchedulingSetting() {
 
     const calendarRef = useRef(null);
 
+
+
     // updates the calendar when the user selects a particular week
     useEffect(() => {
         if (selectedWeek && calendarRef.current) {
@@ -40,9 +48,64 @@ export default function AdminSchedulingSetting() {
         }
 
         // this is where the api logic will need to fetch the location from the db for location and events (HELP)
+        const fetchData = async () => {
+            try {
+                // Fetch all locations
+                const { data: locs, error: locError } = await supabase
+                    .from("venue_locations")
+                    .select("location_id, location_name");
+                if (locError) throw locError;
+
+                setLocations(locs.map(loc => ({ id: loc.location_id, name: loc.location_name })));
+
+                // Fetch bookings
+                const { data: bookings, error: bookingsError } = await supabase
+                    .from("bookings")
+                    .select("*");
+                if (bookingsError) throw bookingsError;
+
+                // Map bookings to FullCalendar events
+                const eventsData = bookings.map(booking => {
+                    const location = locs.find(loc => loc.location_id === booking.location_id);
+
+                    // Fallback to 00:00 / 23:59 if missing
+                    const startTime = booking.start_time || "00:00";
+                    const endTime = booking.end_time || "23:59";
+
+                    // Make sure time set as this HH:MM:SS for ISO format
+                    const startParts = startTime.split(":").map(num => num.padStart(2, "0"));
+                    const endParts = endTime.split(":").map(num => num.padStart(2, "0"));
+
+                    const startISO = `${booking.booking_date}T${startParts[0]}:${startParts[1]}:00`;
+                    const endISO = `${booking.booking_date}T${endParts[0]}:${endParts[1]}:00`;
+
+                    const start = new Date(startISO);
+                    const end = new Date(endISO);
+
+                    return {
+                        id: booking.booking_id,
+                        title: location ? location.location_name : "Unknown location",
+                        start,
+                        end,
+                        color: "blue",
+                        textColor: "white",
+                        extendedProps: { type: "location" },
+                    };
+                });
+
+                console.log("All fetched events:", eventsData);
+
+                setEvents(eventsData);
+            } catch (error) {
+                console.error("Error fetching data:", error.message);
+            }
+        };
+
+        fetchData();
     }, [selectedWeek]);
 
-    const handleAddLocation = () => {
+    const handleAddLocation = async () => {
+
         const trimmedName = newLocation.trim();
         if (!trimmedName) return;
 
@@ -53,17 +116,60 @@ export default function AdminSchedulingSetting() {
             alert("This location is already added");
             return;
         }
-        const tempId = `temp-${Date.now()}`;
-        const newLoc = { id: tempId, name: newLocation };
-        setLocations([...locations, newLoc]);
-        setNewLocation("");
 
-        // add api logic here to save new added location here to the db (HELP)
+        try {
+            // Insert new location into Supabase
+            // BIG NOTE : location_address is required in the db so i had to default it to "TBD" for now
+            const { data, error } = await supabase
+                .from("venue_locations")
+                .insert([{ location_name: trimmedName, location_address: "TBD" }])
+                .select(); 
+
+            if (error) {
+                console.error("Error adding location:", error.message);
+                return;
+            }
+
+            console.log("Inserted location data:", data); 
+
+            if (data && data.length > 0) {
+                const addedLocation = { id: data[0].location_id, name: data[0].location_name };
+                setLocations(prev => [...prev, addedLocation]); 
+                setNewLocation(""); 
+                console.log("Location added successfully!", addedLocation);
+            }
+        } catch (err) {
+            console.error("Unexpected error adding location:", err);
+        }
     };
 
-    const handleDeleteLocation = (id) => {
+
+    const handleDeleteLocation = async (id) => {
         if (!window.confirm("Are you sure you want to delete this location?")) return;
-        setLocations(locations.filter((loc) => loc.id !== id));
+
+        try {
+            // Delete location from Supabase
+            const { error } = await supabase
+                .from("venue_locations")
+                .delete()
+                .eq("location_id", id);
+
+            if (error) {
+                console.error("Error deleting location:", error.message);
+                return;
+            }
+
+            // Update local state
+            setLocations(locations.filter((loc) => loc.id !== id));
+
+            // remove any events linked to this location from state, maybe check 
+            setEvents(events.filter(ev => ev.extendedProps?.type !== "location" || ev.title !== locations.find(l => l.id === id)?.name));
+
+
+            console.log("Location deleted successfully!");
+        } catch (err) {
+            console.error("Unexpected error:", err);
+        }
     };
 
     // The open modal for adding any new dates
@@ -79,7 +185,7 @@ export default function AdminSchedulingSetting() {
                 ev.end >= dayStart
         );
 
-        // just incase user somehow add a location on a blocked day
+        // incase the user somehow add a location on a blocked day
         if (isBlocked) {
             alert("This day is blocked as unavailable. Edit the block event instead.");
             return;
@@ -136,8 +242,8 @@ export default function AdminSchedulingSetting() {
         if (checked) setSelectedLocation(""); 
     };
 
-    const handleSaveEvent = () => {
-        const locationTrimmed = selectedLocation.trim(); 
+    const handleSaveEvent = async () => {
+        const locationTrimmed = selectedLocation.trim();
 
         if (!blockFullDay && !locationTrimmed) {
             alert("Please select a location!");
@@ -160,6 +266,7 @@ export default function AdminSchedulingSetting() {
             startDate.setHours(+startH, +startM, 0, 0);
             const [endH, endM] = selectedEndTime.split(":");
             endDate.setHours(+endH, +endM, 0, 0);
+
             if (endDate <= startDate) {
                 alert("End time must be after start time!");
                 return;
@@ -170,89 +277,116 @@ export default function AdminSchedulingSetting() {
         const eventId = selectedEvent || Date.now().toString();
         let newEvents = [];
 
-
-        if (isRecurring && !blockFullDay) {
-            // remove all future occurrences of this recurring event first
-            if (selectedEvent) {
-                setEvents((prev) =>
-                    prev.filter(
-                        (ev) => !ev.id.startsWith(selectedEvent) || ev.start < startDate
-                    )
-                );
-            }
-
-            // generate events for the new number of weeks
-            for (let i = 0; i < recurringWeeks; i++) {
+        try {
+            for (let i = 0; i < (isRecurring ? recurringWeeks : 1); i++) {
                 const newStart = new Date(startDate);
                 newStart.setDate(startDate.getDate() + i * 7);
                 const newEnd = new Date(endDate);
                 newEnd.setDate(endDate.getDate() + i * 7);
 
-                newEvents.push({
-                    id: i === 0 ? eventId : `${eventId}-r${i}`,
-                    title: locationTrimmed,
-                    start: newStart,
-                    end: newEnd,
-                    color: "blue",
-                    textColor: "white",
-                    display: "auto",
-                    extendedProps: {
-                        recurring: true,
-                        recurringWeeks,
-                        type: "location",
-                        weekday,
-                    },
-                });
-            }
-        } else {
-            // normal single event or full day unavailable
-            newEvents.push({
-                id: selectedEvent || eventId,
-                title: blockFullDay ? "FULL DAY UNAVAILABLE" : locationTrimmed,
-                start: startDate,
-                end: endDate,
-                color: blockFullDay ? "red" : "blue",
-                textColor: blockFullDay ? "black" : "white",
-                display: "auto",
-                extendedProps: { type: blockFullDay ? "unavailable" : "location" },
-            });
+                
+                const pad = (n) => n.toString().padStart(2, "0");
 
-            // remove future recurring occurrences if editing a single event
-            if (selectedEvent) {
-                setEvents((prev) =>
-                    prev.filter((ev) => !ev.id.startsWith(selectedEvent) || ev.start < startDate)
-                );
+                const booking_date = `${newStart.getFullYear()}-${pad(newStart.getMonth() + 1)}-${pad(newStart.getDate())}`;
+                const start_time = `${pad(newStart.getHours())}:${pad(newStart.getMinutes())}`;
+                const end_time = `${pad(newEnd.getHours())}:${pad(newEnd.getMinutes())}`;
+
+
+                // Only save if not a full-day block
+                if (!blockFullDay) {
+                    const locationObj = locations.find(loc => loc.id === selectedLocation);
+                    const locationName = locationObj ? locationObj.name : "Unknown location";
+
+                    const { data, error } = await supabase
+                        .from("bookings")
+                        .insert([{
+                            booking_date,
+                            start_time,
+                            end_time,
+                            location_id: selectedLocation, 
+                            created_at: new Date().toISOString()
+                        }])
+                        .select();
+
+                    if (error) {
+                        console.error("Error saving booking:", error.message);
+                        continue;
+                    }
+
+                    newEvents.push({
+                        id: data[0].booking_id,
+                        title: locationName, 
+                        start: newStart,
+                        end: newEnd,
+                        color: "blue",
+                        textColor: "white",
+                        display: "auto",
+                        extendedProps: { type: "location", recurring: isRecurring, recurringWeeks },
+                    });
+                }
+                else {
+                    // need to make sure full day blocks also save to the db
+                    newEvents.push({
+                        id: i === 0 ? eventId : `${eventId}-r${i}`,
+                        title: "FULL DAY UNAVAILABLE",
+                        start: newStart,
+                        end: newEnd,
+                        color: "red",
+                        textColor: "black",
+                        display: "auto",
+                        extendedProps: { type: "unavailable", recurring: isRecurring, recurringWeeks },
+                    });
+                }
             }
+
+            // Update local state
+            setEvents(prev => [...prev.filter(ev => ev.id !== selectedEvent), ...newEvents]);
+
+            console.log("Saved to DB:", newEvents);
+
+            // Reset modal
+            setModalOpen(false);
+            setSelectedEvent(null);
+            setBlockFullDay(false);
+            setIsRecurring(false);
+            setRecurringWeeks(1);
+        } catch (err) {
+            console.error("Unexpected error saving event:", err);
         }
-
-        // remove the original event for the new eddited event
-        setEvents((prev) => [...prev.filter((ev) => ev.id !== selectedEvent), ...newEvents]);
-
-
-        setModalOpen(false);
-        setSelectedEvent(null);
-        setBlockFullDay(false);
-        setIsRecurring(false);
-        setRecurringWeeks(1);
-
-        console.log("Save to DB:", newEvents);
     };
 
-    const handleDeleteEvent = () => {
-        if (window.confirm("Are you sure you want to delete this event?")) {
+    const handleDeleteEvent = async () => {
+        if (!window.confirm("Are you sure you want to delete this event?")) return;
+
+        try {
+            // Delete event from Supabase
+            const { error } = await supabase
+                .from("bookings")
+                .delete()
+                .eq("booking_id", selectedEvent);
+
+            if (error) {
+                console.error("Error deleting event:", error.message);
+                return;
+            }
+
+            // Remove the event from local state
             setEvents(events.filter((ev) => ev.id !== selectedEvent));
 
-            // in this section to add api where selected event is deleted from the DB - bit unsure how to do this (HELP)
+            console.log("Event deleted successfully!");
 
+            // Close modal and reset selection
             setModalOpen(false);
             setSelectedEvent(null);
             setIsRecurring(false);
+        } catch (err) {
+            console.error("Unexpected error deleting event:", err);
         }
+
     };
 
+    // maybe thinking of removing
     const handleSaveAllEvents = () => {
-        // in this section i was going to allow the api to go and save all events that were saved in this array const [events, setEvents] = useState([]);
-        // (HELP)
         console.log("Saving all events to DB:", events);
         alert("All events saved (stub, no API logic yet).");
     };
@@ -374,7 +508,7 @@ export default function AdminSchedulingSetting() {
                                                 >
                                                     <option value="">Select location</option>
                                                     {locations.map((loc) => (
-                                                        <option key={loc.id} value={loc.name}>
+                                                        <option key={loc.id} value={loc.id}>
                                                             {loc.name}
                                                         </option>
                                                     ))}
