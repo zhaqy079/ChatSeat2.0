@@ -12,12 +12,13 @@ const supabase = createClient(
 // Requests a list of all feedback posts from the database
 export const fetchAllFeedbackPosts = async () => {
     const { data, error } = await supabase.from("feedback_forum")
-        .select(`*`);
+        .select(`*, user_profiles(*)`);
 
     if (error) {
         throw new Error("Failed to fetch feedback forum:" + error.message);
     }
 
+    console.log(data);
     return data;
 };
 
@@ -46,17 +47,42 @@ export default function AdminFeedback() {
 
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
-                    <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
+                    <h4 className="fw-bold mb-4 text-primary">Feedback</h4>
 
                     {feedbacklist.length > 0 ? (
-                        feedbacklist.map((post) => (
-                            <div key={post.user_id} className="card">
-                                <div className="card-body">
-                                    <h5 className="card-title">{post.user_id} </h5>
-                                    <p className="card-text">{post.content}</p>
+                        <div className="card-group gap-5">
+                            {feedbacklist.map((post) => (
+                                <div className="col-lg">
+                                    <div key={post.user_id} className="card">
+                                        <div className="card-body">
+                                            <h5 className="card-title">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
+                                            <small class="text-muted">{post.user_profiles.email}</small>
+                                            <p className="card-text">{post.content}</p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div className="row">
+                                                <small class="text-muted text-center" >Created at: {new Date(post.created_at).toLocaleDateString("en-AU", {
+                                                    year: "numeric",
+                                                    month: "short",
+                                                    day: "numeric",
+                                                })} </small>
+                                            </div>
+
+                                            <div className="row">
+                                                {post.resolved_at === null
+                                                    ? <button type="button" class="btn btn-secondary">Resolve</button>
+                                                    : <small class="text-muted text-center">Resolved at: {new Date(post.created_at).toLocaleDateString("en-AU", {
+                                                        year: "numeric",
+                                                        month: "short",
+                                                        day: "numeric",
+                                                    })} </small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        ))
+                            ))}
+                        </div>
                     ) : (
                         // If no posts are found, show a message
                         <div colSpan="6" className="p-4 text-center text-gray-500">
