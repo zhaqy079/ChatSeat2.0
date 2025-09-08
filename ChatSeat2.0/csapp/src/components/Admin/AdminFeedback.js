@@ -63,7 +63,7 @@ export default function AdminFeedback() {
                                         </div>
                                         <div class="card-footer">
                                             <div className="row">
-                                                <small className="text-muted text-center">Created:
+                                                <small className="text-muted text-center">Created: 
                                                     { // Logic to adjust displayed date to '27 Nov 2025'
                                                     new Date(post.created_at).toLocaleDateString("en-AU", {
                                                     year: "numeric",
