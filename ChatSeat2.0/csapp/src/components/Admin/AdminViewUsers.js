@@ -47,15 +47,15 @@ export default function AdminSchedulingSetting() {
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">View All Users</h4>
 
-                    <div className="overflow-x-auto">
-                        <table className="min-w-[600px] w-full border rounded shadow bg-white">
-                            <thead className="bg-[#e6f0ff]">
+                        <table className="table w-100">
+                            <thead className="">
                                 <tr className="text-left">
                                     <th className="p-3">Name</th>
                                     <th className="p-3">Email</th>
                                     <th className="p-3">Phone</th>
                                     <th className="p-3">Approved By</th>
                                     <th className="p-3">Inactive</th>
+                                    <th className="p-3">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -75,12 +75,17 @@ export default function AdminSchedulingSetting() {
                                                 </td>
                                                 <td className="p-3">
                                                     {user.inactive_at === null
-                                                        ? "active"
+                                                        ? "Active"
                                                         : new Date(user.inactive_at).toLocaleDateString("en-AU", {
                                                             year: "numeric",
                                                             month: "short",
                                                             day: "numeric",
                                                         })}
+                                                </td>
+                                                <td>
+                                                    <button type="button" className="btn btn-secondary me-2">Admin</button>
+                                                    <button type="button" className="btn btn-secondary me-2">Coordinator</button>
+                                                    <button type="button" className="btn btn-danger">Delete</button>
                                                 </td>
                                             </tr>
                                         );
@@ -88,14 +93,13 @@ export default function AdminSchedulingSetting() {
                                 ) : (
                                     // If no users are found for the selected role, show a message
                                     <tr>
-                                        <td colSpan="6" className="p-4 text-center text-gray-500">
+                                        <td className="text-center">
                                             No users found.
                                         </td>
                                     </tr>
                                 )}
                             </tbody>
                         </table>
-                    </div>
                 </div>
             </div>
         </div>
