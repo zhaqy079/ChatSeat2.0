@@ -12,7 +12,7 @@ const supabase = createClient(
 // Requests a list of all general forum posts from the database
 export const fetchAllGeneralForumPosts = async () => {
     const { data, error } = await supabase.from("general_forum")
-        .select(`*`);
+        .select(`*, user_profiles(*)`);
 
     if (error) {
         throw new Error("Failed to fetch general forum:" + error.message);
@@ -52,7 +52,7 @@ export default function UserGeneralForum() {
                         generalforumlist.map((post) => (
                             <div key={post.user_id} className="card">
                                 <div className="card-body">
-                                    <h5 className="card-title">{post.user_id} </h5>
+                                    <h5 className="card-title">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
                                     <p className="card-text">{post.content}</p>
                                 </div>
                             </div>

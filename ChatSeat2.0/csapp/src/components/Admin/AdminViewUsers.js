@@ -58,9 +58,11 @@ export default function AdminSchedulingSetting() {
                                     <th className="p-3">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {userlist.length > 0 ? (
-                                    userlist.map((user) => { 
+                            <tbody> 
+                            { // User display logic, if no users display message otherwise display user details 
+                                userlist.length > 0 ? (
+                                    userlist.map((user) => {
+                                        // Finds the approved user from their id
                                         const approver = userlist.find(u => u.profile_id === user.approved_by);
 
                                         return (
@@ -68,13 +70,10 @@ export default function AdminSchedulingSetting() {
                                                 <td className="p-3">{user.first_name} {user.last_name}</td>
                                                 <td className="p-3">{user.email}</td>
                                                 <td className="p-3">{user.phone_number}</td>
+                                                <td className="p-3">{approver.first_name} {approver.last_name}</td>
                                                 <td className="p-3">
-                                                    {user.approved_by && approver
-                                                        ? `${approver.first_name} ${approver.last_name}`
-                                                        : <div>NULL</div>}
-                                                </td>
-                                                <td className="p-3">
-                                                    {user.inactive_at === null
+                                                    { // Changes incoming date format to '27 Nov 2025'
+                                                        user.inactive_at === null
                                                         ? "Active"
                                                         : new Date(user.inactive_at).toLocaleDateString("en-AU", {
                                                             year: "numeric",
@@ -83,6 +82,7 @@ export default function AdminSchedulingSetting() {
                                                         })}
                                                 </td>
                                                 <td>
+                                                    {/* Placeholder buttons, need to add redirection/confirmation/verification stuff */} 
                                                     <button type="button" className="btn btn-secondary me-2">Admin</button>
                                                     <button type="button" className="btn btn-secondary me-2">Coordinator</button>
                                                     <button type="button" className="btn btn-danger">Delete</button>
