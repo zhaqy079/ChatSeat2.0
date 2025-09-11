@@ -12,7 +12,8 @@ const supabase = createClient(
 // Requests a list of all general forum posts from the database
 export const fetchAllGeneralForumPosts = async () => {
     const { data, error } = await supabase.from("general_forum")
-        .select(`*, user_profiles(*)`);
+        .select(`*, user_profiles(*)`)
+        .order('created_at', { ascending: false });
 
     if (error) {
         throw new Error("Failed to fetch general forum:" + error.message);

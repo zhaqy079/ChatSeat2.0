@@ -12,7 +12,8 @@ const supabase = createClient(
 // Requests a list of all feedback posts from the database
 export const fetchAllFeedbackPosts = async () => {
     const { data, error } = await supabase.from("feedback_forum")
-        .select(`*, user_profiles(*)`);
+        .select(`*, user_profiles(*)`)
+        .order('created_at', { ascending: false });
 
     if (error) {
         throw new Error("Failed to fetch feedback forum:" + error.message);

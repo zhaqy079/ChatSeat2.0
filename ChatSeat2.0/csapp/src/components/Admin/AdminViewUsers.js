@@ -11,7 +11,9 @@ const supabase = createClient(
 
 // Requests a list of all users from the database
 export const fetchAllUsers = async () => {
-    const { data, error } = await supabase.from("user_profiles").select("*");
+    const { data, error } = await supabase.from("user_profiles")
+        .select("*")
+        .order('first_name', { ascending: true });
 
     if (error) {
         throw new Error("Failed to fetch users:" + error.message);
@@ -53,7 +55,8 @@ export default function AdminSchedulingSetting() {
                         <h5 className="text-center">
                             No users found.
                         </h5>
-                    ) : (
+                        ) : (
+                        // Creation of table for display of users and their details
                         <table className="table w-100">
                             <thead className="">
                                 <tr className="text-left">
@@ -74,7 +77,7 @@ export default function AdminSchedulingSetting() {
                                         <tr key={user.profile_id} className="border-t">
                                             <td className="p-3">{user.first_name} {user.last_name}</td>
                                             <td className="p-3">{user.email}</td>
-                                            <td className="p-3">{user.phone_number}</td>
+                                            <td className="p-3">{user.phone}</td>
                                             <td className="p-3">{approver.first_name} {approver.last_name}</td>
                                             <td className="p-3">
                                                 { // Changes incoming date format to '27 Nov 2025' format
@@ -90,6 +93,7 @@ export default function AdminSchedulingSetting() {
                                                 {/* Placeholder buttons, need to add redirection/confirmation/verification stuff */}
                                                 <button type="button" className="btn btn-secondary me-2">Admin</button>
                                                 <button type="button" className="btn btn-secondary me-2">Coordinator</button>
+                                                <button type="button" className="btn btn-warning me-2">Deactivate</button>
                                                 <button type="button" className="btn btn-danger">Delete</button>
                                             </td>
                                         </tr>
