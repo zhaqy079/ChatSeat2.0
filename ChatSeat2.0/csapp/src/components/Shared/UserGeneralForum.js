@@ -48,7 +48,13 @@ export default function UserGeneralForum() {
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
 
-                    {generalforumlist.length > 0 ? (
+                    { // Forum display logic, if no forum posts display special message otherwise display all posts
+                        !generalforumlist.length > 0 ? (
+                        // If no posts are found, show a message
+                        <h5 className="p-4 text-center">
+                            No posts found.
+                        </h5>
+                    ) : (
                         generalforumlist.map((post) => (
                             <div key={post.user_id} className="card">
                                 <div className="card-body">
@@ -58,8 +64,8 @@ export default function UserGeneralForum() {
                                     <p className="card-text">{post.content}</p>
                                 </div>
                                 <div class="card-footer">
-                                    <small className="text-muted text-center">Created: 
-                                        { // Logic to adjust displayed date to '27 Nov 2025'
+                                    <small className="text-muted text-center">Created:
+                                        { // Logic to adjust displayed date to '27 Nov 2025' format
                                             new Date(post.created_at).toLocaleDateString("en-AU", {
                                                 year: "numeric",
                                                 month: "short",
@@ -69,11 +75,6 @@ export default function UserGeneralForum() {
                                 </div>
                             </div>
                         ))
-                    ) : (
-                        // If no posts are found, show a message
-                        <div colSpan="6" className="p-4 text-center text-gray-500">
-                            No posts found.
-                        </div>
                     )}
                 </div>
             </div>
