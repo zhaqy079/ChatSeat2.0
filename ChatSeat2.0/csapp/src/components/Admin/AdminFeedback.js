@@ -42,9 +42,9 @@ export default function AdminFeedback() {
 
 
     return (
-        <div>
+        <div key="1">
             <AdminNavbar title="Feedback" />
-            <div className="d-flex">
+            <div key="2" className="d-flex">
 
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
@@ -57,17 +57,17 @@ export default function AdminFeedback() {
                             No posts found.
                         </h5>
                     ) : (
-                        <div className="card-group gap-4">
+                        <div className="card-group gap-4 overflow-auto">
                             {feedbacklist.map((post) => (
-                                <div className="col-lg">
-                                    <div key={post.user_id} className="card" style={{ width: 16 + 'em' }}>
+                                <div key={post.feedback_forum_id} className="col-md-2">
+                                    <div className="card">
                                         <div className="card-body">
                                             {/* Main content of a feedback post */}
                                             <h5 className="card-title text-center">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
-                                            <h6 class="card-subtitle mb-2 text-muted text-center">{post.user_profiles.email}</h6>
-                                            <p className="card-text">{post.content}</p>
+                                            <h6 className="card-subtitle mb-2 text-muted text-center">{post.user_profiles.email}</h6>
+                                            <p className="card-text overflow-auto h-50">{post.content}</p>
                                         </div>
-                                        <div class="card-footer">
+                                        <div className="card-footer">
                                             <div className="row">
                                                 <small className="text-muted text-center">Created:
                                                     { // Logic to adjust displayed date to '27 Nov 2025' format
@@ -80,14 +80,18 @@ export default function AdminFeedback() {
 
                                             <div className="row">
                                                 { // Logic to check whether a post has been resolved, if it has display resolve time otherwise display resolve button
-                                                    post.resolved_at === null
-                                                        ? // Placeholder resolve button, back end logic still needs to be added 
-                                                        <button type="button" className="btn btn-secondary">Resolve</button>
-                                                        : <small className="text-muted text-center">Resolved: {new Date(post.created_at).toLocaleDateString("en-AU", {
+                                                post.resolved_at === null
+                                                    ? // Placeholder resolve button, back end logic still needs to be added 
+                                                    <button type="button" className="btn btn-secondary">Resolve</button>
+                                                    :
+                                                    <small className="text-muted text-center">Resolved:
+                                                        { // Logic to adjust displayed date to '27 Nov 2025' format
+                                                            new Date(post.resolved_at).toLocaleDateString("en-AU", {
                                                             year: "numeric",
                                                             month: "short",
                                                             day: "numeric",
-                                                        })} </small>
+                                                            })}
+                                                    </small>
                                                 }
                                             </div>
                                         </div>

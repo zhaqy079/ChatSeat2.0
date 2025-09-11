@@ -22,7 +22,7 @@ export const fetchAllUsers = async () => {
     return data;
 };
 
-export default function AdminSchedulingSetting() {
+export default function AdminViewUsers() {
     const [userlist, setUserlist] = useState([]);
 
     // Stores the list of users from the database
@@ -68,7 +68,7 @@ export default function AdminSchedulingSetting() {
                                     <th className="p-3">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody> {
+                            <tbody>{
                                 userlist.map((user) => {
                                     // Finds the approved user from their id
                                     const approver = userlist.find(u => u.profile_id === user.approved_by);

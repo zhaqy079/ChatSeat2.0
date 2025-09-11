@@ -61,10 +61,10 @@ export default function UserGeneralForum() {
                                 <div className="card-body">
                                     {/* Main content of a feedback post */}
                                     <h5 className="card-title">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
+                                    <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
                                     <p className="card-text">{post.content}</p>
                                 </div>
-                                <div class="card-footer">
+                                <div className="card-footer">
                                     <small className="text-muted text-center">Created:
                                         { // Logic to adjust displayed date to '27 Nov 2025' format
                                             new Date(post.created_at).toLocaleDateString("en-AU", {
