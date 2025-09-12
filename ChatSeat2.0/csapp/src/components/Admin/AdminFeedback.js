@@ -25,6 +25,7 @@ export const fetchAllFeedbackPosts = async () => {
 
 export default function AdminFeedback() {
     const [feedbacklist, setFeedbacklist] = useState([]);
+    const [searchdata, setSearchdata] = useState("");
 
     // Stores the list of feedback posts from the database
     useEffect(() => {
@@ -40,6 +41,14 @@ export default function AdminFeedback() {
         getFeedbackPosts(); 
     }, []);
 
+    const filteredFeedbackposts = feedbacklist
+        .filter((post) => (
+            searchdata === "all" || searchdata === ""
+                ? true
+                : (searchdata === "unresolved" ? post.resolved_at === null : post.resolved_at !== null)
+        ));
+    console.log("Filtered posts: ", filteredFeedbackposts)
+
 
     return (
         <div key="1">
@@ -50,15 +59,23 @@ export default function AdminFeedback() {
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">Feedback</h4>
 
+                    <div className="mb-2">
+                        <select value={searchdata} onChange={(e) => setSearchdata(e.target.value)}>
+                            <option value="unresolved">Unresolved</option>
+                            <option value="resolved">Resolved</option>
+                            <option value="all">All Posts</option>
+                        </select>
+                    </div>
+
                     { // Post display logic, if no posts display special message otherwise display all posts
-                        !feedbacklist.length > 0 ? (
+                        !filteredFeedbackposts.length > 0 ? (
                             // If no posts are found, show a message
                         <h5 className="p-4 text-center">
                             No posts found.
                         </h5>
                     ) : (
                         <div className="card-group gap-4 overflow-auto">
-                            {feedbacklist.map((post) => (
+                            {filteredFeedbackposts.map((post) => (
                                 <div key={post.feedback_forum_id} className="col-md-2">
                                     <div className="card">
                                         <div className="card-body">
