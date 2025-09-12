@@ -57,7 +57,7 @@ export default function UserGeneralForum() {
                         </h5>
                     ) : (
                         generalforumlist.map((post) => (
-                            <div key={post.user_id} className="card">
+                            <div key={post.user_id} className="card mb-2">
                                 <div className="card-body">
                                     {/* Main content of a feedback post */}
                                     <h5 className="card-title">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
@@ -65,8 +65,8 @@ export default function UserGeneralForum() {
                                     <p className="card-text">{post.content}</p>
                                 </div>
                                 <div className="card-footer">
-                                    <small className="text-muted text-center">Created:
-                                        { // Logic to adjust displayed date to '27 Nov 2025' format
+                                    <small className="text-muted text-center">Created: {
+                                    // Logic to adjust displayed date to '27 Nov 2025' format
                                             new Date(post.created_at).toLocaleDateString("en-AU", {
                                                 year: "numeric",
                                                 month: "short",

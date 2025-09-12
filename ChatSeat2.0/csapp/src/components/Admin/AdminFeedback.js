@@ -25,7 +25,7 @@ export const fetchAllFeedbackPosts = async () => {
 
 export default function AdminFeedback() {
     const [feedbacklist, setFeedbacklist] = useState([]);
-    const [searchdata, setSearchdata] = useState("");
+    const [searchdata, setSearchdata] = useState({resolveState: ''});
 
     // Stores the list of feedback posts from the database
     useEffect(() => {
@@ -43,9 +43,9 @@ export default function AdminFeedback() {
 
     const filteredFeedbackposts = feedbacklist
         .filter((post) => (
-            searchdata === "all" || searchdata === ""
+            searchdata.resolveState === "all" || searchdata.resolveState === ""
                 ? true
-                : (searchdata === "unresolved" ? post.resolved_at === null : post.resolved_at !== null)
+                : (searchdata.resolveState === "unresolved" ? post.resolved_at === null : post.resolved_at !== null)
         ));
     console.log("Filtered posts: ", filteredFeedbackposts)
 
@@ -60,7 +60,7 @@ export default function AdminFeedback() {
                     <h4 className="fw-bold mb-4 text-primary">Feedback</h4>
 
                     <div className="mb-2">
-                        <select value={searchdata} onChange={(e) => setSearchdata(e.target.value)}>
+                        <select value={searchdata.resolveState} onChange={(e) => setSearchdata({...searchdata, resolveState:e.target.value })}>
                             <option value="unresolved">Unresolved</option>
                             <option value="resolved">Resolved</option>
                             <option value="all">All Posts</option>
@@ -86,8 +86,8 @@ export default function AdminFeedback() {
                                         </div>
                                         <div className="card-footer">
                                             <div className="row">
-                                                <small className="text-muted text-center">Created:
-                                                    { // Logic to adjust displayed date to '27 Nov 2025' format
+                                                <small className="text-muted text-center">Created: {
+                                                // Logic to adjust displayed date to '27 Nov 2025' format
                                                         new Date(post.created_at).toLocaleDateString("en-AU", {
                                                             year: "numeric",
                                                             month: "short",
@@ -101,8 +101,8 @@ export default function AdminFeedback() {
                                                     ? // Placeholder resolve button, back end logic still needs to be added 
                                                     <button type="button" className="btn btn-secondary">Resolve</button>
                                                     :
-                                                    <small className="text-muted text-center">Resolved:
-                                                        { // Logic to adjust displayed date to '27 Nov 2025' format
+                                                    <small className="text-muted text-center">Resolved: { 
+                                                        // Logic to adjust displayed date to '27 Nov 2025' format
                                                             new Date(post.resolved_at).toLocaleDateString("en-AU", {
                                                             year: "numeric",
                                                             month: "short",
