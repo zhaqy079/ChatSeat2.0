@@ -40,6 +40,36 @@ export default function UserGeneralForum() {
     }, []);
 
 
+    // Links posts with their replies
+    function Post({ post, posts, level = 0 }) {
+        // Find direct replies to this post
+        const replies = posts.filter(p => p.reply_to === post.general_forum_id);
+
+        return (
+            <div key={post.general_forum_id} className="card mb-2" style={{ marginLeft: level * 10, padding: '5px 0' }}>
+                <div className="card-body">
+                    {/* Main content of a feedback post */}
+                    <h5 className="card-title">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
+                    <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
+                    <p className="card-text">{post.content}</p>
+                </div>
+                {replies.map(reply => (
+                    <Post key={reply.id} post={reply} posts={posts} level={level + 1} />
+                ))}
+                <div className="card-footer">
+                    <small className="text-muted text-center">Created: {
+                        // Logic to adjust displayed date to '27 Nov 2025' format
+                        new Date(post.created_at).toLocaleDateString("en-AU", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                        })}
+                    </small>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div>
             <AdminNavbar title="General Forum" />
@@ -56,25 +86,10 @@ export default function UserGeneralForum() {
                             No posts found.
                         </h5>
                     ) : (
-                        generalforumlist.map((post) => (
-                            <div key={post.user_id} className="card mb-2">
-                                <div className="card-body">
-                                    {/* Main content of a feedback post */}
-                                    <h5 className="card-title">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
-                                    <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
-                                    <p className="card-text">{post.content}</p>
-                                </div>
-                                <div className="card-footer">
-                                    <small className="text-muted text-center">Created: {
-                                    // Logic to adjust displayed date to '27 Nov 2025' format
-                                            new Date(post.created_at).toLocaleDateString("en-AU", {
-                                                year: "numeric",
-                                                month: "short",
-                                                day: "numeric",
-                                            })}
-                                    </small>
-                                </div>
-                            </div>
+                    generalforumlist
+                        .filter(post => post.reply_to === null) // Only top-level posts
+                        .map(post => (
+                            <Post key={post.id} post={post} posts={generalforumlist} />
                         ))
                     )}
                 </div>

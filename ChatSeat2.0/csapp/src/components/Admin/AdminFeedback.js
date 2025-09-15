@@ -41,6 +41,8 @@ export default function AdminFeedback() {
         getFeedbackPosts(); 
     }, []);
 
+
+    // Filters posts according to inputted criteria
     const filteredFeedbackposts = feedbacklist
         .filter((post) => (
             searchdata.resolveState === "all" || searchdata.resolveState === ""
