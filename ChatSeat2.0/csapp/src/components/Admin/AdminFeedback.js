@@ -19,13 +19,12 @@ export const fetchAllFeedbackPosts = async () => {
         throw new Error("Failed to fetch feedback forum:" + error.message);
     }
 
-    console.log(data);
     return data;
 };
 
 export default function AdminFeedback() {
     const [feedbacklist, setFeedbacklist] = useState([]);
-    const [searchdata, setSearchdata] = useState({resolveState: ''});
+    const [searchdata, setSearchdata] = useState({resolveState: 'unresolved'});
 
     // Stores the list of feedback posts from the database
     useEffect(() => {
@@ -49,7 +48,6 @@ export default function AdminFeedback() {
                 ? true
                 : (searchdata.resolveState === "unresolved" ? post.resolved_at === null : post.resolved_at !== null)
         ));
-    console.log("Filtered posts: ", filteredFeedbackposts)
 
 
     return (
@@ -61,9 +59,10 @@ export default function AdminFeedback() {
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">Feedback</h4>
 
+                    {/* Dropdown menu to refine posts displayed */}
                     <div className="mb-2">
                         <select value={searchdata.resolveState} onChange={(e) => setSearchdata({...searchdata, resolveState:e.target.value })}>
-                            <option value="unresolved">Unresolved</option>
+                            <option value="unresolved" >Unresolved</option>
                             <option value="resolved">Resolved</option>
                             <option value="all">All Posts</option>
                         </select>

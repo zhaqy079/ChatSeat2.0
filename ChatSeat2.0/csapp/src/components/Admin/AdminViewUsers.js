@@ -12,7 +12,7 @@ const supabase = createClient(
 // Requests a list of all users from the database
 export const fetchAllUsers = async () => {
     const { data, error } = await supabase.from("user_profiles")
-        .select("*")
+        .select("*, coordinator_profiles(*, venue_locations(*)), admin_profiles(*)")
         .order('first_name', { ascending: true });
 
     if (error) {
@@ -24,6 +24,7 @@ export const fetchAllUsers = async () => {
 
 export default function AdminViewUsers() {
     const [userlist, setUserlist] = useState([]);
+    const [searchrole, setSearchrole] = useState("pending");
 
     // Stores the list of users from the database
     useEffect(() => {
@@ -39,6 +40,17 @@ export default function AdminViewUsers() {
         getUsers(); 
     }, []);
 
+    // Filters users according to their role
+    const filteredUsers = userlist
+        .filter((user) => (
+            searchrole === "all" || searchrole === ""
+                ? true
+                : (searchrole === "pending" ? user.approved_by === null 
+                : (searchrole === "admin" ? !(user.admin_profiles === null)
+                : user.coordinator_profiles.length > 0))
+        ));
+
+    console.log("Searched role: ", searchrole, "\n Filtered list: ", filteredUsers)
 
     return (
         <div>
@@ -48,6 +60,15 @@ export default function AdminViewUsers() {
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">View All Users</h4>
 
+                    {/* Dropdown menu to refine the displayed users */}
+                    <div className="mb-2">
+                        <select value={searchrole} onChange={(e) => setSearchrole(e.target.value)}>
+                            <option value="pending">Pending Users</option>
+                            <option value="admin">Admins</option>
+                            <option value="coordinator">Coordinators</option>
+                            <option value="all">All Users</option>
+                        </select>
+                    </div>
                     
                     { // User display logic, if no users display message otherwise display users and their details 
                         !userlist.length > 0 ? (
@@ -91,9 +112,11 @@ export default function AdminViewUsers() {
                                             </td>
                                             <td>
                                                 {/* Placeholder buttons, need to add redirection/confirmation/verification stuff */}
-                                                <button type="button" className="btn btn-secondary me-2">Admin</button>
+                                                {user.admin_profiles === null ? <button type="button" className="btn btn-secondary me-2">Admin</button> : false}
                                                 <button type="button" className="btn btn-secondary me-2">Coordinator</button>
-                                                <button type="button" className="btn btn-warning me-2">Deactivate</button>
+                                                {user.inactive_at === null ?
+                                                    <button type="button" className="btn btn-warning me-2">Deactivate</button>
+                                                    : <button type="button" className="btn btn-info me-2">Reactivate</button>}
                                                 <button type="button" className="btn btn-danger">Delete</button>
                                             </td>
                                         </tr>
