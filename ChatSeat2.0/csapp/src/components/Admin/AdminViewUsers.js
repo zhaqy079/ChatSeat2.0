@@ -41,7 +41,7 @@ export default function AdminViewUsers() {
     }, []);
 
     // Filters users according to their role
-    const filteredUsers = userlist
+    const filtereduserList = userlist
         .filter((user) => (
             searchrole === "all" || searchrole === ""
                 ? true
@@ -50,7 +50,7 @@ export default function AdminViewUsers() {
                 : user.coordinator_profiles.length > 0))
         ));
 
-    console.log("Searched role: ", searchrole, "\n Filtered list: ", filteredUsers)
+    console.log("Searched role: ", searchrole, "\n Filtered list: ", filtereduserList)
 
     return (
         <div>
@@ -64,14 +64,14 @@ export default function AdminViewUsers() {
                     <div className="mb-2">
                         <select value={searchrole} onChange={(e) => setSearchrole(e.target.value)}>
                             <option value="pending">Pending Users</option>
-                            <option value="admin">Admins</option>
-                            <option value="coordinator">Coordinators</option>
                             <option value="all">All Users</option>
+                            <option value="coordinator">Coordinators</option>
+                            <option value="admin">Admins</option>
                         </select>
                     </div>
                     
                     { // User display logic, if no users display message otherwise display users and their details 
-                        !userlist.length > 0 ? (
+                        !filtereduserList.length > 0 ? (
                         // If no users are found for the selected role, show a message
                         <h5 className="text-center">
                             No users found.
@@ -90,9 +90,9 @@ export default function AdminViewUsers() {
                                 </tr>
                             </thead>
                             <tbody>{
-                                userlist.map((user) => {
+                                filtereduserList.map((user) => {
                                     // Finds the approved user from their id
-                                    const approver = userlist.find(u => u.profile_id === user.approved_by);
+                                    const approver = user.approved_by ? filtereduserList.find(u => u.profile_id === user.approved_by) : null;
 
                                     return (
                                         <tr key={user.profile_id} className="border-t">
@@ -111,13 +111,24 @@ export default function AdminViewUsers() {
                                                         })}
                                             </td>
                                             <td>
-                                                {/* Placeholder buttons, need to add redirection/confirmation/verification stuff */}
-                                                {user.admin_profiles === null ? <button type="button" className="btn btn-secondary me-2">Admin</button> : false}
-                                                <button type="button" className="btn btn-secondary me-2">Coordinator</button>
-                                                {user.inactive_at === null ?
-                                                    <button type="button" className="btn btn-warning me-2">Deactivate</button>
-                                                    : <button type="button" className="btn btn-info me-2">Reactivate</button>}
-                                                <button type="button" className="btn btn-danger">Delete</button>
+                                                {/* If user hasn't yet been approved, display approve button. Otherwise display all buttons. */}
+                                                {!approver ? (
+                                                    <button type="button" className="btn btn-success">Approve</button>
+                                                ) : (
+                                                    // Displays a varietty of different buttons depending on whether the user is an admin or currently active/inactive
+                                                    <>
+                                                        {user.admin_profiles === null && (
+                                                            <button type="button" className="btn btn-secondary me-2">Admin</button>
+                                                        )}
+                                                        <button type="button" className="btn btn-secondary me-2">Coordinator</button>
+                                                        {user.inactive_at === null ? (
+                                                            <button type="button" className="btn btn-warning me-2">Deactivate</button>
+                                                        ) : (
+                                                            <button type="button" className="btn btn-info me-2">Reactivate</button>
+                                                        )}
+                                                        <button type="button" className="btn btn-danger">Delete</button>
+                                                    </>
+                                                )}
                                             </td>
                                         </tr>
                                     );

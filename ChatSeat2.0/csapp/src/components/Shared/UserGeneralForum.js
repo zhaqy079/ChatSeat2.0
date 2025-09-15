@@ -41,12 +41,12 @@ export default function UserGeneralForum() {
 
 
     // Links posts with their replies
-    function Post({ post, posts, level = 0 }) {
+    function Post({post, posts}) {
         // Find direct replies to this post
         const replies = posts.filter(p => p.reply_to === post.general_forum_id);
 
         return (
-            <div key={post.general_forum_id} className="card mb-2" style={{ marginLeft: level * 10, padding: '5px 0' }}>
+            <div key={post.general_forum_id} className="card mb-2" style={{ marginLeft: 10, padding: "5px 0" }}>
                 <div className="card-body">
                     {/* Main content of a feedback post */}
                     <h5 className="card-title">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
@@ -54,7 +54,7 @@ export default function UserGeneralForum() {
                     <p className="card-text">{post.content}</p>
                 </div>
                 {replies.map(reply => (
-                    <Post key={reply.id} post={reply} posts={posts} level={level + 1} />
+                    <Post key={reply.id} post={reply} posts={posts}/>
                 ))}
                 <div className="card-footer">
                     <small className="text-muted text-center">Created: {
