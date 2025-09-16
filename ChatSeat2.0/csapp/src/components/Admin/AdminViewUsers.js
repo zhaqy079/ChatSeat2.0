@@ -22,6 +22,20 @@ export const fetchAllUsers = async () => {
     return data;
 };
 
+// Function call to approve a user
+async function approveUser(userID) {
+        const { error: profileError } = await supabase.from("user_profiles").update(
+            {
+                // Needs to become dynamic, dependent on user approving.
+                approved_by: "73fd19d1-5665-479b-8500-5ea691b0e1be"
+            }
+        ).eq('profile_id', userID);
+
+        if (profileError) {
+            throw new Error("Failed to approve user: " + profileError.message);
+        }
+}
+
 export default function AdminViewUsers() {
     const [userlist, setUserlist] = useState([]);
     const [searchrole, setSearchrole] = useState("pending");
@@ -50,7 +64,7 @@ export default function AdminViewUsers() {
                 : user.coordinator_profiles.length > 0))
         ));
 
-    console.log("Searched role: ", searchrole, "\n Filtered list: ", filtereduserList)
+    
 
     return (
         <div>
@@ -99,7 +113,8 @@ export default function AdminViewUsers() {
                                             <td className="p-3">{user.first_name} {user.last_name}</td>
                                             <td className="p-3">{user.email}</td>
                                             <td className="p-3">{user.phone}</td>
-                                            <td className="p-3">{approver.first_name} {approver.last_name}</td>
+                                            {!approver ? <td className="p-3">Not yet approved</td> : <td className="p-3">{approver.first_name} {approver.last_name}</td>}
+                                            
                                             <td className="p-3">
                                                 { // Changes incoming date format to '27 Nov 2025' format
                                                     user.inactive_at === null
@@ -113,7 +128,7 @@ export default function AdminViewUsers() {
                                             <td>
                                                 {/* If user hasn't yet been approved, display approve button. Otherwise display all buttons. */}
                                                 {!approver ? (
-                                                    <button type="button" className="btn btn-success">Approve</button>
+                                                    <button type="button" className="btn btn-success" onClick={() => approveUser(user.profile_id) }>Approve</button>
                                                 ) : (
                                                     // Displays a varietty of different buttons depending on whether the user is an admin or currently active/inactive
                                                     <>

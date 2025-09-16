@@ -67,7 +67,7 @@ const signupUser = async ({
     ).eq('email', email);
 
     if (profileError) {
-        throw new Error("Failed to add user data:" + profileError.message);
+        throw new Error("Failed to add user data: " + profileError.message);
     }
 
     return user;
