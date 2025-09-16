@@ -56,7 +56,7 @@ export default function AdminManageLocations() {
                             <tbody>
                                 {locationlist.length > 0 ? (
                                     locationlist.map((location) => (
-                                        <tr key={location.id} className="border-t">
+                                        <tr key={location.location_id} className="border-t">
                                             <td className="p-3">{location.location_name}</td>
                                             <td className="p-3">{location.location_address}</td>
                                         </tr>

@@ -35,6 +35,45 @@ const schema = Yup.object().shape({
         .required("Password is required"),
 });
 
+
+// Supabase signup feature
+const signupUser = async ({
+    email,
+    password,
+    firstName,
+    lastName,
+    phoneNumber,
+}) => {
+    // Validate input
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+    });
+
+    // If there's an error during signup, throw an error
+    if (error) {
+        throw new Error("Signup failed：" + error.message);
+    }
+
+    const user = data.user;
+
+    // If user is not created, throw an error
+    const { error: profileError } = await supabase.from("user_profiles").update(
+        {
+            first_name: firstName,
+            last_name: lastName,
+            phone: phoneNumber,
+        },
+    ).eq('email', email);
+
+    if (profileError) {
+        throw new Error("Failed to add user data:" + profileError.message);
+    }
+
+    return user;
+};
+
+
 export default function Signup() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
@@ -49,7 +88,7 @@ export default function Signup() {
     // Function to handle form submission and it will be called when the form is submitted
     const onSubmit = async (data) => {
         try {
-           
+            await signupUser(data);
             toast.success("Signup successful!");
             navigate("/Login");
         } catch (err) {
@@ -57,6 +96,7 @@ export default function Signup() {
             toast.error("Signup failed:" + err.message);
         }
     };
+
     return (
     // Signup Page Form Page, keep same design with Login page
         <div className="min-vh-100 d-flex flex-column">

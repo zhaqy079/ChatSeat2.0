@@ -1,71 +1,536 @@
-import AdminNavbar from "./AdminNavbar";
+﻿import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
+import { createClient } from '@supabase/supabase-js';
+
+
 // if you get an error for packages of fullcalendar not installed, run this command in terminal
 // npm install @fullcalendar/react @fullcalendar/timegrid @fullcalendar/interaction
+
+// had to make full day unavailable a location to make the blocking work properly
+
+const supabase = createClient(
+    "https://nuarimunhutwzmcknhwj.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51YXJpbXVuaHV0d3ptY2tuaHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTk2MjIsImV4cCI6MjA3MTIzNTYyMn0.fwdTA0n_vSrT_kUqlExIPdDpPrHo_fRIkOUcd5aHi0c"
+);
+
 export default function AdminSchedulingSetting() {
-    const [locations, setLocations] = useState([]);
+    const [locations, setLocations] = useState([]); // locations are saved here so the DB can be updated
     const [newLocation, setNewLocation] = useState("");
     const [selectedWeek, setSelectedWeek] = useState("");
+    const [events, setEvents] = useState([]); // events are saved here so we can save it to the DB 
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedSlot, setSelectedSlot] = useState(null);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [selectedLocation, setSelectedLocation] = useState("");
+    const [selectedStartTime, setSelectedStartTime] = useState("");
+    const [selectedEndTime, setSelectedEndTime] = useState("");
+    const [blockFullDay, setBlockFullDay] = useState(false);
+    const [isRecurring, setIsRecurring] = useState(false);
+    const [recurringWeeks, setRecurringWeeks] = useState(1); 
+    const [deleteConfirm, setDeleteConfirm] = useState({
+        open: false,
+        locationId: null,
+        locationName: "",
+        relatedEvents: []
+    });
+
     const calendarRef = useRef(null);
 
-    // updates the calendar when the user selects a paticular week
+
+
+    // updates the calendar when the user selects a particular week
     useEffect(() => {
         if (selectedWeek && calendarRef.current) {
             const [year, week] = selectedWeek.split("-W").map(Number);
             const firstDayOfWeek = new Date(year, 0, 1 + (week - 1) * 7);
             calendarRef.current.getApi().gotoDate(firstDayOfWeek);
         }
+
+        // fetch locations and bookings from supabase
+        const fetchData = async () => {
+            try {
+                // Fetch all locations
+                const { data: locs, error: locError } = await supabase
+                    .from("venue_locations")
+                    .select("location_id, location_name");
+                if (locError) throw locError;
+
+                setLocations(locs.map(loc => ({ id: loc.location_id, name: loc.location_name })));
+
+                // Fetch bookings
+                const { data: bookings, error: bookingsError } = await supabase
+                    .from("bookings")
+                    .select("*");
+                if (bookingsError) throw bookingsError;
+
+                
+                const unavailableLocation = locs.find(loc => loc.location_name === "FULL DAY UNAVAILABLE");
+                const unavailableId = unavailableLocation ? unavailableLocation.location_id : null;
+
+                // Display bookings on calendar
+                const eventsData = bookings.map(booking => {
+                    const location = locs.find(loc => loc.location_id === booking.location_id);
+
+                    // Handle missing times
+                    const startTime = booking.start_time || "00:00";
+                    const endTime = booking.end_time || "23:59";
+
+                    // Convert to ISO strings
+                    const startParts = startTime.split(":").map(num => num.padStart(2, "0"));
+                    const endParts = endTime.split(":").map(num => num.padStart(2, "0"));
+
+                    const startISO = `${booking.booking_date}T${startParts[0]}:${startParts[1]}:00`;
+                    const endISO = `${booking.booking_date}T${endParts[0]}:${endParts[1]}:00`;
+
+                    const start = new Date(startISO);
+                    const end = new Date(endISO);
+
+                    
+                    const isUnavailable = booking.location_id === unavailableId;
+
+                    return {
+                        id: booking.booking_id,
+                        title: isUnavailable ? "FULL DAY UNAVAILABLE" : location ? location.location_name : "Unknown location",
+                        start,
+                        end,
+                        color: isUnavailable ? "#ff7f7f" : "yellow",
+                        textColor: isUnavailable ? "black" : "black",
+                        extendedProps: { type: isUnavailable ? "unavailable" : "location", location_id: booking.location_id },
+                    };
+                });
+
+                console.log("All fetched events:", eventsData);
+
+                setEvents(eventsData);
+            } catch (error) {
+                console.error("Error fetching data:", error.message);
+            }
+        };
+
+
+        fetchData();
     }, [selectedWeek]);
 
-    const handleAddLocation = () => {
+    const handleAddLocation = async () => {
+
         const trimmedName = newLocation.trim();
         if (!trimmedName) return;
 
-        // ensures there are no duplicate locations
         const isDuplicate = locations.some(
             (loc) => loc.name.toLowerCase() === trimmedName.toLowerCase()
         );
-
         if (isDuplicate) {
             alert("This location is already added");
             return;
         }
 
-        const tempId = `temp-${Date.now()}`;
-        const newLoc = { id: tempId, name: newLocation };
+        try {
+            // Insert new location into Supabase
+            // BIG NOTE : location_address is required in the db so i had to default it to "TBD" for now
+            const { data, error } = await supabase
+                .from("venue_locations")
+                .insert([{ location_name: trimmedName, location_address: "TBD" }])
+                .select(); 
 
+            if (error) {
+                console.error("Error adding location:", error.message);
+                return;
+            }
 
-        setLocations([...locations, newLoc]);
-        setNewLocation("");
+            console.log("Inserted location data:", data); 
+
+            if (data && data.length > 0) {
+                const addedLocation = { id: data[0].location_id, name: data[0].location_name };
+                setLocations(prev => [...prev, addedLocation]); 
+                setNewLocation(""); 
+                console.log("Location added successfully!", addedLocation);
+            }
+        } catch (err) {
+            console.error("Unexpected error adding location:", err);
+        }
     };
 
-    const handleDeleteLocation = (id) => {
-        if (!window.confirm("Are you sure you want to delete this location?")) return;
 
-        setLocations(locations.filter((loc) => loc.id !== id));
+    const handleDeleteLocation = async (id) => {
+   
+
+        const relatedEvents = events.filter(
+            (ev) => ev.extendedProps?.type === "location" && ev.extendedProps.location_id === id
+        );
+
+        if (relatedEvents.length > 0) {
+            const locName = locations.find(l => l.id === id)?.name || "Unknown";
+            setDeleteConfirm({
+                open: true,
+                locationId: id,
+                locationName: locName,
+                relatedEvents
+            });
+            return;
+        }
+
+        // confirm deletion if no related events
+        await confirmDeleteLocation(id);
     };
+
+    // confirm deletion of location 
+    const confirmDeleteLocation = async (id, alsoDeleteEvents = false) => {
+        try {
+            if (alsoDeleteEvents) {
+                // Fetch latest related bookings from Supabase
+                const { data: relatedEvents, error: fetchError } = await supabase
+                    .from("bookings")
+                    .select("booking_id")
+                    .eq("location_id", id);
+
+                if (fetchError) throw fetchError;
+
+                // Delete related bookings
+                if (relatedEvents.length > 0) {
+                    const { error: eventsError } = await supabase
+                        .from("bookings")
+                        .delete()
+                        .in("booking_id", relatedEvents.map(ev => ev.booking_id));
+                    if (eventsError) throw eventsError;
+
+                    setEvents(events.filter(ev => ev.extendedProps?.location_id !== id));
+                }
+            }
+
+            // Delete location
+            const { error: locError } = await supabase
+                .from("venue_locations")
+                .delete()
+                .eq("location_id", id);
+            if (locError) throw locError;
+
+            setLocations(locations.filter((loc) => loc.id !== id));
+
+            console.log("Location and related events deleted successfully!");
+        } catch (err) {
+            console.error("Error deleting location and events:", err.message);
+        } finally {
+            setDeleteConfirm({ open: false, locationId: null, locationName: "", relatedEvents: [] });
+        }
+    };
+
+
+    // The open modal for adding any new dates
+    const handleDateClick = (info) => {
+        const clickedDay = new Date(info.date);
+        const dayStart = new Date(clickedDay.setHours(0, 0, 0, 0));
+        const dayEnd = new Date(clickedDay.setHours(23, 59, 59, 999));
+
+        const isBlocked = events.some(
+            (ev) =>
+                ev.extendedProps?.type === "unavailable" &&
+                ev.start <= dayEnd &&
+                ev.end >= dayStart
+        );
+
+        // incase the user somehow add a location on a blocked day
+        if (isBlocked) {
+            alert("This day is blocked as unavailable. Edit the block event instead.");
+            return;
+        }
+
+        setSelectedSlot(info.date);
+        setSelectedEvent(null);
+        setSelectedLocation("");
+
+        const startH = info.date.getHours().toString().padStart(2, "0");
+        const startM = info.date.getMinutes().toString().padStart(2, "0");
+        setSelectedStartTime(`${startH}:${startM}`);
+
+        const end = new Date(info.date);
+        end.setHours(end.getHours() + 1);
+        const endH = end.getHours().toString().padStart(2, "0");
+        const endM = end.getMinutes().toString().padStart(2, "0");
+        setSelectedEndTime(`${endH}:${endM}`);
+
+        setBlockFullDay(false);
+        setIsRecurring(false);
+        setRecurringWeeks(1); 
+        setModalOpen(true);
+    };
+
+    // the open modal for editing dates in the calendar
+    const handleEventClick = (clickInfo) => {
+        setSelectedEvent(clickInfo.event.id);
+        setSelectedSlot(clickInfo.event.start);
+
+        // Determine event type
+        const eventType = clickInfo.event.extendedProps?.type;
+        setBlockFullDay(eventType === "unavailable");
+
+        // Only pre-fill location if not a full day block
+        setSelectedLocation(
+            eventType === "unavailable"
+                ? ""
+                : clickInfo.event.extendedProps.location_id 
+        );
+
+        const startH = clickInfo.event.start.getHours().toString().padStart(2, "0");
+        const startM = clickInfo.event.start.getMinutes().toString().padStart(2, "0");
+        const endH = clickInfo.event.end.getHours().toString().padStart(2, "0");
+        const endM = clickInfo.event.end.getMinutes().toString().padStart(2, "0");
+
+        setSelectedStartTime(`${startH}:${startM}`);
+        setSelectedEndTime(`${endH}:${endM}`);
+
+        setIsRecurring(clickInfo.event.extendedProps?.recurring || false);
+        setRecurringWeeks(clickInfo.event.extendedProps?.recurringWeeks || 1);
+
+        setModalOpen(true);
+    };
+
+    const handleBlockFullDayChange = (checked) => {
+        setBlockFullDay(checked);
+        if (checked) setSelectedLocation(""); 
+    };
+
+    const handleSaveEvent = async () => {
+        const locationTrimmed = selectedLocation.trim();
+
+        if (!blockFullDay && !locationTrimmed) {
+            alert("Please select a location!");
+            return;
+        }
+
+        if (isRecurring && (!recurringWeeks || recurringWeeks < 1)) {
+            alert("Please enter a valid number of weeks for recurrence!");
+            return;
+        }
+
+        const startDate = new Date(selectedSlot);
+        const endDate = new Date(selectedSlot);
+
+        if (blockFullDay) {
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(23, 59, 0, 0);
+        } else {
+            const [startH, startM] = selectedStartTime.split(":");
+            const [endH, endM] = selectedEndTime.split(":");
+            startDate.setHours(+startH, +startM, 0, 0);
+            endDate.setHours(+endH, +endM, 0, 0);
+
+            if (endDate <= startDate) {
+                alert("End time must be after start time!");
+                return;
+            }
+        }
+
+        const baseEventId = selectedEvent || Date.now().toString();
+        const newEvents = [];
+
+        try {
+            let unavailableLocation;
+            if (blockFullDay) {
+                unavailableLocation = locations.find(loc => loc.name === "FULL DAY UNAVAILABLE");
+                if (!unavailableLocation) {
+                    const { data, error } = await supabase
+                        .from("venue_locations")
+                        .insert([{ location_name: "FULL DAY UNAVAILABLE", location_address: "TBD" }])
+                        .select();
+                    if (error) throw error;
+                    unavailableLocation = { id: data[0].location_id, name: data[0].location_name };
+                    setLocations(prev => [...prev, unavailableLocation]);
+                }
+            }
+
+            for (let i = 0; i < (isRecurring ? recurringWeeks : 1); i++) {
+                const newStart = new Date(startDate);
+                newStart.setDate(startDate.getDate() + i * 7);
+                const newEnd = new Date(endDate);
+                newEnd.setDate(endDate.getDate() + i * 7);
+
+                const pad = n => n.toString().padStart(2, "0");
+                const booking_date = `${newStart.getFullYear()}-${pad(newStart.getMonth() + 1)}-${pad(newStart.getDate())}`;
+                const start_time = `${pad(newStart.getHours())}:${pad(newStart.getMinutes())}`;
+                const end_time = `${pad(newEnd.getHours())}:${pad(newEnd.getMinutes())}`;
+
+                let data, error;
+
+                if (blockFullDay) {
+                    if (selectedEvent && i === 0) {
+                        // Update existing full day block
+                        ({ data, error } = await supabase
+                            .from("bookings")
+                            .update({
+                                booking_date,
+                                start_time,
+                                end_time,
+                                location_id: unavailableLocation.id
+                            })
+                            .eq("booking_id", selectedEvent)
+                            .select());
+                    } else {
+                        // Insert new full day block
+                        ({ data, error } = await supabase
+                            .from("bookings")
+                            .insert([{
+                                booking_date,
+                                start_time,
+                                end_time,
+                                location_id: unavailableLocation.id,
+                                created_at: new Date().toISOString()
+                            }])
+                            .select());
+                    }
+
+                    if (error) {
+                        console.error("Error saving full-day block:", error.message);
+                        continue;
+                    }
+
+                    newEvents.push({
+                        id: i === 0 ? baseEventId : `${baseEventId}-r${i}`,
+                        title: "FULL DAY UNAVAILABLE",
+                        start: newStart,
+                        end: newEnd,
+                        color: "red",
+                        textColor: "black",
+                        display: "auto",
+                        extendedProps: { type: "unavailable", recurring: isRecurring, recurringWeeks },
+                    });
+                } else {
+                    const locationObj = locations.find(loc => loc.id === selectedLocation);
+                    const locationName = locationObj ? locationObj.name : "Unknown location";
+
+                    if (selectedEvent && i === 0) {
+                        // Update existing booking
+                        ({ data, error } = await supabase
+                            .from("bookings")
+                            .update({
+                                booking_date,
+                                start_time,
+                                end_time,
+                                location_id: selectedLocation
+                            })
+                            .eq("booking_id", selectedEvent)
+                            .select());
+                    } else {
+                        // Insert new booking
+                        ({ data, error } = await supabase
+                            .from("bookings")
+                            .insert([{
+                                booking_date,
+                                start_time,
+                                end_time,
+                                location_id: selectedLocation,
+                                created_at: new Date().toISOString()
+                            }])
+                            .select());
+                    }
+
+                    if (error) {
+                        console.error("Error saving booking:", error.message);
+                        continue;
+                    }
+
+                    newEvents.push({
+                        id: i === 0 ? baseEventId : `${baseEventId}-r${i}`,
+                        title: locationName,
+                        start: newStart,
+                        end: newEnd,
+                        color: "blue",
+                        textColor: "white",
+                        display: "auto",
+                        extendedProps: { type: "location", recurring: isRecurring, recurringWeeks },
+                    });
+                }
+            }
+
+            // Update state: remove old event(s) and add new ones
+            setEvents(prev => [
+                ...prev.filter(ev => ev.id !== baseEventId && !ev.id.startsWith(`${baseEventId}-r`)),
+                ...newEvents
+            ]);
+
+            // Reset modal state
+            setModalOpen(false);
+            setSelectedEvent(null);
+            setBlockFullDay(false);
+            setIsRecurring(false);
+            setRecurringWeeks(1);
+
+            console.log("Saved to DB:", newEvents);
+        } catch (err) {
+            console.error("Unexpected error saving event:", err);
+        }
+    };
+
+
+
+    const handleDeleteEvent = async () => {
+        if (!window.confirm("Are you sure you want to delete this event?")) return;
+
+        try {
+            // Delete event from Supabase
+            const { error } = await supabase
+                .from("bookings")
+                .delete()
+                .eq("booking_id", selectedEvent);
+
+            if (error) {
+                console.error("Error deleting event:", error.message);
+                return;
+            }
+
+            // Remove the event from local state
+            setEvents(events.filter((ev) => ev.id !== selectedEvent));
+
+            console.log("Event deleted successfully!");
+
+            // Close modal and reset selection
+            setModalOpen(false);
+            setSelectedEvent(null);
+            setIsRecurring(false);
+        } catch (err) {
+            console.error("Unexpected error deleting event:", err);
+        }
+
+    };
+
+    // displaying the date 
+    function formatDateWithSuffix(date) {
+        if (!date) return "";
+
+        const day = date.getDate();
+        const suffix =
+            day % 10 === 1 && day !== 11
+                ? "st"
+                : day % 10 === 2 && day !== 12
+                    ? "nd"
+                    : day % 10 === 3 && day !== 13
+                        ? "rd"
+                        : "th";
+
+        const month = date.toLocaleString("en-AU", { month: "long" }); 
+        const year = date.getFullYear();
+
+        return `${day}${suffix} ${month} ${year}`;
+    }
 
     return (
         <div>
             <AdminNavbar title="Weekly Scheduler" />
             <div className="d-flex">
-
                 <AdminSidebar userName="userName" />
 
                 <div className="p-4 flex-grow-1">
-
                     <h4 className="fw-bold mb-4 text-primary">Admin Scheduling Settings</h4>
 
+                    {/* Manage Locations */}
                     <div className="card shadow-sm mb-4">
                         <div className="card-body">
                             <h3 className="h5 fw-semibold text-primary mb-3">Manage Locations</h3>
-
-                            {/* Add Location */}
                             <div className="input-group mb-3">
                                 <input
                                     type="text"
@@ -78,8 +543,6 @@ export default function AdminSchedulingSetting() {
                                     Add
                                 </button>
                             </div>
-
-                            {/* List of locations */}
                             <ul className="list-group">
                                 {locations.map((loc) => (
                                     <li
@@ -96,17 +559,14 @@ export default function AdminSchedulingSetting() {
                                     </li>
                                 ))}
                                 {locations.length === 0 && (
-                                    <li className="list-group-item text-muted">
-                                        No locations added yet.
-                                    </li>
+                                    <li className="list-group-item text-muted">No locations added yet.</li>
                                 )}
                             </ul>
                         </div>
                     </div>
 
-
-                    {/* Select Week */}
-                    <div className="card shadow-sm mb-4" >
+                    {/* Select Week and display calendar */}
+                    <div className="card shadow-sm mb-4">
                         <div className="card-body">
                             <h3 className="h5 fw-semibold text-primary mb-3">Select Week</h3>
                             <input
@@ -123,8 +583,22 @@ export default function AdminSchedulingSetting() {
                                         initialView="timeGridWeek"
                                         height={430}
                                         locale="en-AU"
-                                        headerToolbar={{
-                                            right: ''
+                                        dateClick={handleDateClick}
+                                        events={events}
+                                        eventClick={handleEventClick}
+                                        eventDisplay="auto"
+                                        allDaySlot={false}
+                                        eventTimeFormat={{
+                                            hour: "numeric",
+                                            minute: "2-digit",
+                                            meridiem: "short"   
+                                        }}
+                                        dayHeaderFormat={{
+                                            weekday: "short", 
+                                            day: "numeric"    
+                                        }}
+                                        buttonText={{
+                                            today: `Selected Week` 
                                         }}
                                     />
                                 </div>
@@ -132,6 +606,191 @@ export default function AdminSchedulingSetting() {
                         </div>
                     </div>
 
+                    {/* Adding/editing events */}
+                    {modalOpen && (
+                        <div className="modal show d-block" tabIndex="-1">
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title">{selectedEvent ? "Edit Event" : "Add Event"}</h5>
+                                        <button
+                                            type="button"
+                                            className="btn-close"
+                                            onClick={() => setModalOpen(false)}
+                                        ></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        <div className="mb-3">
+                                            <label className="form-label">Date</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={selectedSlot ? formatDateWithSuffix(selectedSlot) : ""}
+                                                readOnly
+                                            />
+                                        </div>
+
+                                        {/* Location field only if not blocking full day */}
+                                        {!blockFullDay && (
+                                            <div className="mb-3">
+                                                <label className="form-label">Location</label>
+                                                <select
+                                                    className="form-select"
+                                                    value={selectedLocation}
+                                                    onChange={(e) => setSelectedLocation(e.target.value)}
+                                                >
+                                                    <option value="">Select location</option>
+                                                    {locations.map((loc) => (
+                                                        <option key={loc.id} value={loc.id}>
+                                                            {loc.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        )}
+
+                                        {/* Checkbox for full day block */}
+                                        <div className="form-check mb-3">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                id="blockFullDayCheck"
+                                                checked={blockFullDay}
+                                                onChange={(e) => handleBlockFullDayChange(e.target.checked)}
+                                            />
+                                            <label className="form-check-label" htmlFor="blockFullDayCheck">
+                                                Block this entire day
+                                            </label>
+                                        </div>
+
+                                        {/* Checkbox for recurring */}
+                                        {!blockFullDay && (
+                                            <div className="form-check mb-3">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    id="recurringCheck"
+                                                    checked={isRecurring}
+                                                    onChange={(e) => setIsRecurring(e.target.checked)}
+                                                />
+                                                <label className="form-check-label" htmlFor="recurringCheck">
+                                                    Repeat weekly
+                                                </label>
+
+                                                {/* sets the number of reccuring weeks */}
+                                                {isRecurring && (
+                                                    <input
+                                                        type="number"
+                                                        className="form-control mt-2"
+                                                        min={1}
+                                                        value={recurringWeeks}
+                                                        onChange={(e) => setRecurringWeeks(+e.target.value)}
+                                                        placeholder="Number of weeks to repeat"
+                                                    />
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {/* Time inputs only if not blocking full day */}
+                                        {!blockFullDay && (
+                                            <>
+                                                <div className="mb-3">
+                                                    <label className="form-label">Start Time</label>
+                                                    <input
+                                                        type="time"
+                                                        className="form-control"
+                                                        value={selectedStartTime}
+                                                        onChange={(e) => setSelectedStartTime(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className="mb-3">
+                                                    <label className="form-label">End Time</label>
+                                                    <input
+                                                        type="time"
+                                                        className="form-control"
+                                                        value={selectedEndTime}
+                                                        onChange={(e) => setSelectedEndTime(e.target.value)}
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                    <div className="modal-footer">
+                                        {selectedEvent && (
+                                            <button className="btn btn-danger" onClick={handleDeleteEvent}>
+                                                Delete
+                                            </button>
+                                        )}
+                                        <button
+                                            className="btn btn-secondary"
+                                            onClick={() => setModalOpen(false)}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button className="btn btn-primary" onClick={handleSaveEvent}>
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* modal for confirming deleting location */}
+                    {deleteConfirm.open && (
+                        <div className="modal show d-block" tabIndex="-1">
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title">Delete Location</h5>
+                                        <button
+                                            type="button"
+                                            className="btn-close"
+                                            onClick={() =>
+                                                setDeleteConfirm({
+                                                    open: false,
+                                                    locationId: null,
+                                                    locationName: "",
+                                                    relatedEvents: []
+                                                })
+                                            }
+                                        ></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        <p>
+                                            The location <strong>{deleteConfirm.locationName}</strong> has{" "}
+                                            <strong>{deleteConfirm.relatedEvents.length}</strong> event(s).
+                                        </p>
+                                        <p>
+                                            To delete this location, you must also delete all of its events. Do you want
+                                            to continue?
+                                        </p>
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button
+                                            className="btn btn-secondary"
+                                            onClick={() =>
+                                                setDeleteConfirm({
+                                                    open: false,
+                                                    locationId: null,
+                                                    locationName: "",
+                                                    relatedEvents: []
+                                                })
+                                            }
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() => confirmDeleteLocation(deleteConfirm.locationId, true)}
+                                        >
+                                            Delete Location & Events
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -118,7 +118,8 @@ h2.intro-title, h3.intro-title, p.intro-title {
     background-color: #d9eefe;
 }
 
-/*sidebar styling*/
+
+/* listener dashboard sidebar styling*/
 .dashboard-page-bg {
     background: #e6f4f9; 
     min-height: 100vh;
@@ -188,3 +189,47 @@ h2.intro-title, h3.intro-title, p.intro-title {
         color: #4b5563; 
         margin-bottom: 0.25rem;
     }
+
+
+/*coordinator sidebar */
+.coordinator-sidebar {
+    width: 225px;
+    height: 55vh;
+    margin-left: 50px;
+    margin-top: 50px;
+    background-color: #D9EAFD;
+}
+
+.coordinator-sidebar .links-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+    justify-content: space-around; 
+}
+
+.sidebar-link {
+    width: 100%;
+    color: #1E3A8A;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    outline: none;
+    text-decoration: none;
+    display: block;
+    background-color: white;
+}
+
+.sidebar-link.active {
+    background-color: #003366;
+    color: white;
+    font-weight: 600;
+}
+
+.coordinator-card .card-body {
+    background-color: #D9EAFD;
+}
+

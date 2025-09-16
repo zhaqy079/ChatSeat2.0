@@ -60,6 +60,13 @@ values ('<uuid from auth.users>', 'admin@chatseat.com', 'admin');
 ```
 
 # Sprint 2
+# Dev
+```
+cd csapp
+npm install react-redux @reduxjs/toolkit
+npm start
+
+```
 ## Database Merge
 New connection, use the new keys. Is different database so we're not affecting live database and to test new database structure.
 
@@ -82,4 +89,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzd
 - Check ``` console.log(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_ANON_KEY) ``` matches new database. 
 - If not, check your local .env file (should be contained within the app section) to make sure it has updated to the new values. 
 - Restart your current instance (redo ```npm start```) 
-- If all else fails, manually assign ```process.env.REACT_APP_SUPABASE_URL``` and ```process.env.REACT_APP_SUPABASE_ANON_KEY``` to the new keys. (This will probably crash the instance but after deleting and reloading, everything should work) 
+- If all else fails, manually assign ```process.env.REACT_APP_SUPABASE_URL``` and ```process.env.REACT_APP_SUPABASE_ANON_KEY``` to the new keys. (This will probably crash the instance but after deleting and reloading, everything should work)
+
+## Admin Scheduling System
+1. Converted the scheduling system to look like a calendar.
+2. Selecting a day will add events to the calendar.
+3. Each day will have options to block a full day, set weekly recurring, and allocate a start and end time.
+4. Days can be edited to be changed or deleted.
+
+## Coordinated Dashboard
+1. Layout set (Sidebar + Dashboard)
