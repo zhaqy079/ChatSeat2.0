@@ -40,6 +40,11 @@ export default function Navbar() {
                 <div className="collapse navbar-collapse" id="mainNav">
                     <ul className="navbar-nav ms-auto align-items-center gap-2">
                         <li className="nav-item">
+                            <Link className="btn btn-light text-primary fw-semibold custom-btn" to="/about">
+                                About Us
+                            </Link>
+                        </li>
+                        <li className="nav-item">
                             <Link className="btn btn-light text-primary fw-semibold custom-btn" to="/venues">
                                 Venues
                             </Link>
