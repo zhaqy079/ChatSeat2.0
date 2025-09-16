@@ -47,6 +47,7 @@ export default function AdminNavbar({ title = "Admin Dashboard" }) {
                                     className="dropdown-item"
                                     onClick={() => {
                                         // listener dashboard navigation logic here
+                                        navigate("/listenerdashboard");
                                         setDropdownIsOpen(false);
                                     }}
                                 >

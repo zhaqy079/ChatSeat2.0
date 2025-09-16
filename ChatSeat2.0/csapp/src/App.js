@@ -12,8 +12,16 @@ import AdminSchedulingSetting from "./components/Admin/AdminSchedulingSetting";
 import CoordinatorDashboard from "./components/Coordinator/CoordinatorDashboard";
 import AdminViewUsers from "./components/Admin/AdminViewUsers";
 import AdminManageLocations from "./components/Admin/AdminManageLocations";
+
+import ListenerDashboard from "./components/Listener/ListenerDashboard";
+import ListenerScheduling from "./components/Listener/ListenerScheduling";
+import ListenerSidebar from "./components/Listener/ListenerSideBar";
+import CoordinatorsListInListener from "./components/Listener/CoordinatorsListInListener";
+import ListenerHelp from "./components/Listener/ListenerHelp";
+
 import UserGeneralForum from "./components/Shared/UserGeneralForum";
 import AdminFeedback from "./components/Admin/AdminFeedback";
+
 
 
 
@@ -33,8 +41,16 @@ export default function App() {
                 <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
                 <Route path="/adminViewUsers" element={<AdminViewUsers />} />
                 <Route path="/adminManageLocations" element={<AdminManageLocations />} />
+                {/* Listener routes */}
+                <Route path="/listenerdashboard" element={<ListenerDashboard />} />
+                <Route path="/listenerscheduling" element={<ListenerScheduling />} />
+                <Route path="/coordinatorslistinlistener" element={< CoordinatorsListInListener />} />
+                <Route path="/listenerhelp" element={<ListenerHelp />} />
+
+
                 <Route path="/userGeneralForums" element={<UserGeneralForum />} />
                 <Route path="/adminFeedback" element={<AdminFeedback />} />
+
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

@@ -1,8 +1,10 @@
 ﻿import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import logo from "../assets/Logo.jpg"; 
 
 export default function Navbar() {
     const navigate = useNavigate();
+    const user = useSelector((state) => state.loggedInUser?.success);
 
     return (
         <nav className="navbar navbar-expand-md navbar-dark bg-primary sticky-top shadow custom-navbar">
@@ -43,11 +45,34 @@ export default function Navbar() {
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="btn btn-outline-light custom-btn" to="/login">
-                                Login
-                            </Link>
+                            {user ? (
+                                <Link
+                                    className="btn btn-light text-primary fw-semibold custom-btn"
+                                    // to={user.role === "admin" ? "/admindashboard" : "/listenerdashboard"
+                                    to={"/listenerdashboard"}
+                            
+                                >
+                                    Dashboard
+                                </Link>
+                            ) : (
+                                <Link className="btn btn-light text-primary fw-semibold custom-btn" to="/login">
+                                    Login
+                                </Link>
+                            )}
                         </li>
-                        {/* Need implement login route content swap Login for Dashboard based on diff role */}
+
+                        {user && (
+                            <li className="nav-item">
+                                <Link
+                                    className="btn btn-light text-primary fw-semibold custom-btn"
+                                    //to={user.role === "admin" ? "/adminhelp" : "/listenerhelp"}
+                                    to={"/listenerhelp"}
+                                >
+                                    Help
+                                </Link>
+                            </li>
+                        )}
+                        
                     </ul>
                 </div>
             </div>

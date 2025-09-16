@@ -28,6 +28,8 @@ code {
 /*Container css */
 h2.intro-title, h3.intro-title, p.intro-title {
     color: #003366;
+    padding:15px;
+    margin:10px;
 }
 /*Login page */
 .login-page {
@@ -116,6 +118,79 @@ h2.intro-title, h3.intro-title, p.intro-title {
     background-color: #d9eefe;
 }
 
+
+/* listener dashboard sidebar styling*/
+.dashboard-page-bg {
+    background: #e6f4f9; 
+    min-height: 100vh;
+
+}
+
+/*Tab content*/
+.tab-button {
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    border: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+}
+
+/* Active tab */
+.tab-active {
+    background-color: #003366; 
+    color: #ffffff; 
+}
+
+/* Inactive tab */
+.tab-inactive {
+    background-color: #ffffff; 
+    color: #1E3A8A; 
+}
+
+    .tab-inactive:hover {
+        background-color: #d9eefe;
+    }
+
+/*Content card*/
+.card-panel {
+    background: #fff;
+    border-radius: 12px;
+    margin: 40px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+/*Coordinator card*/
+.coordinator-card {
+    background-color: white;
+    border-top: 4px solid #3b82f6; 
+    border-radius: 0.75rem; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 10px;
+    transition: box-shadow 0.3s ease;
+}
+
+    .coordinator-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .coordinator-card h5 {
+        font-size: 1.125rem; 
+        font-weight: 600; 
+        margin-bottom: 0.5rem;
+        color: #1f2937;
+    }
+
+    .coordinator-card p {
+        font-size: 0.875rem;
+        color: #4b5563; 
+        margin-bottom: 0.25rem;
+    }
+
+
 /*coordinator sidebar */
 .coordinator-sidebar {
     width: 225px;
@@ -157,3 +232,4 @@ h2.intro-title, h3.intro-title, p.intro-title {
 .coordinator-card .card-body {
     background-color: #D9EAFD;
 }
+
