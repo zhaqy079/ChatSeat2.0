@@ -7,6 +7,8 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ResetRequest from "./components/ResetRequest"
 import Venues from "./components/Venues";
+import AboutUs from "./components/AboutUs";
+
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminSchedulingSetting from "./components/Admin/AdminSchedulingSetting";
 import CoordinatorDashboard from "./components/Coordinator/CoordinatorDashboard";
@@ -36,6 +38,8 @@ export default function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/resetrequest" element={<ResetRequest/>} />
                 <Route path="/venues" element={<Venues />} />
+                <Route path="/about" element={<AboutUs />} />
+
                 <Route path="/admindashboard" element={<AdminDashboard />} />
                 <Route path="/adminSchedulingSetting" element={<AdminSchedulingSetting />} />
                 <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
