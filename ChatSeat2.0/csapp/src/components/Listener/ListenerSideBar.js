@@ -24,12 +24,17 @@ export default function ListenerSidebar() {
                 <NavLink to="/coordinatorslistinlistener" className={getActiveLink("/coordinatorslistinlistener")}>
                     List of Coordinators
                 </NavLink>
-            <NavLink to="/listenerscheduling" className={getActiveLink("/listenerscheduling")}>
+                <NavLink to="/listenerscheduling" className={getActiveLink("/listenerscheduling")}>
                     Scheduling
                 </NavLink>
-            <NavLink to="/listenerchatroom" className={getActiveLink("/listenerchatroom")}>
+                <NavLink to="/listenerchatroom" className={getActiveLink("/listenerchatroom")}>
                     Let’s Talk
                 </NavLink>
+            </div>
+            <div className="mt-3">
+                <button className="admin-sidebar__logout" onClick={handleLogout}>
+                    Logout
+                </button>
             </div>
        </div>
     );

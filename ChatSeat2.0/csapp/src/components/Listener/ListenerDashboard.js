@@ -9,7 +9,7 @@ export default function ListenerDashboard() {
             <ListenerSideBar />
             <container className="flex-grow-1 p-4">
                 <h2 className="fw-bold text-primary mb-3">
-                    Welcome{user?.firstName ? `, ${user.firsttName}` : ""}! 
+                    Welcome{user?.firstName ? `, ${user.firstName}` : ""}! 
                 </h2>
 
                 {/* will edit upcoming bookings soon*/}

@@ -15,6 +15,8 @@ import ListenerDashboard from "./components/Listener/ListenerDashboard";
 import ListenerScheduling from "./components/Listener/ListenerScheduling";
 import ListenerSidebar from "./components/Listener/ListenerSideBar";
 import CoordinatorsListInListener from "./components/Listener/CoordinatorsListInListener";
+import ListenerHelp from "./components/Listener/ListenerHelp";
+
 
 export default function App() {
     return (
@@ -34,7 +36,8 @@ export default function App() {
                 <Route path="/listenerdashboard" element={<ListenerDashboard />} />
                 <Route path="/listenerscheduling" element={<ListenerScheduling />} />
                 <Route path="/coordinatorslistinlistener" element={< CoordinatorsListInListener />} />
-               
+                <Route path="/listenerhelp" element={<ListenerHelp />} />
+
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
