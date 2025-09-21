@@ -10,7 +10,9 @@ const supabase = createClient(
 
 // Requests a list of all locations from the database
 export const fetchLocations = async () => {
-    const { data, error } = await supabase.from("venue_locations").select("*");
+    const { data, error } = await supabase.from("venue_locations")
+        .select("*")
+        .order('location_name', { ascending: true });
 
     if (error) {
         throw new Error("Failed to fetch locations:" + error.message);

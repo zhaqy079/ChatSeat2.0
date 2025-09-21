@@ -11,7 +11,9 @@ const supabase = createClient(
 
 // Requests a list of all users from the database
 export const fetchAllUsers = async () => {
-    const { data, error } = await supabase.from("user_profiles").select("*");
+    const { data, error } = await supabase.from("user_profiles")
+        .select("*, coordinator_profiles(*, venue_locations(*)), admin_profiles(*)")
+        .order('first_name', { ascending: true });
 
     if (error) {
         throw new Error("Failed to fetch users:" + error.message);
@@ -20,8 +22,23 @@ export const fetchAllUsers = async () => {
     return data;
 };
 
-export default function AdminSchedulingSetting() {
+// Function call to approve a user
+async function approveUser(userID) {
+        const { error: profileError } = await supabase.from("user_profiles").update(
+            {
+                // Needs to become dynamic, dependent on user approving.
+                approved_by: "73fd19d1-5665-479b-8500-5ea691b0e1be"
+            }
+        ).eq('profile_id', userID);
+
+        if (profileError) {
+            throw new Error("Failed to approve user: " + profileError.message);
+        }
+}
+
+export default function AdminViewUsers() {
     const [userlist, setUserlist] = useState([]);
+    const [searchrole, setSearchrole] = useState("pending");
 
     // Stores the list of users from the database
     useEffect(() => {
@@ -37,65 +54,103 @@ export default function AdminSchedulingSetting() {
         getUsers(); 
     }, []);
 
+    // Filters users according to their role
+    const filtereduserList = userlist
+        .filter((user) => (
+            searchrole === "all" || searchrole === ""
+                ? true
+                : (searchrole === "pending" ? user.approved_by === null 
+                : (searchrole === "admin" ? !(user.admin_profiles === null)
+                : user.coordinator_profiles.length > 0))
+        ));
+
+    
 
     return (
         <div>
             <AdminNavbar title="Display Users" />
             <div className="d-flex">
-
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">View All Users</h4>
 
-                    <div className="overflow-x-auto">
-                        <table className="min-w-[600px] w-full border rounded shadow bg-white">
-                            <thead className="bg-[#e6f0ff]">
+                    {/* Dropdown menu to refine the displayed users */}
+                    <div className="mb-2">
+                        <select value={searchrole} onChange={(e) => setSearchrole(e.target.value)}>
+                            <option value="pending">Pending Users</option>
+                            <option value="all">All Users</option>
+                            <option value="coordinator">Coordinators</option>
+                            <option value="admin">Admins</option>
+                        </select>
+                    </div>
+                    
+                    { // User display logic, if no users display message otherwise display users and their details 
+                        !filtereduserList.length > 0 ? (
+                        // If no users are found for the selected role, show a message
+                        <h5 className="text-center">
+                            No users found.
+                        </h5>
+                        ) : (
+                        // Creation of table for display of users and their details
+                        <table className="table w-100">
+                            <thead className="">
                                 <tr className="text-left">
                                     <th className="p-3">Name</th>
                                     <th className="p-3">Email</th>
                                     <th className="p-3">Phone</th>
                                     <th className="p-3">Approved By</th>
                                     <th className="p-3">Inactive</th>
+                                    <th className="p-3">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {userlist.length > 0 ? (
-                                    userlist.map((user) => { 
-                                        const approver = userlist.find(u => u.profile_id === user.approved_by);
+                            <tbody>{
+                                filtereduserList.map((user) => {
+                                    // Finds the approved user from their id
+                                    const approver = user.approved_by ? filtereduserList.find(u => u.profile_id === user.approved_by) : null;
 
-                                        return (
-                                            <tr key={user.profile_id} className="border-t">
-                                                <td className="p-3">{user.first_name} {user.last_name}</td>
-                                                <td className="p-3">{user.email}</td>
-                                                <td className="p-3">{user.phone_number}</td>
-                                                <td className="p-3">
-                                                    {user.approved_by && approver
-                                                        ? `${approver.first_name} ${approver.last_name}`
-                                                        : <div>NULL</div>}
-                                                </td>
-                                                <td className="p-3">
-                                                    {user.inactive_at === null
-                                                        ? "active"
+                                    return (
+                                        <tr key={user.profile_id} className="border-t">
+                                            <td className="p-3">{user.first_name} {user.last_name}</td>
+                                            <td className="p-3">{user.email}</td>
+                                            <td className="p-3">{user.phone}</td>
+                                            {!approver ? <td className="p-3">Not yet approved</td> : <td className="p-3">{approver.first_name} {approver.last_name}</td>}
+                                            
+                                            <td className="p-3">
+                                                { // Changes incoming date format to '27 Nov 2025' format
+                                                    user.inactive_at === null
+                                                        ? "Active"
                                                         : new Date(user.inactive_at).toLocaleDateString("en-AU", {
                                                             year: "numeric",
                                                             month: "short",
                                                             day: "numeric",
                                                         })}
-                                                </td>
-                                            </tr>
-                                        );
-                                    })
-                                ) : (
-                                    // If no users are found for the selected role, show a message
-                                    <tr>
-                                        <td colSpan="6" className="p-4 text-center text-gray-500">
-                                            No users found.
-                                        </td>
-                                    </tr>
-                                )}
+                                            </td>
+                                            <td>
+                                                {/* If user hasn't yet been approved, display approve button. Otherwise display all buttons. */}
+                                                {!approver ? (
+                                                    <button type="button" className="btn btn-success" onClick={() => approveUser(user.profile_id) }>Approve</button>
+                                                ) : (
+                                                    // Displays a varietty of different buttons depending on whether the user is an admin or currently active/inactive
+                                                    <>
+                                                        {user.admin_profiles === null && (
+                                                            <button type="button" className="btn btn-secondary me-2">Admin</button>
+                                                        )}
+                                                        <button type="button" className="btn btn-secondary me-2">Coordinator</button>
+                                                        {user.inactive_at === null ? (
+                                                            <button type="button" className="btn btn-warning me-2">Deactivate</button>
+                                                        ) : (
+                                                            <button type="button" className="btn btn-info me-2">Reactivate</button>
+                                                        )}
+                                                        <button type="button" className="btn btn-danger">Delete</button>
+                                                    </>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>

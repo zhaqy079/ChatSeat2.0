@@ -19,7 +19,7 @@ export default function AdminSidebar({ userName = "" }) {
     };
 
     return (
-        <div className="admin-sidebar">
+        <div className="admin-sidebar" style={{minWidth: "14%"}}>
             <div className="admin-sidebar__greeting">
                 Hello, {userName}!
             </div>

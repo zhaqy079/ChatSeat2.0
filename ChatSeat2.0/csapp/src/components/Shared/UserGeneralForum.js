@@ -12,7 +12,8 @@ const supabase = createClient(
 // Requests a list of all general forum posts from the database
 export const fetchAllGeneralForumPosts = async () => {
     const { data, error } = await supabase.from("general_forum")
-        .select(`*`);
+        .select(`*, user_profiles(*)`)
+        .order('created_at', { ascending: false });
 
     if (error) {
         throw new Error("Failed to fetch general forum:" + error.message);
@@ -39,6 +40,36 @@ export default function UserGeneralForum() {
     }, []);
 
 
+    // Links posts with their replies
+    function Post({post, posts}) {
+        // Find direct replies to this post
+        const replies = posts.filter(p => p.reply_to === post.general_forum_id);
+
+        return (
+            <div key={post.general_forum_id} className="card mb-2" style={{ marginLeft: 10, padding: "5px 0" }}>
+                <div className="card-body">
+                    {/* Main content of a feedback post */}
+                    <h5 className="card-title">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
+                    <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
+                    <p className="card-text">{post.content}</p>
+                </div>
+                {replies.map(reply => (
+                    <Post key={reply.id} post={reply} posts={posts}/>
+                ))}
+                <div className="card-footer">
+                    <small className="text-muted text-center">Created: {
+                        // Logic to adjust displayed date to '27 Nov 2025' format
+                        new Date(post.created_at).toLocaleDateString("en-AU", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                        })}
+                    </small>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div>
             <AdminNavbar title="General Forum" />
@@ -48,20 +79,18 @@ export default function UserGeneralForum() {
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
 
-                    {generalforumlist.length > 0 ? (
-                        generalforumlist.map((post) => (
-                            <div key={post.user_id} className="card">
-                                <div className="card-body">
-                                    <h5 className="card-title">{post.user_id} </h5>
-                                    <p className="card-text">{post.content}</p>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
+                    { // Forum display logic, if no forum posts display special message otherwise display all posts
+                        !generalforumlist.length > 0 ? (
                         // If no posts are found, show a message
-                        <div colSpan="6" className="p-4 text-center text-gray-500">
+                        <h5 className="p-4 text-center">
                             No posts found.
-                        </div>
+                        </h5>
+                    ) : (
+                    generalforumlist
+                        .filter(post => post.reply_to === null) // Only top-level posts
+                        .map(post => (
+                            <Post key={post.id} post={post} posts={generalforumlist} />
+                        ))
                     )}
                 </div>
             </div>
