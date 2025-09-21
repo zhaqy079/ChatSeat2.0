@@ -33,7 +33,7 @@ export default function Login() {
                     email: user.email,
                     password: user.password
                 });
-            console.log('authData:', authData);
+            console.log("authData: ", authData);
 
             if (authError) throw authError;
 
@@ -72,8 +72,9 @@ export default function Login() {
             //    navigate("/"); 
             //}
 
-        } catch {
-            toast.error("Login failed");
+        } catch (err) {
+            console.error("Login error: ", err.message);
+            toast.error("Login failed: " + err.message);
         } finally {
             setLoading(false);
         }

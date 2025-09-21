@@ -92,8 +92,8 @@ export default function Signup() {
             toast.success("Signup successful!");
             navigate("/Login");
         } catch (err) {
-            console.error("Signup error:", err.message);
-            toast.error("Signup failed:" + err.message);
+            console.error("Signup error: ", err.message);
+            toast.error("Signup failed: " + err.message);
         }
     };
 
