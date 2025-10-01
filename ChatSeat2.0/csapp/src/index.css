@@ -163,7 +163,7 @@ h2.intro-title, h3.intro-title, p.intro-title {
 }
 
 /*Coordinator card*/
-.coordinator-card {
+.coordinator-card  {
     background-color: white;
     border-top: 4px solid #3b82f6; 
     border-radius: 0.75rem; 
