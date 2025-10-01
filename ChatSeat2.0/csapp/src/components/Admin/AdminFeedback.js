@@ -22,6 +22,32 @@ export const fetchAllFeedbackPosts = async () => {
     return data;
 };
 
+// Function call to resolve a post
+async function resolvePost(feedbackID) {
+    const { error: profileError } = await supabase.from("feedback_forum").update(
+        {
+            resolved_at: new Date()
+        }
+    ).eq('feedback_forum_id', feedbackID);
+
+    if (profileError) {
+        throw new Error("Failed to resolve post: " + profileError.message);
+    }
+}
+
+// Function call to unresolve a post
+async function unresolvePost(feedbackID) {
+    const { error: profileError } = await supabase.from("feedback_forum").update(
+        {
+            resolved_at: null
+        }
+    ).eq('feedback_forum_id', feedbackID);
+
+    if (profileError) {
+        throw new Error("Failed to unresolve post: " + profileError.message);
+    }
+}
+
 export default function AdminFeedback() {
     const [feedbacklist, setFeedbacklist] = useState([]);
     const [searchdata, setSearchdata] = useState({resolveState: 'unresolved'});
