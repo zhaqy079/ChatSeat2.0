@@ -1,6 +1,5 @@
 ﻿import React, { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-//import ListenerNavbar from "./ListenerNavbar";
 import ListenerSideBar from "./ListenerSideBar";
 
 export default function ListenerScheduling() {

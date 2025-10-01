@@ -30,6 +30,9 @@ export default function ListenerSidebar() {
                 <NavLink to="/listenerchatroom" className={getActiveLink("/listenerchatroom")}>
                     Let’s Talk
                 </NavLink>
+                <NavLink to="/privatemessage" className={getActiveLink("/privatemessage")}>
+                    Inbox
+                </NavLink>
             </div>
             <div className="mt-3">
                 <button className="admin-sidebar__logout" onClick={handleLogout}>
