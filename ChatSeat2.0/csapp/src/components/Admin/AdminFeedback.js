@@ -96,21 +96,26 @@ export default function AdminFeedback() {
                                                         })} </small>
                                             </div>
 
-                                            <div className="row">
+                                            <div className="">
                                                 { // Logic to check whether a post has been resolved, if it has display resolve time otherwise display resolve button
                                                 post.resolved_at === null
-                                                    ? // Placeholder resolve button, back end logic still needs to be added 
-                                                    <button type="button" className="btn btn-secondary">Resolve</button>
-                                                    :
-                                                    <small className="text-muted text-center">Resolved: { 
-                                                        // Logic to adjust displayed date to '27 Nov 2025' format
-                                                            new Date(post.resolved_at).toLocaleDateString("en-AU", {
-                                                            year: "numeric",
-                                                            month: "short",
-                                                            day: "numeric",
-                                                            })}
-                                                    </small>
-                                                }
+                                                        ? // Placeholder resolve button, back end logic still needs to be added 
+                                                        <div className="row">
+                                                            <button type="button" className="btn btn-secondary">Resolve</button>
+                                                        </div>
+                                                    : (
+                                                    <div className="row">
+                                                        <small className="text-muted text-center">Resolved: { 
+                                                            // Logic to adjust displayed date to '27 Nov 2025' format
+                                                                new Date(post.resolved_at).toLocaleDateString("en-AU", {
+                                                                year: "numeric",
+                                                                month: "short",
+                                                                day: "numeric",
+                                                                })}
+                                                        </small>
+                                                        <button type="button" className="btn btn-dark">Unresolve</button>
+                                                    </div>
+                                                    )}
                                             </div>
                                         </div>
                                     </div>

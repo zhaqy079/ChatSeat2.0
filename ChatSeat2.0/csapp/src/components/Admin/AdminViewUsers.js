@@ -26,7 +26,7 @@ export const fetchAllUsers = async () => {
 async function approveUser(userID) {
         const { error: profileError } = await supabase.from("user_profiles").update(
             {
-                // Needs to become dynamic, dependent on user approving.
+                // Needs to become dynamic, dependent on user approving. Defaulting to Admin Istrator
                 approved_by: "73fd19d1-5665-479b-8500-5ea691b0e1be"
             }
         ).eq('profile_id', userID);
@@ -34,6 +34,111 @@ async function approveUser(userID) {
         if (profileError) {
             throw new Error("Failed to approve user: " + profileError.message);
         }
+}
+
+function userTable(userlist) {
+
+
+    return (
+        <table>
+            <thead className="text-left">
+                <tr className="text-left">
+                    <th className="p-3">Name</th>
+                    <th className="p-3">Email</th>
+                    <th className="p-3">Phone</th>
+                    <th className="p-3">Approved By</th>
+                    <th className="p-3">Inactive</th>
+                    <th className="p-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr key={user.profile_id} className="border-t">
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    )
+}
+
+function coordinatorTable(userlist) {
+
+
+    return (
+        <table>
+            <thead className="text-left">
+                <tr className="text-left">
+                    <th className="p-3">Name</th>
+                    <th className="p-3">Email</th>
+                    <th className="p-3">Phone</th>
+                    <th className="p-3">Locations</th>
+                    <th className="p-3">Coordinator Approved By</th>
+                    <th className="p-3">Inactive</th>
+                    <th className="p-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr key={user.profile_id} className="border-t">
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    )
+}
+
+function adminTable(userlist) {
+
+
+    return (
+        <table>
+            <thead className="text-left">
+                <tr className="text-left">
+                    <th className="p-3">Name</th>
+                    <th className="p-3">Email</th>
+                    <th className="p-3">Phone</th>
+                    <th className="p-3">Admin Approval</th>
+                    <th className="p-3">Inactive</th>
+                    <th className="p-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {userlist.map((user) => {
+                    // Finds the approved user from their id
+                    const admin_approver = user.admin_profiles.approved_by ? filtereduserList.find(u => u.profile_id === user.admin_profiles.approved_by) : null;
+
+                    <tr key={user.profile_id} className="border-t">
+                        <td className="p-3">{user.first_name} {user.last_name}</td>
+                        <td className="p-3">{user.email}</td>
+                        <td className="p-3">{user.phone}</td>
+                        {!approver ? <td className="p-3">Not yet approved</td> : <td className="p-3">{admin_approver.first_name} {admin_approver.last_name}</td>}
+
+                        <td className="p-3">
+                            { // Changes incoming date format to '27 Nov 2025' format
+                                user.inactive_at === null
+                                    ? "Active"
+                                    : new Date(user.inactive_at).toLocaleDateString("en-AU", {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                    })}
+                        </td>
+                        <td>
+                            <>
+                                {/* Displays a variety of different buttons depending on whether the user is an admin or currently active/inactive */}
+                                <button type="button" className="btn btn-secondary me-2">Coordinator</button>
+                                {user.inactive_at === null ? (
+                                    <button type="button" className="btn btn-warning me-2">Deactivate</button>
+                                ) : (
+                                    <button type="button" className="btn btn-info me-2">Reactivate</button>
+                                )}
+                                <button type="button" className="btn btn-danger">Remove Admin</button>
+                                <button type="button" className="btn btn-danger">DELETE</button>
+                            </>
+                        </td>
+                    </tr>
+                })}
+            </tbody>
+        </table>
+    )
 }
 
 export default function AdminViewUsers() {
@@ -88,7 +193,7 @@ export default function AdminViewUsers() {
                         !filtereduserList.length > 0 ? (
                         // If no users are found for the selected role, show a message
                         <h5 className="text-center">
-                            No users found.
+                            No {searchrole} users found.
                         </h5>
                         ) : (
                         // Creation of table for display of users and their details
@@ -130,7 +235,7 @@ export default function AdminViewUsers() {
                                                 {!approver ? (
                                                     <button type="button" className="btn btn-success" onClick={() => approveUser(user.profile_id) }>Approve</button>
                                                 ) : (
-                                                    // Displays a varietty of different buttons depending on whether the user is an admin or currently active/inactive
+                                                    // Displays a variety of different buttons depending on whether the user is an admin or currently active/inactive
                                                     <>
                                                         {user.admin_profiles === null && (
                                                             <button type="button" className="btn btn-secondary me-2">Admin</button>
