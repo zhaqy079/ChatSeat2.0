@@ -1,10 +1,29 @@
-﻿import { Link, useNavigate } from "react-router-dom";
+﻿import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import logo from "../assets/Logo.jpg"; 
 
 export default function Navbar() {
     const navigate = useNavigate();
+    const location = useLocation();
     const user = useSelector((state) => state.loggedInUser?.success);
+    const isAuthenticated = !!user;
+    const role = user?.role;
+    // Set the dashboard and the help page swither route 
+    const dashboardPath =
+        role === "admin"
+            ? "/admindashboard"
+            : role === "coordinator"
+                ? "/coordinatordashboard"
+                : "/listenerdashboard";
+
+    const helpPath =
+        role === "admin"
+            ? "/adminhelp"
+            : role === "coordinator"
+                ? "/coordinatorhelp"
+                : "/listenerhelp";
+    // Set the login button only on Home page
+    const showLoginBtn = !isAuthenticated && location.pathname === "/";
 
     return (
         <nav className="navbar navbar-expand-md navbar-dark bg-primary sticky-top shadow custom-navbar">
@@ -49,30 +68,28 @@ export default function Navbar() {
                                 Venues
                             </Link>
                         </li>
+
+                        {/*dashboard switch*/}
+                        {isAuthenticated ? (
                         <li className="nav-item">
-                            {user ? (
-                                <Link
-                                    className="btn btn-light text-primary fw-semibold custom-btn"
-                                    // to={user.role === "admin" ? "/admindashboard" : "/listenerdashboard"
-                                    to={"/listenerdashboard"}
-                            
-                                >
+                                <Link className="btn btn-light text-primary fw-semibold custom-btn" to={dashboardPath}>
                                     Dashboard
                                 </Link>
-                            ) : (
-                                <Link className="btn btn-light text-primary fw-semibold custom-btn" to="/login">
-                                    Login
-                                </Link>
-                            )}
-                        </li>
-
-                        {user && (
+                            </li>
+                        ) : (
+                            showLoginBtn && (
+                                <li className="nav-item">
+                                    <Link className="btn btn-light text-primary fw-semibold custom-btn" to="/login">
+                                        Login
+                                    </Link>
+                                </li>
+                            )
+                        )}
+                        {/*help page switch*/}
+                        {isAuthenticated && (
                             <li className="nav-item">
                                 <Link
-                                    className="btn btn-light text-primary fw-semibold custom-btn"
-                                    //to={user.role === "admin" ? "/adminhelp" : "/listenerhelp"}
-                                    to={"/listenerhelp"}
-                                >
+                                    className="btn btn-light text-primary fw-semibold custom-btn"to={"/helpPath"} >
                                     Help
                                 </Link>
                             </li>
