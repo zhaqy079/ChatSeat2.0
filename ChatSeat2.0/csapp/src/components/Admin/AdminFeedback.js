@@ -127,7 +127,7 @@ export default function AdminFeedback() {
                                                 post.resolved_at === null
                                                         ? // Placeholder resolve button, back end logic still needs to be added 
                                                         <div className="row">
-                                                            <button type="button" className="btn btn-secondary">Resolve</button>
+                                                            <button type="button" className="btn btn-secondary" onClick={() => resolvePost(post.feedback_forum_id)}>Resolve</button>
                                                         </div>
                                                     : (
                                                     <div className="row">
@@ -139,7 +139,7 @@ export default function AdminFeedback() {
                                                                 day: "numeric",
                                                                 })}
                                                         </small>
-                                                        <button type="button" className="btn btn-dark">Unresolve</button>
+                                                        <button type="button" className="btn btn-dark" onClick={() => unresolvePost(post.feedback_forum_id)}>Unresolve</button>
                                                     </div>
                                                     )}
                                             </div>

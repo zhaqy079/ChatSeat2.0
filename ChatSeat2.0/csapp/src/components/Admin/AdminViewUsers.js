@@ -52,7 +52,7 @@ function userTable(userlist) {
                 </tr>
             </thead>
             <tbody>
-                <tr key={user.profile_id} className="border-t">
+                <tr key="" className="border-t">
                     <td></td>
                 </tr>
             </tbody>
@@ -77,7 +77,7 @@ function coordinatorTable(userlist) {
                 </tr>
             </thead>
             <tbody>
-                <tr key={user.profile_id} className="border-t">
+                <tr key="" className="border-t">
                     <td></td>
                 </tr>
             </tbody>
@@ -103,13 +103,13 @@ function adminTable(userlist) {
             <tbody>
                 {userlist.map((user) => {
                     // Finds the approved user from their id
-                    const admin_approver = user.admin_profiles.approved_by ? filtereduserList.find(u => u.profile_id === user.admin_profiles.approved_by) : null;
+                    const admin_approver = user.admin_profiles.approved_by ? userlist.find(u => u.profile_id === user.admin_profiles.approved_by) : null;
 
                     <tr key={user.profile_id} className="border-t">
                         <td className="p-3">{user.first_name} {user.last_name}</td>
                         <td className="p-3">{user.email}</td>
                         <td className="p-3">{user.phone}</td>
-                        {!approver ? <td className="p-3">Not yet approved</td> : <td className="p-3">{admin_approver.first_name} {admin_approver.last_name}</td>}
+                        {!admin_approver ? <td className="p-3">Not yet approved</td> : <td className="p-3">{admin_approver.first_name} {admin_approver.last_name}</td>}
 
                         <td className="p-3">
                             { // Changes incoming date format to '27 Nov 2025' format
