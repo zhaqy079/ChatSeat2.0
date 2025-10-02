@@ -14,25 +14,40 @@ const supabase = createClient(
 export default function ListenerScheduling() {
     const [activeTab, setActiveTab] = useState("Upcoming");
     const [events, setEvents] = useState([]);
+    const [locations, setLocations] = useState([]);
+    const [selectedLocation, setSelectedLocation] = useState("");
 
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const { data: locs } = await supabase.from("venue_locations").select("location_id, location_name");
+                // Fetch locations
+                const { data: locs } = await supabase
+                    .from("venue_locations")
+                    .select("location_id, location_name");
+                setLocations(locs || []);
+
+                // Fetch bookings
                 const { data: bookings } = await supabase.from("bookings").select("*");
 
-                const calendarEvents = bookings.map(b => {
-                    const loc = locs.find(l => l.location_id === b.location_id);
+                const calendarEvents = bookings.map((b) => {
+                    const loc = locs.find((l) => l.location_id === b.location_id);
                     const [sh, sm] = (b.start_time || "00:00").split(":");
                     const [eh, em] = (b.end_time || "23:59").split(":");
 
                     return {
                         id: b.booking_id,
                         title: loc?.location_name || "Unknown location",
-                        start: `${b.booking_date}T${sh.padStart(2, "0")}:${sm.padStart(2, "0")}:00`,
-                        end: `${b.booking_date}T${eh.padStart(2, "0")}:${em.padStart(2, "0")}:00`,
+                        location_id: b.location_id,
+                        start: `${b.booking_date}T${sh.padStart(2, "0")}:${sm.padStart(
+                            2,
+                            "0"
+                        )}:00`,
+                        end: `${b.booking_date}T${eh.padStart(2, "0")}:${em.padStart(
+                            2,
+                            "0"
+                        )}:00`,
                         color: "#007bff",
-                        textColor: "white"
+                        textColor: "white",
                     };
                 });
 
@@ -44,6 +59,18 @@ export default function ListenerScheduling() {
 
         fetchBookings();
     }, []);
+
+    // filter events with slected location
+    const unavailableLocation = locations.find(loc => loc.location_name === "FULL DAY UNAVAILABLE");
+    const unavailableId = unavailableLocation?.location_id;
+
+    const filteredEvents = selectedLocation
+        ? events.filter(
+            (e) => e.location_id === selectedLocation || e.location_id === unavailableId
+        )
+        : [];
+
+
 
 
     return (
@@ -86,8 +113,8 @@ export default function ListenerScheduling() {
                                         <p><strong>Time:</strong> 10:00</p>
                                         <p><strong>Location:</strong> Campbelltown Library</p>
                                         <div className="mt-2 flex space-x-2">
-                                            <button type=" button" class="btn btn-primary">Reschedule</button>
-                                            <button type="button" class="btn btn-danger">Cancel</button>
+                                            <button type=" button" className="btn btn-primary">Reschedule</button>
+                                            <button type="button" className="btn btn-danger">Cancel</button>
                                         </div>
                                     </div>
 
@@ -96,8 +123,8 @@ export default function ListenerScheduling() {
                                         <p><strong>Time:</strong> 11:00</p>
                                         <p><strong>Location:</strong> Campbelltown Library</p>
                                         <div className="mt-2 flex space-x-2">
-                                            <button type="button" class="btn btn-primary">Reschedule</button>
-                                            <button type="button" class="btn btn-danger">Cancel</button>
+                                            <button type="button" className="btn btn-primary">Reschedule</button>
+                                            <button type="button" className="btn btn-danger">Cancel</button>
                                         </div>
                                     </div>
                             </div>
@@ -107,12 +134,18 @@ export default function ListenerScheduling() {
                                     <div className="card-panel p-4 sm:p-6 rounded shadow w-full">
                                         <h3 className="text-xl font-bold mb-3">Book a Slot</h3>
 
-                                        {/* location dropdown */}
-                                        <select className="location-dropdown">
+                                        {/*location dropdown */}
+                                        <select
+                                            className="location-dropdown"
+                                            value={selectedLocation}
+                                            onChange={(e) => setSelectedLocation(e.target.value)}
+                                        >
                                             <option value="">Select Location</option>
-                                            <option value="loc1">Campbelltown Library</option>
-                                            <option value="loc2">Other Location</option>
-                                            <option value="loc3">Another Location</option>
+                                            {locations.filter(loc => loc.location_name !== "FULL DAY UNAVAILABLE").map((loc) => (
+                                                <option key={loc.location_id} value={loc.location_id}>
+                                                    {loc.location_name}
+                                                </option>
+                                            ))}
                                         </select>
 
                                         <div className="calendar-size">
@@ -121,7 +154,7 @@ export default function ListenerScheduling() {
                                                 initialView="timeGridWeek"
                                                 height={550}
                                                 locale="en-AU"
-                                                events={events}
+                                                events={filteredEvents}
                                                 editable={false}
                                                 selectable={false}
                                                 allDaySlot={false}
@@ -135,12 +168,18 @@ export default function ListenerScheduling() {
                                  <div className="card-panel p-4 sm:p-6 rounded shadow w-full">
                                         <h3 className="text-xl font-bold mb-3">Calendar View</h3>
 
-                                        {/* location dropdown */}
-                                        <select className="location-dropdown">
+                                        {/*location dropdown */}
+                                        <select
+                                            className="location-dropdown"
+                                            value={selectedLocation}
+                                            onChange={(e) => setSelectedLocation(e.target.value)}
+                                        >
                                             <option value="">Select Location</option>
-                                            <option value="loc1">Campbelltown Library</option>
-                                            <option value="loc2">Other Location</option>
-                                            <option value="loc3">Another Location</option>
+                                            {locations.filter(loc => loc.location_name !== "FULL DAY UNAVAILABLE").map((loc) => (
+                                                <option key={loc.location_id} value={loc.location_id}>
+                                                    {loc.location_name}
+                                                </option>
+                                            ))}
                                         </select>
 
                                         <div className="calendar-size">
@@ -148,6 +187,7 @@ export default function ListenerScheduling() {
                                                 plugins={[timeGridPlugin]}
                                                 initialView="timeGridWeek"
                                                 height={550}
+                                                events={filteredEvents}
                                                 locale="en-AU"
                                                 allDaySlot={false}
                                             />
