@@ -36,6 +36,33 @@ async function approveUser(userID) {
         }
 }
 
+// Function call to deactivate a user
+async function deactivateUser(userID) {
+    const { error: profileError } = await supabase.from("user_profiles").update(
+        {
+            inactive_at: new Date()
+        }
+    ).eq('profile_id', userID);
+
+    if (profileError) {
+        throw new Error("Failed to deactivate user: " + profileError.message);
+    }
+}
+
+// Function call to reactivate a user
+async function reactivateUser(userID) {
+    const { error: profileError } = await supabase.from("user_profiles").update(
+        {
+            inactive_at: null
+        }
+    ).eq('profile_id', userID);
+
+    if (profileError) {
+        throw new Error("Failed to reactivate user: " + profileError.message);
+    }
+}
+
+
 function userTable(userlist) {
 
 
@@ -242,9 +269,9 @@ export default function AdminViewUsers() {
                                                         )}
                                                         <button type="button" className="btn btn-secondary me-2">Coordinator</button>
                                                         {user.inactive_at === null ? (
-                                                            <button type="button" className="btn btn-warning me-2">Deactivate</button>
+                                                            <button type="button" className="btn btn-warning me-2" onClick={() => deactivateUser(user.profile_id) }>Deactivate</button>
                                                         ) : (
-                                                            <button type="button" className="btn btn-info me-2">Reactivate</button>
+                                                            <button type="button" className="btn btn-info me-2" onClick={() => reactivateUser(user.profile_id) }>Reactivate</button>
                                                         )}
                                                         <button type="button" className="btn btn-danger">Delete</button>
                                                     </>
