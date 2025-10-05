@@ -122,34 +122,31 @@ function userTable(userlist) {
 
 function coordinatorTable(userlist) {
     return (
-        <table>
+        <table className="table">
             <thead className="text-left">
                 <tr className="text-left">
                     <th className="p-3">Name</th>
                     <th className="p-3">Email</th>
                     <th className="p-3">Phone</th>
                     <th className="p-3">Locations</th>
-                    <th className="p-3">Coordinator Approved By</th>
                     <th className="p-3">Inactive</th>
                     <th className="p-3">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {userlist.map((user) => {
-                    // Finds the approved user from their id
-                    const coord_approver = user.coordinator_profiles.approved_by ? userlist.find(u => u.profile_id === user.coordinator_profiles.approved_by) : null;
-
                     return (
                         <tr key={user.profile_id} className="border-t">
                             <td className="p-3">{user.first_name} {user.last_name}</td>
                             <td className="p-3">{user.email}</td>
                             <td className="p-3">{user.phone}</td>
                             <td className="p-3">
-                                {user.venue_locations.map((location) => { 
-                                    <div className="row">{location.location_name}</div>
-                                })}
+                                {user.coordinator_profiles.map((coord_profile) => { 
+                                    return (
+                                        <div className="row">{coord_profile.venue_locations.location_name}</div>
+                                )})}
                             </td>
-                            {!coord_approver ? <td className="p-3">Not yet approved</td> : <td className="p-3">{coord_approver.first_name} {coord_approver.last_name}</td>}
+                            
 
                             <td className="p-3">
                                 { // Changes incoming date format to '27 Nov 2025' format
@@ -185,7 +182,7 @@ function coordinatorTable(userlist) {
 
 function adminTable(userlist) {
     return (
-        <table>
+        <table className="table">
             <thead className="text-left">
                 <tr className="text-left">
                     <th className="p-3">Name</th>
@@ -227,7 +224,7 @@ function adminTable(userlist) {
                                     ) : (
                                         <button type="button" className="btn btn-info me-2" onClick={() => reactivateUser(user.profile_id) }>Reactivate</button>
                                     )}
-                                    <button type="button" className="btn btn-danger">Remove Admin</button>
+                                    <button type="button" className="btn btn-danger me-2">Remove Admin</button>
                                     <button type="button" className="btn btn-danger">DELETE</button>
                                 </>
                             </td>
@@ -297,7 +294,7 @@ export default function AdminViewUsers() {
                                 ? adminTable(filtereduserList)
                                 : (searchrole === "coordinator" ? coordinatorTable(filtereduserList)
                                     : userTable(filtereduserList))
-                        ) )}
+                        ))}
                 </div>
             </div>
         </div>
