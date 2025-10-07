@@ -16,8 +16,8 @@ export default function CoordinatorSidebar() {
 
     const getActiveLink = (url) =>
         location.pathname === url
-            ? "admin-sidebar__link active"
-            : "admin-sidebar__link";
+            ? "dashboard-sidebar__link active"
+            : "dashboard-sidebar__link";
 
     const handleLogout = async () => {
         // Supabase logout
@@ -29,29 +29,29 @@ export default function CoordinatorSidebar() {
     };
 
     return (
-        <div className="admin-sidebar">
-            <div className="admin-sidebar__nav">
-                <div className="admin-sidebar__greeting">
+        <div className="dashboard-sidebar">
+            <div className="dashboard-sidebar__nav">
+                <div className="dashboard-sidebar__greeting">
                     Dashboard
                 </div>
-                <NavLink to="#" className={getActiveLink("")}>
+                <NavLink to="/coordinatorappointments" className={getActiveLink("coordinatorappointments")}>
                     Appointments
                 </NavLink>
-                <NavLink to="#" className={getActiveLink("")}>
+                <NavLink to="coordinatoravailability" className={getActiveLink("coordinatoravailability")}>
                     Availability
                 </NavLink>
-                <NavLink to="#" className={getActiveLink("")}>
+                <NavLink to="coordinatoraddlistener" className={getActiveLink("coordinatoraddlistener")}>
                     Add A Listener
                 </NavLink>
-                <NavLink to="#" className={getActiveLink("")}>
+                <NavLink to="coordinatorchatroom" className={getActiveLink("coordinatorchatroom")}>
                     Coordinators Chat Room
                 </NavLink>
-                <NavLink to="#" cclassName={getActiveLink("")}>
+                <NavLink to="coordinatorlistenerchatroom" className={getActiveLink("coordinatorlistenerchatroom")}>
                     Listener Chat Room
                 </NavLink>
             </div>
             <div className="mt-3">
-                <button className="admin-sidebar__logout" onClick={handleLogout}>
+                <button className="dashboard-sidebar__logout" onClick={handleLogout}>
                     Logout
                 </button>
             </div>
