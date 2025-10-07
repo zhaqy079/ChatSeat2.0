@@ -8,6 +8,8 @@ export default function Navbar() {
     const user = useSelector((state) => state.loggedInUser?.success);
     const isAuthenticated = !!user;
     const role = user?.role;
+    console.log("Logged-in user:", user);
+    console.log("User role:", user?.role);
     // Set the dashboard and the help page swither route 
     const dashboardPath =
         role === "admin"
@@ -58,38 +60,75 @@ export default function Navbar() {
 
                 <div className="collapse navbar-collapse" id="mainNav">
                     <ul className="navbar-nav ms-auto align-items-center gap-2">
+                    {/*Global Links*/}
                         <li className="nav-item">
-                            <Link className="btn btn-light text-primary fw-semibold custom-btn" to="/about">
+                            <Link className="btn fw-semibold custom-btn" to="/about">
                                 About Us
                             </Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="btn btn-light text-primary fw-semibold custom-btn" to="/venues">
+                            <Link className="btn fw-semibold custom-btn" to="/venues">
                                 Venues
                             </Link>
                         </li>
 
-                        {/*dashboard switch*/}
-                        {isAuthenticated ? (
-                        <li className="nav-item">
-                                <Link className="btn btn-light text-primary fw-semibold custom-btn" to={dashboardPath}>
+                        {/*Admin Dashboard Dropdown btn*/}
+                        {isAuthenticated && role === "admin" && (
+                            <li className="nav-item dropdown">
+                                <button
+                                    className="btn btn-outline-light fw-semibold custom-btn dropdown-toggle"
+                                    id="adminDropdown"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    Dashboards
+                                </button>
+                                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                                    <li>
+                                        <button className="dropdown-item" onClick={() => navigate("/admindashboard")}>
+                                            Admin Portal
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button className="dropdown-item" onClick={() => navigate("/coordinatordashboard")}>
+                                            Coordinator Portal
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button className="dropdown-item" onClick={() => navigate("/listenerdashboard")}>
+                                            Listener Portal
+                                        </button>
+                                    </li>
+                                </ul>
+                            </li>
+                        )}
+
+                        {/* Listener / Coordinator: only show the single Dashboard */}
+                        {isAuthenticated && role !== "admin" && (
+                            <li className="nav-item">
+                                <Link className="btn fw-semibold custom-btn" to={dashboardPath}>
                                     Dashboard
                                 </Link>
                             </li>
-                        ) : (
-                            showLoginBtn && (
+                        )}
+
+                        {/*Login (only at the home page*/}
+                         {!isAuthenticated && showLoginBtn && (
                                 <li className="nav-item">
-                                    <Link className="btn btn-light text-primary fw-semibold custom-btn" to="/login">
+                                    <Link className="btn fw-semibold custom-btn" to="/login">
                                         Login
                                     </Link>
                                 </li>
-                            )
+                            
                         )}
+
+                  
                         {/*help page switch*/}
                         {isAuthenticated && (
                             <li className="nav-item">
                                 <Link
-                                    className="btn btn-light text-primary fw-semibold custom-btn"to={"/helpPath"} >
+                                    className="btn fw-semibold custom-btn"to={helpPath} >
                                     Help
                                 </Link>
                             </li>
