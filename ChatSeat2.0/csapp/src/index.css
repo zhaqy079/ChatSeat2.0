@@ -20,11 +20,13 @@ code {
     color: #003366;
     border: none;
     border-radius: 9999px;
+   
 }
 
-.btn.custom-btn:hover {
-    background-color: white;
-}
+    .btn.custom-btn:hover {
+        background-color: white;
+        color: #003366;
+    }
 /*Container css */
 h2.intro-title, h3.intro-title, p.intro-title {
     color: #003366;
@@ -48,37 +50,36 @@ h2.intro-title, h3.intro-title, p.intro-title {
     color: #003366;
 }
 
-/*Admin sidebar*/
-.admin-sidebar {
+/*Dashboard sidebar*/
+.dashboard-sidebar {
     width: 250px;
     position: sticky;
-    height: calc(81vh + 125px);
+    min-height: 100vh;
     background-color: #A8E4F2;
-    padding-top: 20px;
     display: flex;
     flex-direction: column;
-    padding-left: 1rem; 
-    padding-right: 1rem;
-    padding-bottom: 1rem;
+    padding: 20px 1rem;
+    overflow-y: auto;
+    
 }
 
-.admin-sidebar__greeting {
+.dashboard-sidebar__greeting {
     color: #1E3A8A;
     font-weight: bold;
     font-size: 1.25rem; 
     text-align: center;
-    margin-top: 20px;
+    margin-top: 4px;
     margin-bottom: 1.5rem; 
 }
 
-.admin-sidebar__nav {
+.dashboard-sidebar__nav {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem; 
+    gap: 0.8rem;
     flex-grow: 1;
 }
 
-.admin-sidebar__link {
+.dashboard-sidebar__link {
     width: 100%;
     color: #1E3A8A;
     font-weight: 500;
@@ -94,13 +95,13 @@ h2.intro-title, h3.intro-title, p.intro-title {
     background-color: white;
 }
 
-.admin-sidebar__link.active {
-  background-color: #003366; 
-  color: white;
-  font-weight: 600;
-}
+    .dashboard-sidebar__link.active {
+        background-color: #003366;
+        color: white;
+        font-weight: 600;
+    }
 
-.admin-sidebar__logout {
+.dashboard-sidebar__logout {
     width: 100%;
     background-color: white;
     color: #1E3A8A;
@@ -114,18 +115,30 @@ h2.intro-title, h3.intro-title, p.intro-title {
     outline: none;
 }
 
-.admin-sidebar__logout:hover {
-    background-color: #d9eefe;
-}
+    .dashboard-sidebar__logout:hover {
+        background-color: #d9eefe;
+    }
 
-
-/* listener dashboard sidebar styling*/
 .dashboard-page-bg {
     background: #e6f4f9; 
     min-height: 100vh;
 
 }
 
+/* Responsive: For narrow screens*/
+@media (max-width: 992px) {
+    .dashboard-sidebar {
+        width: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-sidebar {
+        position: static;
+        top: 0;
+        height: auto;
+    }
+}
 /*Tab content*/
 .tab-button {
     padding: 0.5rem 1rem;
