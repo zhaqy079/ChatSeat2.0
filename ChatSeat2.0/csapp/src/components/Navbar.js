@@ -84,7 +84,7 @@ export default function Navbar() {
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
                                 >
-                                    Dashboards
+                                    View as ...
                                 </button>
                                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dashboardDropdown">
                                     <li>
