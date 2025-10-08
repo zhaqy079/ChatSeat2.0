@@ -8,7 +8,7 @@ const supabase = createClient(
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-export default function ListenerSidebar() {
+export default function ListenerSidebar({ userName = "" }) {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch(); 
@@ -16,8 +16,8 @@ export default function ListenerSidebar() {
 
     const getActiveLink = (url) =>
         location.pathname === url
-            ? "admin-sidebar__link active"
-            : "admin-sidebar__link";
+            ? "dashboard-sidebar__link active"
+            : "dashboard-sidebar__link";
 
     const handleLogout = async () => {
         // Supabase logout
@@ -29,11 +29,15 @@ export default function ListenerSidebar() {
     };
 
     return (
-        <div className="admin-sidebar">
-            <div className="admin-sidebar__nav">
-                <div className="admin-sidebar__greeting">
+        <div className="dashboard-sidebar">
+            <div className="dashboard-sidebar__greeting">
+                    Hello, {userName}!
+            </div>
+
+            <div className="dashboard-sidebar__nav">
+                <NavLink to="/listenerdashboard" className={getActiveLink("/listenerdashboard")}>
                     Dashboard
-                </div>
+                </NavLink>
                 <NavLink to="/coordinatorslistinlistener" className={getActiveLink("/coordinatorslistinlistener")}>
                     List of Coordinators
                 </NavLink>
@@ -48,7 +52,7 @@ export default function ListenerSidebar() {
                 </NavLink>
             </div>
             <div className="mt-3">
-                <button className="admin-sidebar__logout" onClick={handleLogout}>
+                <button className="dashboard-sidebar__logout" onClick={handleLogout}>
                     Logout
                 </button>
             </div>

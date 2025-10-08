@@ -1,4 +1,3 @@
-import AdminNavbar from "../Admin/AdminNavbar";
 import AdminSidebar from "../Admin/AdminSidebar";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
@@ -71,12 +70,13 @@ export default function UserGeneralForum() {
     }
 
     return (
-        <div>
-            <AdminNavbar title="General Forum" />
-            <div className="d-flex">
-
-                <AdminSidebar userName="userName" />
-                <div className="p-4 flex-grow-1">
+        <div className="d-flex  dashboard-page-content ">
+            {/* Sidebar on the left */}
+            <aside>
+                <AdminSidebar />
+            </aside>
+            {/* Right content area */}
+            <div className="flex-grow-1 px-3 px-md-4 py-4">
                     <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
 
                     { // Forum display logic, if no forum posts display special message otherwise display all posts
@@ -94,6 +94,6 @@ export default function UserGeneralForum() {
                     )}
                 </div>
             </div>
-        </div>
+
     );
 }
