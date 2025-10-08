@@ -28,24 +28,26 @@ export default function Navbar() {
     const showLoginBtn = !isAuthenticated && location.pathname === "/";
 
     return (
-        <nav className="navbar navbar-expand-md navbar-dark bg-primary sticky-top shadow custom-navbar">
-            <div className="container">
-                <button
-                    type="button"
-                    className="navbar-brand btn p-0 border-0 d-flex align-items-center"
-                    onClick={() => navigate("/")}
-                >
-                    <img
-                        src={logo}
-                        alt="ChatSeat Logo"
-                        width="40"
-                        height="40"
-                        className="rounded me-2"
+        <nav className="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow custom-navbar">
+            <div className="container position-relative">
+               
+                    <button
+                        type="button"
+                        className="navbar-brand btn p-0 border-0 d-flex align-items-center"
+                        onClick={() => navigate("/")}
+                    >
+                        <img
+                            src={logo}
+                            alt="ChatSeat Logo"
+                            width="40"
+                            height="40"
+                            className="rounded me-2"
 
-                    />
-                    <span className="position-absolute top-50 start-50 translate-middle fw-bold">Have a Chat Seat</span>
-                </button>
-
+                        />
+                    
+                    </button>
+                <span className="brand-center-title fw-bold text-white fs-5 mb-0" onClick={() => navigate("/")}>Have a Chat Seat</span>
+                
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -59,7 +61,7 @@ export default function Navbar() {
                 </button>
 
                 <div className="collapse navbar-collapse" id="mainNav">
-                    <ul className="navbar-nav ms-auto align-items-center gap-2">
+                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                     {/*Global Links*/}
                         <li className="nav-item">
                             <Link className="btn fw-semibold custom-btn" to="/about">
@@ -76,29 +78,23 @@ export default function Navbar() {
                         {isAuthenticated && role === "admin" && (
                             <li className="nav-item dropdown">
                                 <button
-                                    className="btn btn-outline-light fw-semibold custom-btn dropdown-toggle"
-                                    id="adminDropdown"
+                                    className="btn fw-semibold custom-btn dropdown-toggle"
+                                    id="dashboardDropdown"
                                     type="button"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
                                 >
                                     Dashboards
                                 </button>
-                                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dashboardDropdown">
                                     <li>
-                                        <button className="dropdown-item" onClick={() => navigate("/admindashboard")}>
-                                            Admin Portal
-                                        </button>
+                                        <Link className="dropdown-item" to="/admindashboard">Admin Portal</Link>
                                     </li>
                                     <li>
-                                        <button className="dropdown-item" onClick={() => navigate("/coordinatordashboard")}>
-                                            Coordinator Portal
-                                        </button>
+                                        <Link className="dropdown-item" to="/coordinatordashboard">Coordinator Portal</Link>
                                     </li>
                                     <li>
-                                        <button className="dropdown-item" onClick={() => navigate("/listenerdashboard")}>
-                                            Listener Portal
-                                        </button>
+                                        <Link className="dropdown-item" to="/listenerdashboard">Listener Portal</Link>
                                     </li>
                                 </ul>
                             </li>
@@ -135,7 +131,8 @@ export default function Navbar() {
                         )}
                         
                     </ul>
-                </div>
+                    </div>
+                
             </div>
         </nav>
     );
