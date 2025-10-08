@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../state/loggedInUser";
 import { createClient } from "@supabase/supabase-js";
@@ -15,8 +15,8 @@ export default function AdminSidebar({ userName = "" }) {
 
     const getActiveLink = (url) =>
         location.pathname === url
-            ? "admin-sidebar__link active"
-            : "admin-sidebar__link";
+            ? "dashboard-sidebar__link active"
+            : "dashboard-sidebar__link";
 
     const handleLogout = async () => {
  
@@ -29,34 +29,34 @@ export default function AdminSidebar({ userName = "" }) {
     };
 
     return (
-        <div className="admin-sidebar" style={{minWidth: "14%"}}>
-            <div className="admin-sidebar__greeting">
+        <div className="dashboard-sidebar">
+            <div className="dashboard-sidebar__greeting">
                 Hello, {userName}!
             </div>
 
-            <div className="admin-sidebar__nav">
-                <Link to="/admindashboard" className={getActiveLink("/admindashboard")}>
+            <div className="dashboard-sidebar__nav">
+                <NavLink to="/admindashboard" className={getActiveLink("/admindashboard")}>
                     Dashboard
-                </Link>
-                <Link to="/adminSchedulingSetting" className={getActiveLink("/adminSchedulingSetting")}>
+                </NavLink>
+                <NavLink to="/adminSchedulingSetting" className={getActiveLink("/adminSchedulingSetting")}>
                     Scheduling Setting
-                </Link>
-                <Link to="/adminViewUsers" className={getActiveLink("/adminViewUsers")}>
+                </NavLink>
+                <NavLink to="/adminViewUsers" className={getActiveLink("/adminViewUsers")}>
                     View All Users
-                </Link>
-                <Link to="/adminManageLocations" className={getActiveLink("/adminManageLocations")}>
+                </NavLink>
+                <NavLink to="/adminManageLocations" className={getActiveLink("/adminManageLocations")}>
                     Manage Locations
-                </Link>
-                <Link to="/userGeneralForums" className={getActiveLink("/userGeneralForums")}>
+                </NavLink>
+                <NavLink to="/userGeneralForums" className={getActiveLink("/userGeneralForums")}>
                     General Forum
-                </Link>
-                <Link to="/adminFeedback" className={getActiveLink("/adminFeedback")}>
+                </NavLink>
+                <NavLink to="/adminFeedback" className={getActiveLink("/adminFeedback")}>
                     Feedback
-                </Link>
+                </NavLink>
             </div>
 
             <div className="mt-3">
-                <button className="admin-sidebar__logout" onClick={handleLogout}>
+                <button className="dashboard-sidebar__logout" onClick={handleLogout}>
                     Logout
                 </button>
             </div>

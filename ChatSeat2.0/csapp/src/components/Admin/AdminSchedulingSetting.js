@@ -1,5 +1,4 @@
-﻿import AdminNavbar from "./AdminNavbar";
-import AdminSidebar from "./AdminSidebar";
+﻿import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
