@@ -8,7 +8,7 @@ const supabase = createClient(
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-export default function CoordinatorSidebar() {
+export default function CoordinatorSidebar({ userName = "" }) {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -30,10 +30,14 @@ export default function CoordinatorSidebar() {
 
     return (
         <div className="dashboard-sidebar">
+            <div className="dashboard-sidebar__greeting">
+                Hello, {userName}!
+            </div>
+
             <div className="dashboard-sidebar__nav">
-                <div className="dashboard-sidebar__greeting">
+                <NavLink to="/coordinatordashboard" className={getActiveLink("/coordinatordashboard")}>
                     Dashboard
-                </div>
+                </NavLink>
                 <NavLink to="/coordinatorappointments" className={getActiveLink("coordinatorappointments")}>
                     Appointments
                 </NavLink>
@@ -44,7 +48,7 @@ export default function CoordinatorSidebar() {
                     Add A Listener
                 </NavLink>
                 <NavLink to="coordinatorchatroom" className={getActiveLink("coordinatorchatroom")}>
-                    Coordinators Chat Room
+                    Coordinator Chat Room
                 </NavLink>
                 <NavLink to="coordinatorlistenerchatroom" className={getActiveLink("coordinatorlistenerchatroom")}>
                     Listener Chat Room
