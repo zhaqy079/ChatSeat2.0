@@ -146,10 +146,9 @@ h2.intro-title, h3.intro-title, p.intro-title {
         background-color: #d9eefe;
     }
 
-.dashboard-page-bg {
-    background: #e6f4f9; 
-    min-height: 100vh;
-
+.dashboard-page-content {
+    background: #e6f4f9;
+    min-height: calc(100vh - 4rem);
 }
 
 /* Responsive: For narrow screens*/

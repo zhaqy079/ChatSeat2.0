@@ -46,13 +46,15 @@ export default function Login() {
             //// Store user session info for protected routes
             //localStorage.setItem("userRole", profileData.role);
 
-            //if (profileData.role !== "pending") { 
+            //if (profileData.role !== "pending") {
             //    toast.success("Login successful!");
             //} else {
             //    toast.warning("Awaiting approval");
             //}
 
-            //// Navigation for specfic user role after user login 
+            //// Navigation for specfic user role after user login
+            // reference: https://stackoverflow.com/questions/73175525/what-is-the-use-of-dispatch-in-redux
+            // https://supabase.com/docs/guides/auth/passwords
             const authedUser = authData.user;
 
             // Retrieve user data for redirection via role
