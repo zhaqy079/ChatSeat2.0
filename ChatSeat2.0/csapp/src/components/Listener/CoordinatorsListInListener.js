@@ -1,7 +1,5 @@
 ﻿import React, { useEffect, useState } from "react";
 import ListenerSideBar from "./ListenerSideBar";
-//import ListenerNavBar from "./ListenerNavBar";
-//import AdminNavbar from "../Admin/AdminNavbar";
 import { useSelector } from "react-redux";
 import { createClient } from '@supabase/supabase-js';
 

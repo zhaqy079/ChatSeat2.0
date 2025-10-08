@@ -1,26 +1,43 @@
 ﻿import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../state/loggedInUser";
+import { createClient } from "@supabase/supabase-js";
 
-export default function ListenerSidebar() {
+const supabase = createClient(
+    process.env.REACT_APP_SUPABASE_URL,
+    process.env.REACT_APP_SUPABASE_ANON_KEY
+);
+
+export default function ListenerSidebar({ userName = "" }) {
     const location = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch(); 
+
 
     const getActiveLink = (url) =>
         location.pathname === url
-            ? "admin-sidebar__link active"
-            : "admin-sidebar__link";
+            ? "dashboard-sidebar__link active"
+            : "dashboard-sidebar__link";
 
-    const handleLogout = () => {
-        // Add logout logic here
-        //navigate("/login");
-        navigate("/");
+    const handleLogout = async () => {
+        // Supabase logout
+        await supabase.auth.signOut();
+
+        // Clear Redux state
+        dispatch(logoutUser());
+        navigate("/");                          
     };
 
     return (
-        <div className="admin-sidebar">
-            <div className="admin-sidebar__nav">
-                <div className="admin-sidebar__greeting">
+        <div className="dashboard-sidebar">
+            <div className="dashboard-sidebar__greeting">
+                    Hello, {userName}!
+            </div>
+
+            <div className="dashboard-sidebar__nav">
+                <NavLink to="/listenerdashboard" className={getActiveLink("/listenerdashboard")}>
                     Dashboard
-                </div>
+                </NavLink>
                 <NavLink to="/coordinatorslistinlistener" className={getActiveLink("/coordinatorslistinlistener")}>
                     List of Coordinators
                 </NavLink>
@@ -30,9 +47,12 @@ export default function ListenerSidebar() {
                 <NavLink to="/listenerchatroom" className={getActiveLink("/listenerchatroom")}>
                     Let’s Talk
                 </NavLink>
+                <NavLink to="/privatemessage" className={getActiveLink("/privatemessage")}>
+                    Inbox
+                </NavLink>
             </div>
             <div className="mt-3">
-                <button className="admin-sidebar__logout" onClick={handleLogout}>
+                <button className="dashboard-sidebar__logout" onClick={handleLogout}>
                     Logout
                 </button>
             </div>

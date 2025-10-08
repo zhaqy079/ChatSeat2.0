@@ -1,5 +1,4 @@
-﻿import AdminNavbar from "./AdminNavbar";
-import AdminSidebar from "./AdminSidebar";
+﻿import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -519,12 +518,13 @@ export default function AdminSchedulingSetting() {
     }
 
     return (
-        <div>
-            <AdminNavbar title="Weekly Scheduler" />
-            <div className="d-flex">
-                <AdminSidebar userName="userName" />
-
-                <div className="p-4 flex-grow-1">
+        <div className="d-flex  dashboard-page-content ">
+            {/* Sidebar on the left */}
+            <aside>
+                <AdminSidebar />
+            </aside>
+            {/* Right content area */}
+            <div className="flex-grow-1 px-3 px-md-4 py-4">
                     <h4 className="fw-bold mb-4 text-primary">Admin Scheduling Settings</h4>
 
                     {/* Manage Locations */}
@@ -793,6 +793,6 @@ export default function AdminSchedulingSetting() {
                     )}
                 </div>
             </div>
-        </div>
+        
     );
 }

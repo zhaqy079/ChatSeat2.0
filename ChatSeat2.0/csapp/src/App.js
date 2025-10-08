@@ -17,15 +17,19 @@ import AdminManageLocations from "./components/Admin/AdminManageLocations";
 
 import ListenerDashboard from "./components/Listener/ListenerDashboard";
 import ListenerScheduling from "./components/Listener/ListenerScheduling";
-import ListenerSidebar from "./components/Listener/ListenerSideBar";
+//import ListenerSidebar from "./components/Listener/ListenerSideBar";
 import CoordinatorsListInListener from "./components/Listener/CoordinatorsListInListener";
 import ListenerHelp from "./components/Listener/ListenerHelp";
+import PrivateMessage from "./components/Listener/PrivateMessage";
 
 import UserGeneralForum from "./components/Shared/UserGeneralForum";
 import AdminFeedback from "./components/Admin/AdminFeedback";
 
-
-
+import CoordinatorAppointments from "./components/Coordinator/CoordinatorAppointments";
+import CoordinatorAvailability from "./components/Coordinator/CoordinatorAvailability";
+import CoordinatorChatroom from "./components/Coordinator/CoordinatorAppointments";
+import CoordinatorListenerChatroom from "./components/Coordinator/CoordinatorListenerChatroom";
+import CoordinatorAddListener from "./components/Coordinator/CoordinatorAddListener";
 
 export default function App() {
     return (
@@ -45,15 +49,21 @@ export default function App() {
                 <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
                 <Route path="/adminViewUsers" element={<AdminViewUsers />} />
                 <Route path="/adminManageLocations" element={<AdminManageLocations />} />
-                {/* Listener routes */}
+                
                 <Route path="/listenerdashboard" element={<ListenerDashboard />} />
                 <Route path="/listenerscheduling" element={<ListenerScheduling />} />
                 <Route path="/coordinatorslistinlistener" element={< CoordinatorsListInListener />} />
                 <Route path="/listenerhelp" element={<ListenerHelp />} />
-
+                <Route path="/privatemessage" element={<PrivateMessage />} />
 
                 <Route path="/userGeneralForums" element={<UserGeneralForum />} />
                 <Route path="/adminFeedback" element={<AdminFeedback />} />
+
+                <Route path="/coordinatorappointments" element={< CoordinatorAppointments />} />
+                <Route path="/coordinatoravailability" element={< CoordinatorAvailability />} />
+                <Route path="/coordinatoraddlistener" element={< CoordinatorAddListener />} />
+                <Route path="/coordinatorchatroom" element={< CoordinatorChatroom />} />
+                <Route path="/coordinatorlistenerchatroom" element={< CoordinatorListenerChatroom />} />
 
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
