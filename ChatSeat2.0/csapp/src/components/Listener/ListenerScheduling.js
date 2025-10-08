@@ -6,13 +6,13 @@ export default function ListenerScheduling() {
     const [activeTab, setActiveTab] = useState("Upcoming");
 
     return (
-         <div className="d-flex  dashboard-page-bg ">
-                  {/* Sidebar on the left */}
+         <div className="d-flex dashboard-page-content ">
+                  {/* Sidebar*/}
                   <aside>
                         <ListenerSideBar />
                   </aside>
                    {/* Right content area */}
-                   <div className="flex-1 p-4 sm:p-6">
+                     <div className="flex-grow-1 px-3 px-md-4 py-4">
                           {/* Tabs row */}
                          <div className="flex flex-wrap gap-4 mb-6">
                                 {["Upcoming", "Book", "Calendar"].map((tab) => (
