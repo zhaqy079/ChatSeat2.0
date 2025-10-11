@@ -46,26 +46,31 @@ export default function UserGeneralForum() {
         const replies = posts.filter(p => p.reply_to === post.general_forum_id);
 
         return (
-            <div key={post.general_forum_id} className="card mb-2" style={{ marginLeft: 10, marginRight: 1, padding: "5px 0" }}>
-                <div className="card-body">
+            <div key={post.general_forum_id} className="card mb-2" style={{ marginLeft: 10, marginRight: 1, padding: "1px 0" }}>
+                <div className="card-body py-2">
                     {/* Main content of a feedback post */}
-                    <h5 className="card-title">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
-                    <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
+                    <div>
+                        <div className="d-flex align-items-center">
+                            <h6 className="card-title col">{post.user_profiles.first_name} {post.user_profiles.last_name}</h6>
+                            <small className="text-muted col text-end">Created: {
+                                // Logic to adjust displayed date to '27 Nov 2025' format
+                                new Date(post.created_at).toLocaleDateString("en-AU", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                })}
+                            </small>
+                        </div>
+                        <div className="d-flex align-items-center">
+                            <h7 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h7>
+                            <button type="button" className="btn btn-secondary ms-auto">Reply</button>
+                        </div>
+                    </div>
                     <p className="card-text">{post.content}</p>
                 </div>
                 {replies.map(reply => (
                     <Post key={reply.id} post={reply} posts={posts}/>
                 ))}
-                <div className="card-footer">
-                    <small className="text-muted text-center">Created: {
-                        // Logic to adjust displayed date to '27 Nov 2025' format
-                        new Date(post.created_at).toLocaleDateString("en-AU", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                        })}
-                    </small>
-                </div>
             </div>
         );
     }
@@ -78,6 +83,11 @@ export default function UserGeneralForum() {
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
+                    <div className="mb-2">
+                        <textarea className="form-control p-2 mb-2" placeholder="Create new discussion" />
+                        <button className="w-full btn btn-primary">Post New Discussion</button>
+                    </div>
+
 
                     { // Forum display logic, if no forum posts display special message otherwise display all posts
                         !generalforumlist.length > 0 ? (
