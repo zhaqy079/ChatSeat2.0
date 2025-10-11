@@ -1,5 +1,6 @@
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
 
@@ -63,7 +64,7 @@ async function reactivateUser(userID) {
 }
 
 
-function userTable(userlist) {
+function UserTable({ userlist }) {
     return (
         <table className="table">
             <thead className="text-left">
@@ -101,16 +102,13 @@ function userTable(userlist) {
                             <td>
                                 <>
                                     {/* Displays a variety of different buttons depending on whether the user is an admin or currently active/inactive */}
-                                    {user.admin_profiles === null && (
-                                        <button type="button" className="btn btn-secondary me-2">Admin</button>
-                                    )}
-                                    <button type="button" className="btn btn-secondary me-2">Coordinator</button>
+                                    <a href={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</a>
                                     {user.inactive_at === null ? (
                                         <button type="button" className="btn btn-warning me-2" onClick={() => deactivateUser(user.profile_id) }>Deactivate</button>
                                     ) : (
                                         <button type="button" className="btn btn-info me-2" onClick={() => reactivateUser(user.profile_id) }>Reactivate</button>
                                     )}
-                                    <button type="button" className="btn btn-danger fw-bold">DELETE</button>
+                                    
                                 </>
                             </td>
                         </tr>
@@ -293,8 +291,8 @@ export default function AdminViewUsers() {
                             searchrole === "admin"
                                 ? adminTable(filtereduserList)
                                 : (searchrole === "coordinator" ? coordinatorTable(filtereduserList)
-                                    : userTable(filtereduserList))
-                        ))}
+                                    : <UserTable userlist={filtereduserList} />
+                        )))}
                 </div>
             </div>
         </div>

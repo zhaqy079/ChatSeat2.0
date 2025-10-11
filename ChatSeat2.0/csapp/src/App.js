@@ -12,6 +12,7 @@ import AdminSchedulingSetting from "./components/Admin/AdminSchedulingSetting";
 import CoordinatorDashboard from "./components/Coordinator/CoordinatorDashboard";
 import AdminViewUsers from "./components/Admin/AdminViewUsers";
 import AdminManageLocations from "./components/Admin/AdminManageLocations";
+import AdminManageUser from "./components/Admin/AdminManageUser";
 import UserGeneralForum from "./components/Shared/UserGeneralForum";
 import AdminFeedback from "./components/Admin/AdminFeedback";
 
@@ -35,6 +36,7 @@ export default function App() {
                 <Route path="/adminManageLocations" element={<AdminManageLocations />} />
                 <Route path="/userGeneralForums" element={<UserGeneralForum />} />
                 <Route path="/adminFeedback" element={<AdminFeedback />} />
+                <Route path="/manageUser/:id" element={<AdminManageUser />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>

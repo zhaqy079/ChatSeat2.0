@@ -84,7 +84,7 @@ export default function AdminManageLocations() {
                                 <tr className="text-left">
                                     <th className="p-3">Name</th>
                                     <th className="p-3">Address</th>
-                                    <th className="p-3">Inactive</th>
+                                    <th className="p-3">Location Inactive</th>
                                     <th className="p-3">Actions</th>
                                 </tr>
                             </thead>

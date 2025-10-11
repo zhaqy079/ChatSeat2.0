@@ -2,6 +2,11 @@ import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
@@ -9,14 +14,28 @@ const supabase = createClient(
 );
 
 
-// Requests a list of all users from the database
-export const fetchAllUsers = async (userID) => {
+// Requests a user from the database
+export const fetchUser = async (userID) => {
     const { data, error } = await supabase.from("user_profiles")
-        .select("*, coordinator_profiles(*, venue_locations(*)), admin_profiles(*)")
-        .eq('profile_id', userID);;
+        .select("*, coordinator_profiles(*), admin_profiles(*)")
+        .eq('profile_id', userID)
+        .limit(1)
+        .single();
 
     if (error) {
         throw new Error("Failed to fetch user:" + error.message);
+    }
+
+    return data;
+};
+
+export const fetchLocations = async () => {
+    const { data, error } = await supabase.from("venue_locations")
+        .select("*")
+        .order('location_name', { ascending: true });
+
+    if (error) {
+        throw new Error("Failed to fetch locations:" + error.message);
     }
 
     return data;
@@ -36,12 +55,11 @@ const schema = Yup.object().shape({
 
 // Supabase update feature
 const updateUser = async ({
+    email,
     firstName,
     lastName,
     phoneNumber,
 }) => {
-
-    const user = data.user;
 
     // If user is not created, throw an error
     const { error: profileError } = await supabase.from("user_profiles").update(
@@ -55,12 +73,12 @@ const updateUser = async ({
     if (profileError) {
         throw new Error("Failed to add user data: " + profileError.message);
     }
-
-    return user;
 };
 
 export default function AdminManageUser() {
     const [user, setUser] = useState([]);
+    const [locationlist, setLocationlist] = useState([]);
+    const { id } = useParams();
 
     // Initialise the form with validation schema
     const {
@@ -82,70 +100,93 @@ export default function AdminManageUser() {
 
     // Stores the list of users from the database
     useEffect(() => {
-        const getUsers = async (id = useParams()) => {
+        const getLocations = async () => {
             try {
-                const data = await fetchAllUsers(id);
+                const data = await fetchLocations();
+                setLocationlist(data);
+            } catch (err) {
+                console.error("Error fetching locations:", err);
+            }
+        };
+
+        getLocations();
+    }, []);
+
+    // Stores the list of users from the database
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const data = await fetchUser(id);
                 setUser(data);
             } catch (err) {
                 console.error("Error fetching user:", err);
             }
         };
 
-        getUsers(); 
+        getUser(); 
     }, []);
 
-    
     return (
         <div>
             <AdminNavbar title="Display Users" />
             <div className="d-flex">
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
-                    <h4 className="fw-bold mb-4 text-primary">Manage User: { user.email }</h4>
-
-                    <form onSubmit={handleSubmit(onSubmit)} noValidate>
-                        <div className="mb-3">
-                            <label className="form-label fw-semibold">First Name</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={ user.first_name }
-                                {...register("firstName")}
-                            />
-                            <p className="text-danger small">{errors.firstName?.message}</p>
+                    <h4>Manage User</h4>
+                    {!user.profile_id ? <h3 className="text-center">Loading User Data.....</h3>
+                        : <div>
+                            {console.log(user.coordinator_profiles)}
+                            <h5>User Details: </h5>
+                            <div>Name: {user.first_name} {user.last_name}</div>
+                            <div>Email: {user.email}</div>
+                            <h5>Coordinator Locations</h5>
+                            <table className="table">
+                                <thead className="text-left">
+                                    <tr className="text-left">
+                                        <th className="p-3">Name</th>
+                                        <th className="p-3">Address</th>
+                                        <th className="p-3">Location Inactive</th>
+                                        <th className="p-3">Coordinate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {locationlist.map((location) => {
+                                        return (
+                                            <tr key={location.location_id} className="border-t">
+                                                <td className="p-3">{location.location_name}</td>
+                                                <td className="p-3">{location.location_address}</td>
+                                                <td className="p-3">
+                                                    { // Changes incoming date format to '27 Nov 2025' format
+                                                        location.inactive_at === null
+                                                            ? "Active"
+                                                            : new Date(location.inactive_at).toLocaleDateString("en-AU", {
+                                                                year: "numeric",
+                                                                month: "short",
+                                                                day: "numeric",
+                                                            })}
+                                                </td>
+                                                <td>
+                                                    <label>
+                                                        <input type="checkbox" name="location" defaultChecked={(user.coordinator_profiles.some(coord_location => coord_location.location_id === location.location_id))} />
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                            {/*{user.coordinator_profiles.length > 0 ? user.coordinator_profiles.map((coord_profile) => {*/}
+                            {/*    return (*/}
+                            {/*        <div className="row">{coord_profile.location_id}</div>*/}
+                            {/*    )*/}
+                            {/*}*/}
+                            {/*) : <div> No locations </div>}*/}
+                            <h5>Admin Privledges</h5>
+                            <label>
+                                Admin: <input type="checkbox" name="admin" defaultChecked={!(user.admin_profiles === null)} />
+                            </label>
                         </div>
-
-                        <div className="mb-3">
-                            <label className="form-label fw-semibold">Last Name</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={user.last_name}
-                                {...register("lastName")}
-                            />
-                            <p className="text-danger small">{errors.lastName?.message}</p>
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label fw-semibold">Phone Number</label>
-                            <input
-                                type="tel"
-                                className="form-control"
-                                value={user.phone}
-                                {...register("phoneNumber")}
-                            />
-                            <p className="text-danger small">{errors.phoneNumber?.message}</p>
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="btn w-100 fw-bold text-white mb-3 login-btn"
-                        >
-                            Update
-                        </button>
-                    </form>
-                    
-                    
+                    }                    
                 </div>
             </div>
         </div>
