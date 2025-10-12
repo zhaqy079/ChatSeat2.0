@@ -220,6 +220,17 @@ h2.intro-title, h3.intro-title, p.intro-title {
         background-color: #d9eefe;
     }
 
+/*Listener Calendar*/
+.calendar-size{
+    width: 1450px;
+}
+
+.location-dropdown {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+}
+
 /*Content card*/
 .card-panel {
     background: #fff;
