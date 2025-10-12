@@ -1,6 +1,5 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 //import { NavLink, useLocation, useNavigate } from "react-router-dom";
-//import ListenerNavbar from "./ListenerNavbar";
 import ListenerSideBar from "./ListenerSideBar";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -191,13 +190,13 @@ export default function ListenerScheduling() {
     };
 
     return (
-         <div className="d-flex  dashboard-page-bg ">
-                  {/* Sidebar on the left */}
+         <div className="d-flex dashboard-page-content ">
+                  {/* Sidebar*/}
                   <aside>
                         <ListenerSideBar />
                   </aside>
                    {/* Right content area */}
-                   <div className="flex-1 p-4 sm:p-6">
+                     <div className="flex-grow-1 px-3 px-md-4 py-4">
                           {/* Tabs row */}
                          <div className="flex flex-wrap gap-4 mb-6">
                                 {["Upcoming", "Book", "Calendar"].map((tab) => (

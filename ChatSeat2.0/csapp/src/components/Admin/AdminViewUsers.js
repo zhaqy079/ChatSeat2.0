@@ -1,4 +1,3 @@
-import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
@@ -67,16 +66,21 @@ export default function AdminViewUsers() {
     
 
     return (
-        <div>
-            <AdminNavbar title="Display Users" />
-            <div className="d-flex">
-                <AdminSidebar userName="userName" />
-                <div className="p-4 flex-grow-1">
+        <div className="d-flex  dashboard-page-content ">
+            {/* Sidebar on the left */}
+            <aside>
+                <AdminSidebar />
+            </aside>
+            {/* Right content area */}
+            <div className="flex-grow-1 px-3 px-md-4 py-4">
+
                     <h4 className="fw-bold mb-4 text-primary">View All Users</h4>
 
                     {/* Dropdown menu to refine the displayed users */}
-                    <div className="mb-2">
-                        <select value={searchrole} onChange={(e) => setSearchrole(e.target.value)}>
+                    <div className="mb-3">
+                    <select className="form-select fw-semibold mb-2 w-auto"
+                            value={searchrole}
+                            onChange={(e) => setSearchrole(e.target.value)}>
                             <option value="pending">Pending Users</option>
                             <option value="all">All Users</option>
                             <option value="coordinator">Coordinators</option>
@@ -153,6 +157,6 @@ export default function AdminViewUsers() {
                     )}
                 </div>
             </div>
-        </div>
+        
     );
 }
