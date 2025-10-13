@@ -134,11 +134,12 @@ export default function AdminManageUser() {
                 <div className="p-4 flex-grow-1">
                     <h4>Manage User</h4>
                     {!user.profile_id ? <h3 className="text-center">Loading User Data.....</h3>
-                        : <div>
-                            {console.log(user.coordinator_profiles)}
+                        : <form>
+                            <hr />
                             <h5>User Details: </h5>
                             <div>Name: {user.first_name} {user.last_name}</div>
                             <div>Email: {user.email}</div>
+                            <hr />
                             <h5>Coordinator Locations</h5>
                             <table className="table">
                                 <thead className="text-left">
@@ -146,7 +147,7 @@ export default function AdminManageUser() {
                                         <th className="p-3">Name</th>
                                         <th className="p-3">Address</th>
                                         <th className="p-3">Location Inactive</th>
-                                        <th className="p-3">Coordinate</th>
+                                        <th className="text-center p-3">Coordinator at Location</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,27 +166,29 @@ export default function AdminManageUser() {
                                                                 day: "numeric",
                                                             })}
                                                 </td>
-                                                <td>
-                                                    <label>
-                                                        <input type="checkbox" name="location" defaultChecked={(user.coordinator_profiles.some(coord_location => coord_location.location_id === location.location_id))} />
-                                                    </label>
+                                                <td className="text-center">
+                                                    <div className="justify-content-center">
+                                                        <input type="checkbox" className="" defaultChecked={(user.coordinator_profiles.some(coord_location => coord_location.location_id === location.location_id))} />
+                                                    </div>
                                                 </td>
                                             </tr>
                                         )
                                     })}
                                 </tbody>
                             </table>
-                            {/*{user.coordinator_profiles.length > 0 ? user.coordinator_profiles.map((coord_profile) => {*/}
-                            {/*    return (*/}
-                            {/*        <div className="row">{coord_profile.location_id}</div>*/}
-                            {/*    )*/}
-                            {/*}*/}
-                            {/*) : <div> No locations </div>}*/}
-                            <h5>Admin Privledges</h5>
+                            <hr />
+                            <h5>Admin Privileges</h5>
                             <label>
                                 Admin: <input type="checkbox" name="admin" defaultChecked={!(user.admin_profiles === null)} />
                             </label>
-                        </div>
+                            <hr/>
+                            <div className="d-flex align-items-center">
+                                <div className="ms-auto">
+                                    <button type="button" className="btn btn-info me-2 col">Update Privileges</button>
+                                    <button type="button" className="btn btn-danger fw-bold col">DELETE USER</button>
+                                </div>
+                            </div>
+                        </form>
                     }                    
                 </div>
             </div>
