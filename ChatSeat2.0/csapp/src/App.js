@@ -14,13 +14,14 @@ import AdminSchedulingSetting from "./components/Admin/AdminSchedulingSetting";
 import CoordinatorDashboard from "./components/Coordinator/CoordinatorDashboard";
 import AdminViewUsers from "./components/Admin/AdminViewUsers";
 import AdminManageLocations from "./components/Admin/AdminManageLocations";
+import AdminHelp from "./components/Admin/AdminHelp";
 
 import ListenerDashboard from "./components/Listener/ListenerDashboard";
 import ListenerScheduling from "./components/Listener/ListenerScheduling";
 //import ListenerSidebar from "./components/Listener/ListenerSideBar";
 import CoordinatorsListInListener from "./components/Listener/CoordinatorsListInListener";
 import ListenerHelp from "./components/Listener/ListenerHelp";
-import PrivateMessage from "./components/Listener/PrivateMessage";
+import PrivateMessage from "./components/Listener/Privatemessage";
 
 import UserGeneralForum from "./components/Shared/UserGeneralForum";
 import AdminFeedback from "./components/Admin/AdminFeedback";
@@ -29,7 +30,9 @@ import CoordinatorAppointments from "./components/Coordinator/CoordinatorAppoint
 import CoordinatorAvailability from "./components/Coordinator/CoordinatorAvailability";
 import CoordinatorChatroom from "./components/Coordinator/CoordinatorAppointments";
 import CoordinatorListenerChatroom from "./components/Coordinator/CoordinatorListenerChatroom";
-import CoordinatorAddListener from "./components/Coordinator/CoordinatorAddListener";
+import CoordinatorAddListener from "./components/Coordinator/CoordinatorAddListener"; 
+import CoordinatorHelp from "./components/Coordinator/CoordinatorHelp";
+
 
 export default function App() {
     return (
@@ -49,6 +52,7 @@ export default function App() {
                 <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
                 <Route path="/adminViewUsers" element={<AdminViewUsers />} />
                 <Route path="/adminManageLocations" element={<AdminManageLocations />} />
+                <Route path="/adminhelp" element={<AdminHelp />} />
                 
                 <Route path="/listenerdashboard" element={<ListenerDashboard />} />
                 <Route path="/listenerscheduling" element={<ListenerScheduling />} />
@@ -64,6 +68,7 @@ export default function App() {
                 <Route path="/coordinatoraddlistener" element={< CoordinatorAddListener />} />
                 <Route path="/coordinatorchatroom" element={< CoordinatorChatroom />} />
                 <Route path="/coordinatorlistenerchatroom" element={< CoordinatorListenerChatroom />} />
+                <Route path="/coordinatorhelp" element={< CoordinatorHelp />} />
 
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

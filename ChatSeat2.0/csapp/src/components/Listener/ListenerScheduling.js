@@ -107,6 +107,7 @@ export default function ListenerScheduling() {
                     end: `${b.booking_date}T${eh.padStart(2, "0")}:${em.padStart(2, "0")}:00`,
                     color: eventColor,
                     textColor: "black",
+                    created_by: b.created_by,
                 };
             });
 
@@ -128,11 +129,22 @@ export default function ListenerScheduling() {
 
     const handleEventClick = (clickInfo) => {
 
-        if (clickInfo.event.title === "FULL DAY UNAVAILABLE") {
-            return; 
+        const clicked = clickInfo.event;
+        const booking = events.find(e => e.id === clicked.id);
+
+        if (!user || !user.id) {
+            alert("Please log in to manage bookings.");
+            return;
         }
 
-        setClickedEvent(clickInfo.event);
+        if (clicked.title === "FULL DAY UNAVAILABLE") return;
+
+        if (booking.created_by && booking.created_by !== user.id) {
+            alert("This slot is already booked by someone else!");
+            return;
+        }
+
+        setClickedEvent(clicked);
         setShowEventPopup(true);
     };
 
