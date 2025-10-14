@@ -348,7 +348,7 @@ h2.intro-title, h3.intro-title, p.intro-title {
     border-left: 6px solid #A8E4F2; 
 }
 
-    .pm-form-container label {
+    .pm-form-container label, .reply-label  {
         color: #003366;
         font-weight: 600;
     }
@@ -364,12 +364,16 @@ h2.intro-title, h3.intro-title, p.intro-title {
             box-shadow: 0 0 0 0.15rem rgba(86,192,221,0.25);
         }
 
-    .pm-form-container .btn-info {
+    .pm-form-container .btn-info, .form-send-btn {
         background-color: #A8E4F2;
         color: #003366;
-        border: #003366;
-        border-radius: 60px;
-        font-weight: 600;
+        border: 10px;
+        padding: 0.5rem 1rem;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        border-radius: 100px;
+        font-weight: 400;
+        border: none;
     }
 
         .pm-form-container .btn-info:hover {
@@ -377,7 +381,7 @@ h2.intro-title, h3.intro-title, p.intro-title {
         }
 
     .pm-form-container .btn-outline-secondary {
-        border-radius: 40px;
+        border-radius: 100px;
     }
 
 .form-container-floating {
@@ -485,6 +489,19 @@ h2.intro-title, h3.intro-title, p.intro-title {
         background-color: #A5D6A7;
         transform: translateY(-1px);
     }
+
+.form-cancel-btn {
+    background-color: #CCCCCC;
+    color: black;
+    border: 10px;
+    padding: 0.3rem 1rem;
+    margin-left: 0.3rem;
+    margin-right: 0.5rem;
+    border-radius: 100px;
+    font-weight: 400;
+    border: none;
+}
+
 
 .pm-btn-mark {
     background-color: #FFF3B0;

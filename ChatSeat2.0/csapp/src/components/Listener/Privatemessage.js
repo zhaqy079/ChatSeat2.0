@@ -146,26 +146,26 @@ function ReplyForm({ to, onCancel, onSend, sending }) {
     return (
         <div className="border rounded p-3 bg-light">
             <div className="mb-2">
-                <label className="form-label mb-1">To</label>
+                <label className="reply-label mb-2">To</label>
                 <input className="form-control" value={to || ""} readOnly />
             </div>
             <div className="mb-2">
-                <label className="form-label mb-1">Subject</label>
+                <label className="reply-label mb-2">Subject</label>
                 <input className="form-control" value={subject} onChange={(e) => setSubject(e.target.value)} />
             </div>
             <div className="mb-3">
-                <label className="form-label mb-1">Message</label>
+                <label className="reply-label mb-2">Message</label>
                 <textarea className="form-control" rows={4} value={text} onChange={(e) => setText(e.target.value)} />
             </div>
             <div className="d-flex gap-2">
                 <button
-                    className="btn btn-primary"
+                    className="form-send-btn"
                     disabled={sending || !to || !text.trim()}
                     onClick={() => onSend({ to, subject: subject.trim(), text: text.trim() })}
                 >
                     {sending ? "Sending…" : "Send"}
                 </button>
-                <button className="btn btn-outline-secondary" onClick={onCancel}>Cancel</button>
+                <button className="form-cancel-btn" onClick={onCancel}>Cancel</button>             
             </div>
         </div>
     );

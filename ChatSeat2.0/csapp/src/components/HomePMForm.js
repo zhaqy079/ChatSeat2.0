@@ -51,7 +51,7 @@ export default function HomePMForm({ onClose, onSent, onError }) {
                     onChange={(e) => setForm({ ...form, content: e.target.value })} required />
             </div>
             <div className="d-flex gap-2">
-                <button type="submit" className="btn btn-info" disabled={loading}>
+                <button type="submit" className="form-send-btn" disabled={loading}>
                     {loading ? "Sending…" : "Send"}
                 </button>
                 <button type="button" className="btn btn-outline-secondary" onClick={onClose}>Cancel</button>
