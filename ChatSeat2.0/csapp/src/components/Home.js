@@ -98,27 +98,18 @@ export default function Home() {
                     />
                 </div>
 
-                {/*PM btn feature*/}
+                {/*PM feature*/}
                 <div className="d-flex justify-content-end">
                     <HomePMBtn onOpen={() => setShowForm(true)} />
                 </div>
                 {showForm && (
-                    <div className="modal fade show d-block" tabIndex={-1} role="dialog" style={{ background: "rgba(0,0,0,0.4)" }}>
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Tell Us Your Story</h5>
-                                    <button type="button" className="btn-close" onClick={() => setShowForm(false)}></button>
-                                </div>
-                                <div className="modal-body">
-                                    <HomePMForm
-                                        onClose={() => setShowForm(false)}
-                                        onSent={() => alert("Message sent! Thank you.")}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                    <div className="form-container-floating">
+                        <HomePMForm
+                            onClose={() => setShowForm(false)}
+                            onSent={() => alert("Message sent! Thank you.")}
+                        />
                     </div>
+                   
                 )}
 
                 {/* Closing */}
