@@ -27,10 +27,13 @@ export const fetchAllGeneralForumPosts = async () => {
 
 export default function UserGeneralForum() {
     const [generalforumlist, setGeneralforumlist] = useState([]);
+    const [activePostId, setActivePostId] = useState(null);
     const [messagedata, setMessagedata] = useState({
         message: null,
         reply: null
     });
+    const replyRef = useRef(null);
+    const postRef = useRef(null);
 
     // Stores the list of general forum posts from the database
     useEffect(() => {
@@ -47,15 +50,15 @@ export default function UserGeneralForum() {
     }, []);
 
     
-    const createPost = async() => {
-        if (!messagedata.message) {
+    const createPost = async ({ message, reply }) => {
+        if (!message) {
             alert("Please input something into the reply field.");
             return;
         }
 
         const { error } = await supabase
             .from('general_forum')
-            .insert({ user_id: "73fd19d1-5665-479b-8500-5ea691b0e1be", content: messagedata.message, reply_to: messagedata.reply });
+            .insert({ user_id: "73fd19d1-5665-479b-8500-5ea691b0e1be", content: message, reply_to: reply });
 
         window.location.reload();
     }
@@ -83,11 +86,32 @@ export default function UserGeneralForum() {
                             </small>
                         </div>
                         <div className="d-flex align-items-center">
-                            <h7 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h7>
-                            <button type="button" className="btn btn-secondary ms-auto">Reply</button>
+                            <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
+                            <button type="button" className="btn btn-secondary ms-auto" onClick={() => {
+                                setActivePostId(prevId => (prevId === post.general_forum_id ? null : post.general_forum_id));
+                            } }>Reply</button>
                         </div>
                     </div>
                     <p className="card-text">{post.content}</p>
+
+                    {activePostId === post.general_forum_id && (
+                        <form onSubmit={async (e) => {
+                            e.preventDefault();
+
+                            const message = replyRef.current?.value;
+                            const reply = post.general_forum_id;
+                            await createPost({ message, reply });
+                        }}>
+                            <textarea
+                                className="form-control"
+                                placeholder="Write your reply..."
+                                ref={replyRef}
+                            />
+                            <button type="submit" className="btn btn-primary mt-2">
+                                Post
+                            </button>
+                        </form>
+                    )}
                 </div>
                 {replies.map(reply => (
                     <Post key={reply.id} post={reply} posts={posts}/>
@@ -104,10 +128,16 @@ export default function UserGeneralForum() {
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
-                    <div className="mb-2">
-                        <textarea id="newDiscussion" className="form-control p-2 mb-2" placeholder="Create new discussion..." onChange={(e) => setMessagedata({ ...messagedata, message: e.target.value })} />
-                        <button className="w-full btn btn-primary" onClick={createPost}>Post New Discussion</button>
-                    </div>
+                    <form className="mb-2" onSubmit={async (e) => {
+                        e.preventDefault();
+
+                        const message = postRef.current?.value;
+                        const reply = null;
+                        await createPost({ message, reply });
+                    }}>
+                        <textarea id="newDiscussion" className="form-control p-2 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef}/>
+                        <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
+                    </form>
 
 
                     { // Forum display logic, if no forum posts display special message otherwise display all posts
