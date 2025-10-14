@@ -1,12 +1,8 @@
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from '@supabase/supabase-js';
-import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
+import {useNavigate, useParams } from "react-router-dom";
 
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
@@ -29,6 +25,7 @@ export const fetchUser = async (userID) => {
     return data;
 };
 
+// Requests locations from database
 export const fetchLocations = async () => {
     const { data, error } = await supabase.from("venue_locations")
         .select("*")
@@ -41,62 +38,42 @@ export const fetchLocations = async () => {
     return data;
 };
 
-const schema = Yup.object().shape({
-    firstName: Yup.string()
-        .matches(/^[A-Za-z]+$/, "Only letters allowed")
-        .required("First name is required"),
-    lastName: Yup.string()
-        .matches(/^[A-Za-z]+$/, "Only letters allowed")
-        .required("Last name is required"),
-    phoneNumber: Yup.string()
-        .matches(/^\d{10}$/, "Enter a valid 10-digit phone number")
-        .required("Phone number is required")
-});
 
-// Supabase update feature
-const updateUser = async ({
-    email,
-    firstName,
-    lastName,
-    phoneNumber,
-}) => {
+// Supabase delete user
+export const deleteUser = async (userID, navigate) => {
+    const confirmed = window.confirm("Are you sure you want to delete this user? \n There is no way to undo this action. ");
 
-    // If user is not created, throw an error
-    const { error: profileError } = await supabase.from("user_profiles").update(
-        {
-            first_name: firstName,
-            last_name: lastName,
-            phone: phoneNumber,
-        },
-    ).eq('email', email);
+    if (confirmed) {
+        const { profError } = await supabase.auth.admin.deleteUser(userID)
+        const authError = await supabase
+            .from('user_profiles')
+            .delete()
+            .eq('profile_id', userID)
 
-    if (profileError) {
-        throw new Error("Failed to add user data: " + profileError.message);
+        if (profError || authError) {
+            console.log("User profile response: " + profError);
+            console.log("User auth response: " + authError);
+            alert("Failed to completely delete user.");
+            return;
+        }
+        console.log("User deleted.");
+
+        navigate("/adminViewUsers");
+    } else {
+        // Cancelled
+        console.log("Action canceled.");
     }
+
 };
 
+
+
 export default function AdminManageUser() {
+    const navigate = useNavigate();
     const [user, setUser] = useState([]);
     const [locationlist, setLocationlist] = useState([]);
     const { id } = useParams();
 
-    // Initialise the form with validation schema
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm({ resolver: yupResolver(schema) });
-
-    // Function to handle form submission and it will be called when the form is submitted
-    const onSubmit = async (data) => {
-        try {
-            await updateUser(data);
-            toast.success("Update successful!");
-        } catch (err) {
-            console.error("Update error: ", err.message);
-            toast.error("Update failed: " + err.message);
-        }
-    };
 
     // Stores the list of users from the database
     useEffect(() => {
@@ -185,7 +162,7 @@ export default function AdminManageUser() {
                             <div className="d-flex align-items-center">
                                 <div className="ms-auto">
                                     <button type="button" className="btn btn-info me-2 col">Update Privileges</button>
-                                    <button type="button" className="btn btn-danger fw-bold col">DELETE USER</button>
+                                    <button type="button" className="btn btn-danger fw-bold col" onClick={ () => deleteUser(user.profile_id, navigate) }>DELETE USER</button>
                                 </div>
                             </div>
                         </form>
