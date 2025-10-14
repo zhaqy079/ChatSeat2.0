@@ -22,8 +22,15 @@ export const fetchAllGeneralForumPosts = async () => {
     return data;
 };
 
+
+
+
 export default function UserGeneralForum() {
     const [generalforumlist, setGeneralforumlist] = useState([]);
+    const [messagedata, setMessagedata] = useState({
+        message: null,
+        reply: null
+    });
 
     // Stores the list of general forum posts from the database
     useEffect(() => {
@@ -38,6 +45,20 @@ export default function UserGeneralForum() {
 
         getGeneralForumPosts(); 
     }, []);
+
+    
+    const createPost = async() => {
+        if (!messagedata.message) {
+            alert("Please input something into the reply field.");
+            return;
+        }
+
+        const { error } = await supabase
+            .from('general_forum')
+            .insert({ user_id: "73fd19d1-5665-479b-8500-5ea691b0e1be", content: messagedata.message, reply_to: messagedata.reply });
+
+        window.location.reload();
+    }
 
 
     // Links posts with their replies
@@ -84,8 +105,8 @@ export default function UserGeneralForum() {
                 <div className="p-4 flex-grow-1">
                     <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
                     <div className="mb-2">
-                        <textarea className="form-control p-2 mb-2" placeholder="Create new discussion" />
-                        <button className="w-full btn btn-primary">Post New Discussion</button>
+                        <textarea id="newDiscussion" className="form-control p-2 mb-2" placeholder="Create new discussion..." onChange={(e) => setMessagedata({ ...messagedata, message: e.target.value })} />
+                        <button className="w-full btn btn-primary" onClick={createPost}>Post New Discussion</button>
                     </div>
 
 

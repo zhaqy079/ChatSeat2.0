@@ -38,9 +38,8 @@ export const fetchLocations = async () => {
     return data;
 };
 
-
 // Supabase delete user
-export const deleteUser = async (userID, navigate) => {
+const deleteUser = async (userID, navigate) => {
     const confirmed = window.confirm("Are you sure you want to delete this user? \n There is no way to undo this action. ");
 
     if (confirmed) {
@@ -66,6 +65,11 @@ export const deleteUser = async (userID, navigate) => {
 
 };
 
+// Logic to make/remove coordinator and admin privileges
+const updatePrivileges = (e) => {
+    e.preventDefault();
+    console.log("In da loop!!!");
+};
 
 
 export default function AdminManageUser() {
@@ -111,7 +115,7 @@ export default function AdminManageUser() {
                 <div className="p-4 flex-grow-1">
                     <h4>Manage User</h4>
                     {!user.profile_id ? <h3 className="text-center">Loading User Data.....</h3>
-                        : <form>
+                        : <form onSubmit={updatePrivileges}>
                             <hr />
                             <h5>User Details: </h5>
                             <div>Name: {user.first_name} {user.last_name}</div>
@@ -145,7 +149,7 @@ export default function AdminManageUser() {
                                                 </td>
                                                 <td className="text-center">
                                                     <div className="justify-content-center">
-                                                        <input type="checkbox" className="" defaultChecked={(user.coordinator_profiles.some(coord_location => coord_location.location_id === location.location_id))} />
+                                                        <input type="checkbox" id={location.location_id} defaultChecked={(user.coordinator_profiles.some(coord_location => coord_location.location_id === location.location_id))} />
                                                     </div>
                                                 </td>
                                             </tr>
@@ -156,12 +160,12 @@ export default function AdminManageUser() {
                             <hr />
                             <h5>Admin Privileges</h5>
                             <label>
-                                Admin: <input type="checkbox" name="admin" defaultChecked={!(user.admin_profiles === null)} />
+                                Admin: <input type="checkbox" id="admin" defaultChecked={!(user.admin_profiles === null)} />
                             </label>
                             <hr/>
                             <div className="d-flex align-items-center">
                                 <div className="ms-auto">
-                                    <button type="button" className="btn btn-info me-2 col">Update Privileges</button>
+                                    <button type="submit" className="btn btn-info me-2 col">Update Privileges</button>
                                     <button type="button" className="btn btn-danger fw-bold col" onClick={ () => deleteUser(user.profile_id, navigate) }>DELETE USER</button>
                                 </div>
                             </div>
