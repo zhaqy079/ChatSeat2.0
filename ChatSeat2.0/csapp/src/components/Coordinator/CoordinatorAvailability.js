@@ -112,7 +112,7 @@ export default function CoordinatorAvailability() {
                         ))}
                     </select>
 
-                    <div className="calendar-size">
+                    <div className="bg-white p-2 rounded shadow">
                         <FullCalendar
                             plugins={[timeGridPlugin]}
                             initialView="timeGridWeek"

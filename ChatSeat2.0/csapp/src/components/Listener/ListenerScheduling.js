@@ -333,7 +333,7 @@ export default function ListenerScheduling() {
                                             ))}
                                         </select>
 
-                                        <div className="calendar-size">
+                                        <div className="bg-white p-2 rounded shadow">
                                             <FullCalendar
                                                 plugins={[timeGridPlugin]}
                                                 initialView="timeGridWeek"
@@ -368,7 +368,7 @@ export default function ListenerScheduling() {
                                             ))}
                                         </select>
 
-                                        <div className="calendar-size">
+                                        <div className="bg-white p-2 rounded shadow">
                                             <FullCalendar
                                                 plugins={[timeGridPlugin]}
                                                 initialView="timeGridWeek"
