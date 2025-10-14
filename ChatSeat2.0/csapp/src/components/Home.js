@@ -1,9 +1,13 @@
-﻿import { useEffect } from "react";
+﻿import { useEffect, useState } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import Seat from "../assets/Seat.JPG";
+import HomePMBtn from "../components/HomePMBtn";
+import HomePMForm from "../components/HomePMForm";
 
 export default function Home() {
+    const [showForm, setShowForm] = useState(false);
+
     useEffect(() => {
         Aos.init({ duration: 800, once: false, mirror: true });
     }, []);
@@ -93,6 +97,29 @@ export default function Home() {
                         style={{ maxWidth: 420 }}
                     />
                 </div>
+
+                {/*PM btn feature*/}
+                <div className="d-flex justify-content-end">
+                    <HomePMBtn onOpen={() => setShowForm(true)} />
+                </div>
+                {showForm && (
+                    <div className="modal fade show d-block" tabIndex={-1} role="dialog" style={{ background: "rgba(0,0,0,0.4)" }}>
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Tell Us Your Story</h5>
+                                    <button type="button" className="btn-close" onClick={() => setShowForm(false)}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <HomePMForm
+                                        onClose={() => setShowForm(false)}
+                                        onSent={() => alert("Message sent! Thank you.")}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Closing */}
                 <div className="p-4 rounded-3 text-center shadow-sm bg-light" data-aos="fade-up">

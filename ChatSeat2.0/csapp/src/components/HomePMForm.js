@@ -28,17 +28,17 @@ export default function PMForm({ onClose, onSent }) {
     return (
         <form onSubmit={submit} className="p-3">
             <div className="mb-3">
-                <label className="form-label">Your name: </label>
+                <label className="form-label">Your name </label>
                 <input className="form-control" value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })} required />
             </div>
             <div className="mb-3">
-                <label className="form-label">Email (required): </label>
+                <label className="form-label">Email (required)</label>
                 <input type="email" className="form-control" value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             </div>
             <div className="mb-3">
-                <label className="form-label">Message: </label>
+                <label className="form-label">Message</label>
                 <textarea className="form-control" rows={4} value={form.content}
                     onChange={(e) => setForm({ ...form, content: e.target.value })} required />
             </div>
