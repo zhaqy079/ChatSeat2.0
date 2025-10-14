@@ -33,6 +33,8 @@ async function resolvePost(feedbackID) {
     if (profileError) {
         throw new Error("Failed to resolve post: " + profileError.message);
     }
+
+    window.location.reload();
 }
 
 // Function call to unresolve a post
@@ -46,11 +48,19 @@ async function unresolvePost(feedbackID) {
     if (profileError) {
         throw new Error("Failed to unresolve post: " + profileError.message);
     }
+
+    window.location.reload();
 }
 
 export default function AdminFeedback() {
     const [feedbacklist, setFeedbacklist] = useState([]);
-    const [searchdata, setSearchdata] = useState({resolveState: 'unresolved'});
+    const [searchdata, setSearchdata] = useState(() => {
+        return sessionStorage.getItem('feedback') || 'unresolved';
+    });
+
+    useEffect(() => {
+        sessionStorage.setItem('feedback', searchdata);
+    }, [searchdata]);
 
     // Stores the list of feedback posts from the database
     useEffect(() => {
@@ -70,9 +80,9 @@ export default function AdminFeedback() {
     // Filters posts according to inputted criteria
     const filteredFeedbackposts = feedbacklist
         .filter((post) => (
-            searchdata.resolveState === "all" || searchdata.resolveState === ""
+            searchdata === "all" || searchdata === ""
                 ? true
-                : (searchdata.resolveState === "unresolved" ? post.resolved_at === null : post.resolved_at !== null)
+                : (searchdata === "unresolved" ? post.resolved_at === null : post.resolved_at !== null)
         ));
 
 
@@ -87,7 +97,7 @@ export default function AdminFeedback() {
 
                     {/* Dropdown menu to refine posts displayed */}
                     <div className="mb-2">
-                        <select value={searchdata.resolveState} onChange={(e) => setSearchdata({...searchdata, resolveState:e.target.value })}>
+                        <select value={searchdata} onChange={(e) => setSearchdata(e.target.value)}>
                             <option value="unresolved" >Unresolved</option>
                             <option value="resolved">Resolved</option>
                             <option value="all">All Posts</option>

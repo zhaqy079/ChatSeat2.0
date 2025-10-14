@@ -242,6 +242,7 @@ export default function AdminViewUsers() {
     useEffect(() => {
         sessionStorage.setItem('role', searchrole);
     }, [searchrole]);
+
     // Stores the list of users from the database
     useEffect(() => {
         const getUsers = async () => {
