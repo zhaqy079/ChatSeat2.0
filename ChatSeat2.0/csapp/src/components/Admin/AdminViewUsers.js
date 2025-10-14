@@ -1,7 +1,6 @@
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect} from "react";
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -48,6 +47,8 @@ async function deactivateUser(userID) {
     if (profileError) {
         throw new Error("Failed to deactivate user: " + profileError.message);
     }
+
+    window.location.reload();
 }
 
 // Function call to reactivate a user
@@ -61,6 +62,8 @@ async function reactivateUser(userID) {
     if (profileError) {
         throw new Error("Failed to reactivate user: " + profileError.message);
     }
+
+    window.location.reload();
 }
 
 
@@ -232,8 +235,13 @@ function adminTable(userlist) {
 
 export default function AdminViewUsers() {
     const [userlist, setUserlist] = useState([]);
-    const [searchrole, setSearchrole] = useState("pending");
+    const [searchrole, setSearchrole] = useState(() => {
+        return sessionStorage.getItem('role') || 'pending';
+    });
 
+    useEffect(() => {
+        sessionStorage.setItem('role', searchrole);
+    }, [searchrole]);
     // Stores the list of users from the database
     useEffect(() => {
         const getUsers = async () => {
