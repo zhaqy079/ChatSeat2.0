@@ -404,3 +404,37 @@ h2.intro-title, h3.intro-title, p.intro-title {
     }
 }
 
+.pm-alert {
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    background-color: #A8E4F2; 
+    color: #003366;
+    font-weight: 600;
+    border-radius: 12px;
+    text-align: center;
+    padding: 1rem 1.5rem;
+    width: 90%;
+    max-width: 420px;
+    z-index: 1100;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 3s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+
+    10%, 90% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -55%);
+    }
+}

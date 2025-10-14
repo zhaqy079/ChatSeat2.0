@@ -7,10 +7,19 @@ import HomePMForm from "../components/HomePMForm";
 
 export default function Home() {
     const [showForm, setShowForm] = useState(false);
+    const [messageSent, setMessageSent] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         Aos.init({ duration: 800, once: false, mirror: true });
     }, []);
+
+    useEffect(() => {
+        if (messageSent || errorMessage) {
+            const timer = setTimeout(() => setMessageSent(false), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [messageSent, errorMessage]);
 
     return (
         <div className="bg-white">
@@ -106,10 +115,22 @@ export default function Home() {
                     <div className="form-container-floating">
                         <HomePMForm
                             onClose={() => setShowForm(false)}
-                            onSent={() => alert("Message sent! Thank you.")}
+                            onSent={() => setMessageSent(true)}
+                            onError={(msg) => setErrorMessage(msg)}
                         />
                     </div>
                    
+                )}
+                {messageSent && (
+                    <div className="pm-alert" role="alert">
+                         Message sent! Thank you for reaching out.
+                    </div>
+                )}
+
+                {errorMessage && (
+                    <div className="pm-alert bg-danger-subtle" role="alert">
+                        {errorMessage}
+                    </div>
                 )}
 
                 {/* Closing */}
