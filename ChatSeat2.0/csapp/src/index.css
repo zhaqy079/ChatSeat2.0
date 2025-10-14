@@ -438,3 +438,66 @@ h2.intro-title, h3.intro-title, p.intro-title {
         transform: translate(-50%, -55%);
     }
 }
+
+/* PM card*/
+.pm-card {
+    background-color: white;
+    border-top: 4px solid #56c0dd;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 10px;
+    transition: box-shadow 0.3s ease;
+}
+
+    .pm-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+    .pm-card .card-body {
+        padding: 1.3rem 1.8rem; 
+    }
+    .pm-card h6 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #003366; 
+    }
+
+    .pm-card p {
+        font-size: 0.875rem;
+        color: #4b5563;
+        margin-bottom: 0.25rem;
+    }
+
+.pm-btn-reply {
+    background-color: #C8E6C9; 
+    color: #1B5E20;
+    border: 10px;
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    border-radius: 100px;
+    font-weight: 400;
+    border: none;
+}
+
+    .pm-btn-reply:hover {
+        background-color: #A5D6A7;
+        transform: translateY(-1px);
+    }
+
+.pm-btn-mark {
+    background-color: #FFF3B0;
+    color: #4b5563;
+    border: 10px;
+    border-radius: 100px;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    font-weight: 400;
+    border: none;
+}
+
+    .pm-btn-mark:hover {
+        background-color: #FFE680;
+        transform: translateY(-1px);
+    }

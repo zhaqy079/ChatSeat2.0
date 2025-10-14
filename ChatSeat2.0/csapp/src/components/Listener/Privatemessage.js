@@ -90,12 +90,12 @@ export default function PrivateMessage() {
                 {messages.length === 0 && (
                     <div className="alert alert-info">No new messages</div>
                 )}
-                <div className="col-xl-8 ms-auto">
+                <div className="col-xl-8 ps-3">
                     {messages.map((m) => (
-                        <div key={m.message_id} className="card shadow-sm mb-3 inbox-card">
+                        <div key={m.message_id} className="pm-card">
                             <div className="card-body">
                                 <div className="d-flex justify-content-between">
-                                    <h6 className="mb-1 text-primary">{m.name || "Anonymous"}</h6>
+                                    <h6 className="mb-2">{m.name}</h6>
                                     <small className="text-muted">
                                         {new Date(m.created_at).toLocaleString()}
                                     </small>
@@ -113,9 +113,9 @@ export default function PrivateMessage() {
                                         sending={loading}
                                     />
                                 ) : (
-                                    <div className="d-flex gap-2">
+                                        <div className="d-flex justify-content-end gap-2 mt-3">
                                         <button
-                                            className="btn btn-success"
+                                            className="pm-btn pm-btn-reply"
                                             disabled={!m.email}
                                             onClick={() => setReplyFor(m)}
                                             title={m.email ? "Reply by email" : "No email to reply"}
@@ -123,7 +123,7 @@ export default function PrivateMessage() {
                                             Reply
                                         </button>
                                         <button
-                                            className="btn btn-warning"
+                                            className="pm-btn pm-btn-mark"
                                             onClick={() => markAsRead(m.message_id)}
                                         >
                                             Mark as Read
