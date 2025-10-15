@@ -32,6 +32,8 @@ async function deactivateLocation(locationID) {
     if (profileError) {
         throw new Error("Failed to deactivate location: " + profileError.message);
     }
+
+    window.location.reload();
 }
 
 // Function call to reactivate a location
@@ -45,6 +47,8 @@ async function reactivateLocation(locationID) {
     if (profileError) {
         throw new Error("Failed to reactivate location: " + profileError.message);
     }
+
+    window.location.reload();
 }
 
 export default function AdminManageLocations() {

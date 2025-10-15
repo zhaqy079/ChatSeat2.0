@@ -28,10 +28,6 @@ export const fetchAllGeneralForumPosts = async () => {
 export default function UserGeneralForum() {
     const [generalforumlist, setGeneralforumlist] = useState([]);
     const [activePostId, setActivePostId] = useState(null);
-    const [messagedata, setMessagedata] = useState({
-        message: null,
-        reply: null
-    });
     const replyRef = useRef(null);
     const postRef = useRef(null);
 
