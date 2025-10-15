@@ -311,3 +311,210 @@ h2.intro-title, h3.intro-title, p.intro-title {
     background-color: #D9EAFD;
 }
 
+/*PM feature*/
+.chat-btn {
+    background-color: #A8E4F2;
+    color: #003366;
+    border: 10px;
+    border-radius: 100px;
+    padding: 8px 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .chat-btn:hover {
+        background-color: #8dd4e8;
+    }
+
+    .chat-btn img {
+        width: 24px;
+        height: 24px;
+    }
+
+.chat-btn-floating {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 1050;
+}
+
+.pm-form-container {
+    background-color: #f0fbff; 
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 24px;
+    border-left: 6px solid #A8E4F2; 
+}
+
+    .pm-form-container label, .reply-label  {
+        color: #003366;
+        font-weight: 600;
+    }
+
+    .pm-form-container .form-control {
+        border-radius: 12px;
+        border: 1px solid #A8E4F2;
+        box-shadow: none;
+    }
+
+        .pm-form-container .form-control:focus {
+            border-color: #56c0dd;
+            box-shadow: 0 0 0 0.15rem rgba(86,192,221,0.25);
+        }
+
+    .pm-form-container .btn-info, .form-send-btn {
+        background-color: #A8E4F2;
+        color: #003366;
+        border: 10px;
+        padding: 0.5rem 1rem;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        border-radius: 100px;
+        font-weight: 400;
+        border: none;
+    }
+
+        .pm-form-container .btn-info:hover {
+            background-color: #8dd4e8;
+        }
+
+    .pm-form-container .btn-outline-secondary {
+        border-radius: 100px;
+    }
+
+.form-container-floating {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    z-index: 1050;
+    padding: 2rem;
+    width: 100%;
+    max-width: 550px; 
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.pm-alert {
+    position: fixed; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    background-color: #A8E4F2; 
+    color: #003366;
+    font-weight: 600;
+    border-radius: 12px;
+    text-align: center;
+    padding: 1rem 1.5rem;
+    width: 90%;
+    max-width: 420px;
+    z-index: 1100;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 3s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+
+    10%, 90% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -55%);
+    }
+}
+
+/* PM card*/
+.pm-card {
+    background-color: white;
+    border-top: 4px solid #56c0dd;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 10px;
+    transition: box-shadow 0.3s ease;
+}
+
+    .pm-card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+    .pm-card .card-body {
+        padding: 1.3rem 1.8rem; 
+    }
+    .pm-card h6 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #003366; 
+    }
+
+    .pm-card p {
+        font-size: 0.875rem;
+        color: #4b5563;
+        margin-bottom: 0.25rem;
+    }
+
+.pm-btn-reply {
+    background-color: #C8E6C9; 
+    color: #1B5E20;
+    border: 10px;
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    border-radius: 100px;
+    font-weight: 400;
+    border: none;
+}
+
+    .pm-btn-reply:hover {
+        background-color: #A5D6A7;
+        transform: translateY(-1px);
+    }
+
+.form-cancel-btn {
+    background-color: #CCCCCC;
+    color: black;
+    border: 10px;
+    padding: 0.3rem 1rem;
+    margin-left: 0.3rem;
+    margin-right: 0.5rem;
+    border-radius: 100px;
+    font-weight: 400;
+    border: none;
+}
+
+
+.pm-btn-mark {
+    background-color: #FFF3B0;
+    color: #4b5563;
+    border: 10px;
+    border-radius: 100px;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    font-weight: 400;
+    border: none;
+}
+
+    .pm-btn-mark:hover {
+        background-color: #FFE680;
+        transform: translateY(-1px);
+    }
