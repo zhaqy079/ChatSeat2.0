@@ -48,8 +48,8 @@ const deleteUser = async (userID, navigate) => {
             .delete()
             .eq('profile_id', userID)
 
-        if (profError) {
-            console.log("User profile response: " + profError);
+        if (profError.error) {
+            console.log(profError);
             alert("Failed to completely delete user.");
             return;
         }
@@ -74,7 +74,7 @@ export default function AdminManageUser() {
     const { id } = useParams();
 
     // Logic to make/remove coordinator and admin privileges
-    const updatePrivileges = (event) => {
+    const updatePrivileges = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
         const isAdmin = formData.get('admin') === 'on';
@@ -84,33 +84,27 @@ export default function AdminManageUser() {
 
 
         if (isAdmin === (user.admin_profiles === null)) {
-            console.log("In admin loop!");
-
-            updateAdmin(isAdmin)
+            await updateAdmin(isAdmin)
         }
 
-        locationlist.map((location) => {
-            console.log(location.location_id)
-            const diff = user.coordinator_profiles.some(coord_location => coord_location.location_id === location.location_id);
+        // Loops through locations for promotions/demotions
+        for (const location of locationlist) {
+            const currentCoordinator = user.coordinator_profiles.some(
+                coord => coord.location_id === location.location_id
+            );
+            const coordinatorState = updateLocationIds.includes(location.location_id);
 
-            if (updateLocationIds.includes(location.location_id)) {
-                console.log("Has been checked.")
-                if (!diff) {
-                    console.log("Difference to user data!");
-
-                    updateCoord(true, location.location_id)
-                }
-            } else {
-                console.log("Unchecked.")
-                if (diff) {
-                    console.log("Difference to user data!");
-
-                    updateCoord(false, location.location_id)
-                }
+            if (coordinatorState && !currentCoordinator) {
+                await updateCoord(true, location.location_id); // promote to coordinator
+            } else if (!coordinatorState && currentCoordinator) {
+                await updateCoord(false, location.location_id); // remove coordinator
             }
-        })
+        }
+
+        window.location.reload();
     };
 
+    // Updates admin to correct state
     const updateAdmin = async (state) => {
         var adminError = '';
         if (state === true) {
@@ -120,22 +114,19 @@ export default function AdminManageUser() {
                     admin_id: user.profile_id,
                     approved_by: "73fd19d1-5665-479b-8500-5ea691b0e1be"
                 })
-
-            console.log("User admin added.");
         } else {
             adminError = await supabase
                 .from('admin_profiles')
                 .delete()
                 .eq('admin_id', user.profile_id)
-
-            console.log("User admin removed.");
         }
 
-        if (adminError) {
+        if (adminError.error) {
             console.log("User admin response: " + adminError);
         }
     }
 
+    // Updates coord to correct state
     const updateCoord = async (state, locationID) => {
         var coordError = '';
         if (state === true) {
@@ -146,18 +137,14 @@ export default function AdminManageUser() {
                     location_id: locationID,
                     approved_by: "73fd19d1-5665-479b-8500-5ea691b0e1be"
                 })
-
-            console.log("User admin added to location: " + locationID);
         } else {
             coordError = await supabase
                 .from('coordinator_profiles')
                 .delete()
                 .eq('location_id', locationID, 'coordinator_id', user.profile_id)
-
-            console.log("User coord removed for location: " + locationID);
         }
 
-        if (coordError) {
+        if (coordError.error) {
             console.log("User coord response: " + coordError + ", for location: " + locationID);
         }
     }

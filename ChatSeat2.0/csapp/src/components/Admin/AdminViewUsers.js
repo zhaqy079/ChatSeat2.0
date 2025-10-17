@@ -13,6 +13,7 @@ const supabase = createClient(
 export const fetchAllUsers = async () => {
     const { data, error } = await supabase.from("user_profiles")
         .select("*, coordinator_profiles(*, venue_locations(*)), admin_profiles(*)")
+        .neq('role', 'deleted')
         .order('first_name', { ascending: true });
 
     if (error) {
