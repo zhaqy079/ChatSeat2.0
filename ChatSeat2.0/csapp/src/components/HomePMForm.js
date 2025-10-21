@@ -23,6 +23,20 @@ export default function HomePMForm({ onClose, onSent, onError }) {
         }]);
         setLoading(false);
 
+        // Auto reply
+        // after successful insert
+        if (form.email?.trim()) {
+            await supabase.functions.invoke("send-reply", {
+                body: {
+                    to: form.email.trim(),
+                    subject: "Thanks for reaching out to ChatSeat",
+                    text: `Hi ${form.name || "there"},
+                    \n\nThanks for contacting ChatSeat. Our Listener team will review your message and reply soon.
+                    \n\nWarm regards,\nChatSeat`
+                }
+            });
+        }
+
         if (error) {
             console.error("Message send error:", error);
             onError?.("Failed to send message. Please try again later.");
