@@ -10,10 +10,38 @@ export default function HomePMForm({ onClose, onSent, onError }) {
     const [form, setForm] = useState({ name: "", email: "", content: "" });
     const [loading, setLoading] = useState(false);
 
+    // PM message front-end maximium 3 times limitation
+    const DAILY_LIMIT = 3;
+    function dailySendMessage() {
+        const key = "dailyPM";
+        const today = new Date().toISOString().slice(0, 10);
+        let s = {};
+        try {
+            s = JSON.parse(localStorage.getItem(key)) || {};
+        } catch { }
+        if (s.date !== today) s = { date: today, count: 0 };
+        return {
+            ok: s.count < DAILY_LIMIT,
+            state: s,
+            key
+        };
+    }
+    function sendCount(state, key) {
+        const today = new Date().toISOString().slice(0, 10);
+        const next = { date: today, count: (state?.count || 0) + 1 };
+        localStorage.setItem(key, JSON.stringify(next));
+    }
+
+    const gate = dailySendMessage();
+    if (!gate.ok) {
+        onError?.("You’ve reached today’s limit (3 messages) today.\n Please try again tomorrow.");
+        return;
+    }
+
     const submit = async (e) => {
         e.preventDefault();
 
-        // Validation 
+        // PM message send validation 
         if (!form.name.trim() || !form.content.trim()) return;
         setLoading(true);
         const { error } = await supabase.from("inbox_messages").insert([{
@@ -30,9 +58,8 @@ export default function HomePMForm({ onClose, onSent, onError }) {
                 body: {
                     to: form.email.trim(),
                     subject: "Thanks for reaching out to ChatSeat",
-                    text: `Hi ${form.name || "there"},
-                    \n\nThanks for contacting ChatSeat. Our Listener team will review your message and reply soon.
-                    \n\nWarm regards,\nChatSeat`
+                    text: `\n\nThanks for contacting ChatSeat. \nOur Listener will review your message and reply soon.`
+                    
                 }
             });
         }
@@ -43,6 +70,7 @@ export default function HomePMForm({ onClose, onSent, onError }) {
             return;
         }
 
+        sendCount(gate.state, gate.key);
         onSent?.();
         onClose?.();
     };
