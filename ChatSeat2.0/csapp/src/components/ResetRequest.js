@@ -13,7 +13,9 @@ export default function ResetRequest() {
     // Function to handle password reset request
     const handleResetRequest = async (e) => {
         e.preventDefault();
-        // Supabase part may need update 
+
+        document.getElementById("resetSubmit").disabled = true;
+
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: "https://chatseats.com.au/reset-password",
         });
@@ -23,6 +25,8 @@ export default function ResetRequest() {
                 ? "Error: " + error.message
                 : "Password reset link sent to your email."
         );
+
+        document.getElementById("resetSubmit").disabled = false;
     };
 
     return (
@@ -51,6 +55,7 @@ export default function ResetRequest() {
                             <button
                                 type="submit"
                                 className="btn w-100 fw-bold text-white login-btn"
+                                id="resetSubmit"
                             >
                                 Send Reset Link
                             </button>

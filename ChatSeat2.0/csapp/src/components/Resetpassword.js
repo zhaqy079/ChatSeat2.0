@@ -19,8 +19,8 @@ const schema = Yup.object().shape({
 });
 
 export default function ResetPassword() {
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
+    const [newPassword, setNewPassword] = useState("");
+    const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
     // Effect to handle password reset link from URL hash
@@ -57,65 +57,29 @@ export default function ResetPassword() {
     };
 
     return (
-        <div className="min-vh-100 d-flex flex-column">
-            <div className="flex-grow-1 d-flex align-items-center justify-content-center login-page">
-                <div className="bg-white shadow p-4 p-md-5 rounded-3">
-                    <h2 className="fw-bold text-center mb-4 intro-title warning">
-                        Reset Password
-                    </h2>
-
-                    <form
-                        onSubmit={handleResetRequest} noValidate>
-
-                        <div className="mb-4">
-                            <input
-                                className="form-control p-3"
-                                placeholder="Enter your password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label fw-semibold">Password</label>
-                            <div className="position-relative">
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    className="form-control pe-5"
-                                    {...register("password")}
-                                />
-                                <button
-                                    type="button"
-                                    className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0"
-                                    style={{ color: "#003366", textDecoration: "none" }}
-                                    onClick={() => setShowPassword((s) => !s)}
-                                >
-                                    {showPassword ? "Hide" : "Show"}
-                                </button>
-                            </div>
-                            <p className="text-danger small">{errors.password?.message?.split("\n").map((line, idx) => (
-                                <div key={idx}>{line}</div>
-                            ))}</p>
-                        </div>
-
-                        <div className="text-center mt-4">
-                            <button
-                                type="submit"
-                                className="btn w-100 fw-bold text-white login-btn"
-                            >
-                                Reset Password
-                            </button>
-                        </div>
-                        <div className="text-center mt-4">
-                            <a href="/login" className="btn btn-link p-0">
-                                Back to Login
-                            </a>
-                        </div>
+        <>
+            <div className="min-h-screen flex justify-center items-center bg-gray-100">
+                <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+                    <h2 className="text-2xl font-bold mb-4">Reset Password</h2>
+                    {message && <p className="mb-4 text-red-500">{message}</p>}
+                    <form onSubmit={handleReset}>
+                        <input
+                            type="password"
+                            placeholder="Enter new password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded mb-4"
+                            required
+                        />
+                        <button
+                            type="submit"
+                            className="w-full bg-blue-600 text-white py-2 rounded"
+                        >
+                            Reset Password
+                        </button>
                     </form>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
-
