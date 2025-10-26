@@ -9,7 +9,6 @@ const supabase = createClient(
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-
 // Requests a user from the database
 export const fetchUser = async (userID) => {
     const { data, error } = await supabase.from("user_profiles")
@@ -95,10 +94,34 @@ export default function AdminManageUser() {
             const coordinatorState = updateLocationIds.includes(location.location_id);
 
             if (coordinatorState && !currentCoordinator) {
-                await updateCoord(true, location.location_id); // promote to coordinator
+                await updateCoord(true, location.location_id); // Add coordinator
             } else if (!coordinatorState && currentCoordinator) {
-                await updateCoord(false, location.location_id); // remove coordinator
+                await updateCoord(false, location.location_id); // Remove coordinator
             }
+        }
+
+        // User role update
+        var roleError = '';
+        if (isAdmin === true && user.role !== 'admin') {
+            roleError = await supabase
+                .from('user_profiles')
+                .update({ role: 'admin' })
+                .eq('profile_id', user.profile_id)
+        } else if (updateLocationIds.length > 0 && user.role !== 'coordinator') {
+            roleError = await supabase
+                .from('user_profiles')
+                .update({ role: 'coordinator' })
+                .eq('profile_id', user.profile_id)
+        } else if (user.role !== 'listener') {
+            roleError = await supabase
+                .from('user_profiles')
+                .update({ role: 'listener' })
+                .eq('profile_id', user.profile_id)
+        }
+
+
+        if (roleError.error) {
+            console.log("User role update response: " + roleError);
         }
 
         window.location.reload();
@@ -112,7 +135,7 @@ export default function AdminManageUser() {
                 .from('admin_profiles')
                 .insert({
                     admin_id: user.profile_id,
-                    approved_by: "73fd19d1-5665-479b-8500-5ea691b0e1be"
+                    approved_by: sessionStorage.getItem('user_id')
                 })
         } else {
             adminError = await supabase
@@ -135,7 +158,7 @@ export default function AdminManageUser() {
                 .insert({
                     coordinator_id: user.profile_id,
                     location_id: locationID,
-                    approved_by: "73fd19d1-5665-479b-8500-5ea691b0e1be"
+                    approved_by: sessionStorage.getItem('user_id')
                 })
         } else {
             coordError = await supabase
@@ -176,7 +199,7 @@ export default function AdminManageUser() {
         };
 
         getUser(); 
-    }, []);
+    }, );
 
     return (
         <div>

@@ -8,7 +8,6 @@ const supabase = createClient(
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-
 // Requests a list of all general forum posts from the database
 export const fetchAllGeneralForumPosts = async () => {
     const { data, error } = await supabase.from("general_forum")
@@ -21,7 +20,6 @@ export const fetchAllGeneralForumPosts = async () => {
 
     return data;
 };
-
 
 
 
@@ -54,7 +52,11 @@ export default function UserGeneralForum() {
 
         const { error } = await supabase
             .from('general_forum')
-            .insert({ user_id: "73fd19d1-5665-479b-8500-5ea691b0e1be", content: message, reply_to: reply });
+            .insert({
+                user_id: sessionStorage.getItem('user_id'),
+                content: message,
+                reply_to: reply
+            });
 
         window.location.reload();
     }
@@ -99,12 +101,12 @@ export default function UserGeneralForum() {
                             await createPost({ message, reply });
                         }}>
                             <textarea
-                                className="form-control"
+                                className="form-control border-2"
                                 placeholder="Write your reply..."
                                 ref={replyRef}
                             />
                             <button type="submit" className="btn btn-primary mt-2">
-                                Post
+                                Post Reply
                             </button>
                         </form>
                     )}
@@ -131,10 +133,11 @@ export default function UserGeneralForum() {
                         const reply = null;
                         await createPost({ message, reply });
                     }}>
-                        <textarea id="newDiscussion" className="form-control p-2 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef}/>
+                        <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef}/>
                         <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
                     </form>
 
+                    <hr/>
 
                     { // Forum display logic, if no forum posts display special message otherwise display all posts
                         !generalforumlist.length > 0 ? (

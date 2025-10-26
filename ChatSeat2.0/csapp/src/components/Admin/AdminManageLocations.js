@@ -1,6 +1,6 @@
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -111,13 +111,12 @@ export default function AdminManageLocations() {
                                             <td>
                                                 <>
                                                     {/* Displays a variety of different buttons depending on the location */}
-                                                    <button type="button" className="btn btn-secondary me-2">More Actions</button>
+                                                    <button type="button" className="btn btn-secondary me-2">Manage</button>
                                                     {location.inactive_at === null ? (
                                                         <button type="button" className="btn btn-warning me-2" onClick={() => deactivateLocation(location.location_id) }>Deactivate</button>
                                                     ) : (
                                                         <button type="button" className="btn btn-info me-2" onClick={() => reactivateLocation(location.location_id) }>Reactivate</button>
                                                     )}
-                                                    <button type="button" className="btn btn-danger fw-bold">DELETE</button>
                                                 </>
                                             </td>
                                         </tr>
