@@ -24,8 +24,8 @@ export default function CoordinatorHelp() {
 
     const fetchImages = async () => {
         const { data, error } = await supabase.storage
-            .from("coordinator-images")
-            .list("", { limit: 100, sortBy: { column: "created_at", order: "desc" } });
+            .from("coordinator-resources")
+            .list("public", { limit: 100, sortBy: { column: "created_at", order: "desc" } }); // list only public folder
 
         if (error) {
             console.error("Failed to fetch images:", error);
@@ -35,8 +35,8 @@ export default function CoordinatorHelp() {
         const signed = await Promise.all(
             data.map(async (file) => {
                 const { data: signedUrl } = await supabase.storage
-                    .from("coordinator-images")
-                    .createSignedUrl(file.name, 300);
+                    .from("coordinator-resources")
+                    .createSignedUrl(`public/${file.name}`, 300); // ADD 'public/' prefix
                 return { name: file.name, url: signedUrl?.signedUrl };
             })
         );
@@ -49,10 +49,10 @@ export default function CoordinatorHelp() {
         if (!file) return;
 
         setUploading(true);
-        const fileName = `${Date.now()}_${file.name}`;
+        const fileName = `public/${Date.now()}_${file.name}`;
 
         const { error } = await supabase.storage
-            .from("coordinator-images")
+            .from("coordinator-resources")
             .upload(fileName, file);
 
         if (error) {
@@ -64,12 +64,14 @@ export default function CoordinatorHelp() {
         }
 
         setUploading(false);
+
+        e.target.value = null;
     };
 
     const handleDelete = async (fileName) => {
         const { error } = await supabase.storage
-            .from("coordinator-images")
-            .remove([fileName]);
+            .from("coordinator-resources")
+            .remove([`public/${fileName}`]); // ADD 'public/' prefix
 
         if (error) {
             console.error(error);
@@ -209,11 +211,14 @@ export default function CoordinatorHelp() {
                             {files.map((file) => (
                                 <div key={file.name} className="col-12 col-md-4">
                                     <div className="p-2 border rounded shadow-sm bg-white">
-                                        <img src={file.url} alt={file.name} className="mb-2 w-full h-auto" />
-                                        <p className="text-sm break-words">{file.name}</p>
+                                        <div className="image-card">
+                                            <img src={file.url} alt={file.name} className="image" />
+                                        </div>
+
+                                        <p className="file-name">{file.name}</p>
                                         <div className="flex space-x-2">
-                                            <a href={file.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">View</a>
-                                            <button onClick={() => handleDelete(file.name)} className="text-red-600 hover:underline">Delete</button>
+                                            <a href={file.url} target="_blank" rel="noopener noreferrer" className="btn btn-primary me-2">View</a>
+                                            <button onClick={() => handleDelete(file.name)} className="btn btn-danger">Delete</button>
                                         </div>
                                     </div>
                                 </div>
