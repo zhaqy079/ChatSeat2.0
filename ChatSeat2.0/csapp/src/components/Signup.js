@@ -88,12 +88,14 @@ export default function Signup() {
     // Function to handle form submission and it will be called when the form is submitted
     const onSubmit = async (data) => {
         try {
+            document.getElementById("signupSubmit").disabled = true;
             await signupUser(data);
             toast.success("Signup successful!");
             navigate("/Login");
         } catch (err) {
             console.error("Signup error: ", err.message);
             toast.error("Signup failed: " + err.message);
+            document.getElementById("signupSubmit").disabled = false;
         }
     };
 
@@ -172,6 +174,7 @@ export default function Signup() {
                         <button
                             type="submit"
                             className="btn w-100 fw-bold text-white mb-3 login-btn"
+                            id="signupSubmit"
                         >
                             Sign Up
                         </button>

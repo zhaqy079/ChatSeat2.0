@@ -75,6 +75,7 @@ export default function AdminManageUser() {
     // Logic to make/remove coordinator and admin privileges
     const updatePrivileges = async (event) => {
         event.preventDefault();
+        document.getElementById("updateSubmit").disabled = true;
         const formData = new FormData(event.target);
         const isAdmin = formData.get('admin') === 'on';
         const updateLocationIds = locationlist
@@ -259,7 +260,7 @@ export default function AdminManageUser() {
                             <hr/>
                             <div className="d-flex align-items-center">
                                 <div className="ms-auto">
-                                    <button type="submit" className="btn btn-info me-2 col">Update Privileges</button>
+                                    <button type="submit" className="btn btn-info me-2 col" id="updateSubmit">Update Privileges</button>
                                     <button type="button" className="btn btn-danger fw-bold col" onClick={ () => deleteUser(user.profile_id, navigate) }>DELETE USER</button>
                                 </div>
                             </div>
