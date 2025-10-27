@@ -28,7 +28,7 @@ import AdminFeedback from "./components/Admin/AdminFeedback";
 
 import CoordinatorAppointments from "./components/Coordinator/CoordinatorAppointments";
 import CoordinatorAvailability from "./components/Coordinator/CoordinatorAvailability";
-import CoordinatorChatroom from "./components/Coordinator/CoordinatorAppointments";
+import CoordinatorChatroom from "./components/Coordinator/CoordinatorChatroom";
 import CoordinatorListenerChatroom from "./components/Coordinator/CoordinatorListenerChatroom";
 import CoordinatorAddListener from "./components/Coordinator/CoordinatorAddListener"; 
 import CoordinatorHelp from "./components/Coordinator/CoordinatorHelp";

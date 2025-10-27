@@ -21,7 +21,9 @@ export default function AdminSchedulingSetting() {
     const [locations, setLocations] = useState([]); // locations are saved here so the DB can be updated
     const [newLocation, setNewLocation] = useState("");
     const [selectedWeek, setSelectedWeek] = useState("");
-    const [events, setEvents] = useState([]); // events are saved here so we can save it to the DB 
+    const [events, setEvents] = useState([]); // events are saved here so we can save it to the DB
+
+    const [selectedDayName, setSelectedDayName] = useState("");
 
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState(null);
@@ -41,9 +43,28 @@ export default function AdminSchedulingSetting() {
 
     const calendarRef = useRef(null);
 
+    const [availabilityModalOpen, setAvailabilityModalOpen] = useState(false);
+    const [selectedLocationForAvailability, setSelectedLocationForAvailability] = useState(null);
+    const [tempAvailability, setTempAvailability] = useState({
+        Monday: { open: "", close: "" },
+        Tuesday: { open: "", close: "" },
+        Wednesday: { open: "", close: "" },
+        Thursday: { open: "", close: "" },
+        Friday: { open: "", close: "" },
+        Saturday: { open: "", close: "" },
+        Sunday: { open: "", close: "" },
+    });
 
+    const shortenName = {
+        Monday: "Mon",
+        Tuesday: "Tue",
+        Wednesday: "Wed",
+        Thursday: "Thu",
+        Friday: "Fri",
+        Saturday: "Sat",
+        Sunday: "Sun",
+    };
 
-    // updates the calendar when the user selects a particular week
     useEffect(() => {
         if (selectedWeek && calendarRef.current) {
             const [year, week] = selectedWeek.split("-W").map(Number);
@@ -51,16 +72,29 @@ export default function AdminSchedulingSetting() {
             calendarRef.current.getApi().gotoDate(firstDayOfWeek);
         }
 
-        // fetch locations and bookings from supabase
+
         const fetchData = async () => {
             try {
                 // Fetch all locations
                 const { data: locs, error: locError } = await supabase
                     .from("venue_locations")
-                    .select("location_id, location_name");
+                    .select("location_id, location_name, availability"); 
                 if (locError) throw locError;
 
-                setLocations(locs.map(loc => ({ id: loc.location_id, name: loc.location_name })));
+                // sets openning hours for each location
+                setLocations(locs.map(loc => ({
+                    id: loc.location_id,
+                    name: loc.location_name,
+                    availability: loc.availability || { 
+                        Monday: { open: "", close: "" },
+                        Tuesday: { open: "", close: "" },
+                        Wednesday: { open: "", close: "" },
+                        Thursday: { open: "", close: "" },
+                        Friday: { open: "", close: "" },
+                        Saturday: { open: "", close: "" },
+                        Sunday: { open: "", close: "" },
+                    }
+                })));
 
                 // Fetch bookings
                 const { data: bookings, error: bookingsError } = await supabase
@@ -173,12 +207,10 @@ export default function AdminSchedulingSetting() {
             });
             return;
         }
-
-        // confirm deletion if no related events
         await confirmDeleteLocation(id);
     };
 
-    // confirm deletion of location 
+    // confirm deletion of location when location is tied to events
     const confirmDeleteLocation = async (id, alsoDeleteEvents = false) => {
         try {
             if (alsoDeleteEvents) {
@@ -222,6 +254,10 @@ export default function AdminSchedulingSetting() {
 
     // The open modal for adding any new dates
     const handleDateClick = (info) => {
+
+        const weekday = new Date(info.date).toLocaleDateString("en-AU", { weekday: "long" });
+        setSelectedDayName(weekday);
+
         const clickedDay = new Date(info.date);
         const dayStart = new Date(clickedDay.setHours(0, 0, 0, 0));
         const dayEnd = new Date(clickedDay.setHours(23, 59, 59, 999));
@@ -497,7 +533,7 @@ export default function AdminSchedulingSetting() {
 
     };
 
-    // displaying the date 
+    // displaying the date in the modal for adding/editing events
     function formatDateWithSuffix(date) {
         if (!date) return "";
 
@@ -517,13 +553,98 @@ export default function AdminSchedulingSetting() {
         return `${day}${suffix} ${month} ${year}`;
     }
 
+    // openning the modal for setting availability for each location
+    const openAvailabilityModal = (loc) => {
+        setSelectedLocationForAvailability(loc);
+        setTempAvailability(
+            loc.availability || {
+                Monday: { open: "", close: "" },
+                Tuesday: { open: "", close: "" },
+                Wednesday: { open: "", close: "" },
+                Thursday: { open: "", close: "" },
+                Friday: { open: "", close: "" },
+                Saturday: { open: "", close: "" },
+                Sunday: { open: "", close: "" },
+            }
+        );
+        setAvailabilityModalOpen(true);
+    };
+
+    // formatting time to am and pm format
+    const formatToAmPm = (timeStr) => {
+        if (!timeStr) return "";
+        const [hour, minute] = timeStr.split(":").map(Number);
+        const date = new Date();
+        date.setHours(hour, minute);
+        return date.toLocaleTimeString("en-AU", {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+        });
+    };
+
+    // retrieving the opening hours for the selected location and day
+    const getSelectedLocationHours = () => {
+        if (!selectedLocation || !selectedDayName) return null;
+        const loc = locations.find((l) => l.id === selectedLocation);
+        if (!loc || !loc.availability) return null;
+        if (loc.name === "FULL DAY UNAVAILABLE") return "";
+
+        const dayKey = selectedDayName.toLowerCase();
+        const hours = loc.availability[dayKey];
+        if (!hours || (!hours.open && !hours.close)) return "Closed";
+
+        const openTime = formatToAmPm(hours.open);
+        const closeTime = formatToAmPm(hours.close);
+
+        return `${openTime} – ${closeTime}`;
+    };
+
+    const closeAvailabilityModal = () => {
+        setAvailabilityModalOpen(false);
+        setSelectedLocationForAvailability(null);
+    };
+
+    // saving the availability of location to the database
+    const saveAvailability = async () => {
+        if (!selectedLocationForAvailability) return;
+
+        try {
+            const { error } = await supabase
+                .from("venue_locations")
+                .update({ availability: tempAvailability })
+                .eq("location_id", selectedLocationForAvailability.id);
+
+            if (error) throw error;
+
+            alert("Opening hours saved successfully!");
+            closeAvailabilityModal();
+
+            // Refresh data
+            const { data: locs } = await supabase
+                .from("venue_locations")
+                .select("location_id, location_name, availability");
+
+            setLocations(
+                locs.map((loc) => ({
+                    id: loc.location_id,
+                    name: loc.location_name,
+                    availability: loc.availability,
+                }))
+            );
+        } catch (err) {
+            console.error("Error saving availability:", err);
+            alert("Failed to save opening hours.");
+        }
+    };
+
     return (
         <div className="d-flex  dashboard-page-content ">
-            {/* Sidebar on the left */}
+            {/* Sidebar */}
             <aside>
                 <AdminSidebar />
             </aside>
-            {/* Right content area */}
+
             <div className="flex-grow-1 px-3 px-md-4 py-4">
                     <h4 className="fw-bold mb-4 text-primary">Admin Scheduling Settings</h4>
 
@@ -549,15 +670,44 @@ export default function AdminSchedulingSetting() {
                                         key={loc.id}
                                         className="list-group-item d-flex justify-content-between align-items-center"
                                     >
-                                        {loc.name}
-                                        <button
-                                            className="btn btn-sm btn-danger"
-                                            onClick={() => handleDeleteLocation(loc.id)}
-                                        >
-                                            Delete
-                                        </button>
+                                        <div>
+                                            <strong>{loc.name}</strong>
+
+                                            {/* ensures only actual location displays opening hours */}
+                                            {loc.name !== "FULL DAY UNAVAILABLE" && loc.availability && (
+                                                <small className="d-block text-muted">
+                                                    {Object.entries(loc.availability) // coverts the avaibility to day and times e.g Monday: {open, close}
+                                                        .map(([day, times]) => {
+                                                            const shortDay = shortenName[day] || day.charAt(0).toUpperCase() + day.slice(1);
+                                                            return times.open
+                                                                ? `${shortDay}: ${formatToAmPm(times.open)}–${formatToAmPm(times.close)}`
+                                                                : `${shortDay}: Closed`;
+                                                        })
+                                                        .join(" | ")}
+                                                </small>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            {loc.name !== "FULL DAY UNAVAILABLE" && (
+                                                <button
+                                                    className="btn btn-sm btn-outline-primary me-2"
+                                                    onClick={() => openAvailabilityModal(loc)}
+                                                >
+                                                    Set Opening Hours
+                                                </button>
+                                            )}
+                                            <button
+                                                className="btn btn-sm btn-danger"
+                                                onClick={() => handleDeleteLocation(loc.id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </li>
                                 ))}
+
+
                                 {locations.length === 0 && (
                                     <li className="list-group-item text-muted">No locations added yet.</li>
                                 )}
@@ -565,7 +715,7 @@ export default function AdminSchedulingSetting() {
                         </div>
                     </div>
 
-                    {/* Select Week and display calendar */}
+                    {/* Select Week and then displays calendar */}
                     <div className="card shadow-sm mb-4">
                         <div className="card-body">
                             <h3 className="h5 fw-semibold text-primary mb-3">Select Week</h3>
@@ -606,7 +756,7 @@ export default function AdminSchedulingSetting() {
                         </div>
                     </div>
 
-                    {/* Adding/editing events */}
+                    {/* Adding or editing events */}
                     {modalOpen && (
                         <div className="modal show d-block" tabIndex="-1">
                             <div className="modal-dialog">
@@ -646,10 +796,23 @@ export default function AdminSchedulingSetting() {
                                                         </option>
                                                     ))}
                                                 </select>
+
+                                                {selectedLocation && locations.find(l => l.id === selectedLocation)?.name !== "FULL DAY UNAVAILABLE" && (
+                                                    <small className="text-muted d-block mt-2">
+                                                        {(() => {
+                                                            const hours = getSelectedLocationHours();
+                                                            return hours === "Closed"
+                                                                ? `This location is closed on ${selectedDayName}`
+                                                                : `${selectedDayName} hours: ${hours}`;
+                                                        })()}
+                                                    </small>
+                                                )}
+
                                             </div>
+
+
                                         )}
 
-                                        {/* Checkbox for full day block */}
                                         <div className="form-check mb-3">
                                             <input
                                                 className="form-check-input"
@@ -663,7 +826,6 @@ export default function AdminSchedulingSetting() {
                                             </label>
                                         </div>
 
-                                        {/* Checkbox for recurring */}
                                         {!blockFullDay && (
                                             <div className="form-check mb-3">
                                                 <input
@@ -693,7 +855,7 @@ export default function AdminSchedulingSetting() {
 
                                         {/* Time inputs only if not blocking full day */}
                                         {!blockFullDay && (
-                                            <>
+                                            <div>
                                                 <div className="mb-3">
                                                     <label className="form-label">Start Time</label>
                                                     <input
@@ -712,7 +874,7 @@ export default function AdminSchedulingSetting() {
                                                         onChange={(e) => setSelectedEndTime(e.target.value)}
                                                     />
                                                 </div>
-                                            </>
+                                            </div>
                                         )}
                                     </div>
                                     <div className="modal-footer">
@@ -736,63 +898,124 @@ export default function AdminSchedulingSetting() {
                         </div>
                     )}
 
-                    {/* modal for confirming deleting location */}
-                    {deleteConfirm.open && (
-                        <div className="modal show d-block" tabIndex="-1">
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <h5 className="modal-title">Delete Location</h5>
-                                        <button
-                                            type="button"
-                                            className="btn-close"
-                                            onClick={() =>
-                                                setDeleteConfirm({
-                                                    open: false,
-                                                    locationId: null,
-                                                    locationName: "",
-                                                    relatedEvents: []
-                                                })
-                                            }
-                                        ></button>
-                                    </div>
-                                    <div className="modal-body">
-                                        <p>
-                                            The location <strong>{deleteConfirm.locationName}</strong> has{" "}
-                                            <strong>{deleteConfirm.relatedEvents.length}</strong> event(s).
-                                        </p>
-                                        <p>
-                                            To delete this location, you must also delete all of its events. Do you want
-                                            to continue?
-                                        </p>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button
-                                            className="btn btn-secondary"
-                                            onClick={() =>
-                                                setDeleteConfirm({
-                                                    open: false,
-                                                    locationId: null,
-                                                    locationName: "",
-                                                    relatedEvents: []
-                                                })
-                                            }
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            className="btn btn-danger"
-                                            onClick={() => confirmDeleteLocation(deleteConfirm.locationId, true)}
-                                        >
-                                            Delete Location & Events
-                                        </button>
-                                    </div>
+                {/* modal for confirming deleting location */}
+                {deleteConfirm.open && (
+                    <div className="modal show d-block" tabIndex="-1">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">Delete Location</h5>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        onClick={() =>
+                                            setDeleteConfirm({
+                                                open: false,
+                                                locationId: null,
+                                                locationName: "",
+                                                relatedEvents: []
+                                            })
+                                        }
+                                    ></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>
+                                        The location <strong>{deleteConfirm.locationName}</strong> has{" "}
+                                        <strong>{deleteConfirm.relatedEvents.length}</strong> event(s).
+                                    </p>
+                                    <p>
+                                        To delete this location, you must also delete all of its events. Do you want
+                                        to continue?
+                                    </p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button
+                                        className="btn btn-secondary"
+                                        onClick={() =>
+                                            setDeleteConfirm({
+                                                open: false,
+                                                locationId: null,
+                                                locationName: "",
+                                                relatedEvents: []
+                                            })
+                                        }
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        className="btn btn-danger"
+                                        onClick={() => confirmDeleteLocation(deleteConfirm.locationId, true)}
+                                    >
+                                        Delete Location & Events
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
+
+                {/* Availability Modal for location */}
+                {availabilityModalOpen && (
+                    <div className="modal show d-block" tabIndex="-1">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title">
+                                        Set Opening Hours – {selectedLocationForAvailability?.name}
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        onClick={closeAvailabilityModal}
+                                    ></button>
+                                </div>
+
+                                <div className="modal-body">
+                                    {Object.keys(tempAvailability).map((day) => ( 
+                                        <div key={day} className="d-flex align-items-center mb-2">
+                                            <label className="me-2">
+                                                {day}
+                                            </label>
+                                            <input
+                                                type="time"
+                                                className="form-control me-2"
+                                                value={tempAvailability[day].open || ""}
+                                                onChange={(e) =>
+                                                    setTempAvailability((prev) => ({
+                                                        ...prev,
+                                                        [day]: { ...prev[day], open: e.target.value },
+                                                    }))
+                                                }
+                                            />
+                                            <input
+                                                type="time"
+                                                className="form-control"
+                                                value={tempAvailability[day].close || ""}
+                                                onChange={(e) =>
+                                                    setTempAvailability((prev) => ({
+                                                        ...prev,
+                                                        [day]: { ...prev[day], close: e.target.value },
+                                                    }))
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="modal-footer">
+                                    <button className="btn btn-secondary" onClick={closeAvailabilityModal}>
+                                        Cancel
+                                    </button>
+                                    <button className="btn btn-primary" onClick={saveAvailability}>
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
-        
+        </div>
     );
+
 }
