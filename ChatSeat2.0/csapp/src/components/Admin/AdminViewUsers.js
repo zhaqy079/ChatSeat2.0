@@ -1,5 +1,5 @@
 import AdminSidebar from "./AdminSidebar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect} from "react";
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -12,6 +12,7 @@ const supabase = createClient(
 export const fetchAllUsers = async () => {
     const { data, error } = await supabase.from("user_profiles")
         .select("*, coordinator_profiles(*, venue_locations(*)), admin_profiles(*)")
+        .neq('role', 'deleted')
         .order('first_name', { ascending: true });
 
     if (error) {
@@ -23,21 +24,224 @@ export const fetchAllUsers = async () => {
 
 // Function call to approve a user
 async function approveUser(userID) {
-        const { error: profileError } = await supabase.from("user_profiles").update(
-            {
-                // Needs to become dynamic, dependent on user approving.
-                approved_by: "73fd19d1-5665-479b-8500-5ea691b0e1be"
-            }
-        ).eq('profile_id', userID);
+    const { error: profileError } = await supabase.from("user_profiles").update({
+            // Needs to become dynamic, dependent on user approving. Defaulting to Admin Istrator
+            approved_by: "73fd19d1-5665-479b-8500-5ea691b0e1be"
+         }).eq('profile_id', userID);
 
         if (profileError) {
             throw new Error("Failed to approve user: " + profileError.message);
         }
+
+    window.location.reload();
+}
+
+// Function call to deactivate a user
+async function deactivateUser(userID) {
+    const { error: profileError } = await supabase.from("user_profiles").update(
+        {
+            inactive_at: new Date()
+        }
+    ).eq('profile_id', userID);
+
+    if (profileError) {
+        throw new Error("Failed to deactivate user: " + profileError.message);
+    }
+
+    window.location.reload();
+}
+
+// Function call to reactivate a user
+async function reactivateUser(userID) {
+    const { error: profileError } = await supabase.from("user_profiles").update(
+        {
+            inactive_at: null
+        }
+    ).eq('profile_id', userID);
+
+    if (profileError) {
+        throw new Error("Failed to reactivate user: " + profileError.message);
+    }
+
+    window.location.reload();
+}
+
+
+function UserTable({ userlist }) {
+    return (
+        <table className="table">
+            <thead className="text-left">
+                <tr className="text-left">
+                    <th className="p-3">Name</th>
+                    <th className="p-3">Email</th>
+                    <th className="p-3">Phone</th>
+                    <th className="p-3">Approved By</th>
+                    <th className="p-3">Inactive</th>
+                    <th className="p-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {userlist.map((user) => {
+                    // Finds the approved user from their id
+                    const user_approver = user.approved_by ? userlist.find(u => u.profile_id === user.approved_by) : null;
+
+                    return (
+                        <tr key={user.profile_id} className="border-t">
+                            <td className="p-3">{user.first_name} {user.last_name}</td>
+                            <td className="p-3">{user.email}</td>
+                            <td className="p-3">{user.phone}</td>
+                            {!user_approver ? <td className="p-3">Not yet approved</td> : <td className="p-3">{user_approver.first_name} {user_approver.last_name}</td>}
+
+                            <td className="p-3">
+                                { // Changes incoming date format to '27 Nov 2025' format
+                                    user.inactive_at === null
+                                        ? "Active"
+                                        : new Date(user.inactive_at).toLocaleDateString("en-AU", {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                        })}
+                            </td>
+                            <td>
+                                {/* Displays a variety of different buttons depending on whether the user is an admin or currently active/inactive */}
+                                {user_approver === null ? <button type="button" className="btn btn-success" onClick={() => approveUser(user.profile_id)}>Approve</button>
+                                : <>
+                                    <a href={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</a>
+                                    {user.inactive_at === null ? (
+                                        <button type="button" className="btn btn-warning me-2" onClick={() => deactivateUser(user.profile_id) }>Deactivate</button>
+                                    ) : (
+                                        <button type="button" className="btn btn-info me-2" onClick={() => reactivateUser(user.profile_id) }>Reactivate</button>
+                                    )}
+                                </>
+                                }
+                            </td>
+                        </tr>
+                )})}
+            </tbody>
+        </table>
+    )
+}
+
+function coordinatorTable(userlist) {
+    return (
+        <table className="table">
+            <thead className="text-left">
+                <tr className="text-left">
+                    <th className="p-3">Name</th>
+                    <th className="p-3">Email</th>
+                    <th className="p-3">Phone</th>
+                    <th className="p-3">Locations</th>
+                    <th className="p-3">Inactive</th>
+                    <th className="p-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {userlist.map((user) => {
+                    return (
+                        <tr key={user.profile_id} className="border-t">
+                            <td className="p-3">{user.first_name} {user.last_name}</td>
+                            <td className="p-3">{user.email}</td>
+                            <td className="p-3">{user.phone}</td>
+                            <td className="p-3">
+                                {user.coordinator_profiles.map((coord_profile) => { 
+                                    return (
+                                        <div className="row">{coord_profile.venue_locations.location_name}</div>
+                                )})}
+                            </td>
+                            
+
+                            <td className="p-3">
+                                { // Changes incoming date format to '27 Nov 2025' format
+                                    user.inactive_at === null
+                                        ? "Active"
+                                        : new Date(user.inactive_at).toLocaleDateString("en-AU", {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                        })}
+                            </td>
+                            <td>
+                                <>
+                                    {/* Displays a variety of different buttons depending on whether the user is an admin or currently active/inactive */}
+                                    <>
+                                        <a href={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</a>
+                                        {user.inactive_at === null ? (
+                                            <button type="button" className="btn btn-warning me-2" onClick={() => deactivateUser(user.profile_id)}>Deactivate</button>
+                                        ) : (
+                                            <button type="button" className="btn btn-info me-2" onClick={() => reactivateUser(user.profile_id)}>Reactivate</button>
+                                        )}
+                                    </>
+                                </>
+                            </td>
+                        </tr>
+                )})}
+            </tbody>
+        </table>
+    )
+}
+
+function adminTable(userlist) {
+    return (
+        <table className="table">
+            <thead className="text-left">
+                <tr className="text-left">
+                    <th className="p-3">Name</th>
+                    <th className="p-3">Email</th>
+                    <th className="p-3">Phone</th>
+                    <th className="p-3">Admin Approval</th>
+                    <th className="p-3">Inactive</th>
+                    <th className="p-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {userlist.map((user) => {
+                    // Finds the approved user from their id
+                    const admin_approver = user.admin_profiles.approved_by ? userlist.find(u => u.profile_id === user.admin_profiles.approved_by) : null;
+
+                    return (
+                        <tr key={user.profile_id} className="border-t">
+                            <td className="p-3">{user.first_name} {user.last_name}</td>
+                            <td className="p-3">{user.email}</td>
+                            <td className="p-3">{user.phone}</td>
+                            {!admin_approver ? <td className="p-3">Not yet approved</td> : <td className="p-3">{admin_approver.first_name} {admin_approver.last_name}</td>}
+
+                            <td className="p-3">
+                                { // Changes incoming date format to '27 Nov 2025' format
+                                    user.inactive_at === null
+                                        ? "Active"
+                                        : new Date(user.inactive_at).toLocaleDateString("en-AU", {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                        })}
+                            </td>
+                            <td>
+                                {/* Displays a variety of different buttons depending on whether the user is an admin or currently active/inactive */}
+                                <>
+                                    <a href={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</a>
+                                    {user.inactive_at === null ? (
+                                        <button type="button" className="btn btn-warning me-2" onClick={() => deactivateUser(user.profile_id)}>Deactivate</button>
+                                    ) : (
+                                        <button type="button" className="btn btn-info me-2" onClick={() => reactivateUser(user.profile_id)}>Reactivate</button>
+                                    )}
+                                </>
+                            </td>
+                        </tr>
+                )})}
+            </tbody>
+        </table>
+    )
 }
 
 export default function AdminViewUsers() {
     const [userlist, setUserlist] = useState([]);
-    const [searchrole, setSearchrole] = useState("pending");
+    const [searchrole, setSearchrole] = useState(() => {
+        return sessionStorage.getItem('role') || 'pending';
+    });
+
+    useEffect(() => {
+        sessionStorage.setItem('role', searchrole);
+    }, [searchrole]);
 
     // Stores the list of users from the database
     useEffect(() => {
@@ -92,69 +296,14 @@ export default function AdminViewUsers() {
                         !filtereduserList.length > 0 ? (
                         // If no users are found for the selected role, show a message
                         <h5 className="text-center">
-                            No users found.
+                            No {searchrole} users found.
                         </h5>
-                        ) : (
-                        // Creation of table for display of users and their details
-                        <table className="table w-100">
-                            <thead className="">
-                                <tr className="text-left">
-                                    <th className="p-3">Name</th>
-                                    <th className="p-3">Email</th>
-                                    <th className="p-3">Phone</th>
-                                    <th className="p-3">Approved By</th>
-                                    <th className="p-3">Inactive</th>
-                                    <th className="p-3">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>{
-                                filtereduserList.map((user) => {
-                                    // Finds the approved user from their id
-                                    const approver = user.approved_by ? filtereduserList.find(u => u.profile_id === user.approved_by) : null;
-
-                                    return (
-                                        <tr key={user.profile_id} className="border-t">
-                                            <td className="p-3">{user.first_name} {user.last_name}</td>
-                                            <td className="p-3">{user.email}</td>
-                                            <td className="p-3">{user.phone}</td>
-                                            {!approver ? <td className="p-3">Not yet approved</td> : <td className="p-3">{approver.first_name} {approver.last_name}</td>}
-                                            
-                                            <td className="p-3">
-                                                { // Changes incoming date format to '27 Nov 2025' format
-                                                    user.inactive_at === null
-                                                        ? "Active"
-                                                        : new Date(user.inactive_at).toLocaleDateString("en-AU", {
-                                                            year: "numeric",
-                                                            month: "short",
-                                                            day: "numeric",
-                                                        })}
-                                            </td>
-                                            <td>
-                                                {/* If user hasn't yet been approved, display approve button. Otherwise display all buttons. */}
-                                                {!approver ? (
-                                                    <button type="button" className="btn btn-success" onClick={() => approveUser(user.profile_id) }>Approve</button>
-                                                ) : (
-                                                    // Displays a varietty of different buttons depending on whether the user is an admin or currently active/inactive
-                                                    <>
-                                                        {user.admin_profiles === null && (
-                                                            <button type="button" className="btn btn-secondary me-2">Admin</button>
-                                                        )}
-                                                        <button type="button" className="btn btn-secondary me-2">Coordinator</button>
-                                                        {user.inactive_at === null ? (
-                                                            <button type="button" className="btn btn-warning me-2">Deactivate</button>
-                                                        ) : (
-                                                            <button type="button" className="btn btn-info me-2">Reactivate</button>
-                                                        )}
-                                                        <button type="button" className="btn btn-danger">Delete</button>
-                                                    </>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    )}
+                        ) : ((
+                            searchrole === "admin"
+                                ? adminTable(filtereduserList)
+                                : (searchrole === "coordinator" ? coordinatorTable(filtereduserList)
+                                    : <UserTable userlist={filtereduserList} />
+                        )))}
                 </div>
             </div>
         

@@ -49,16 +49,22 @@ export default function AdminSidebar({ userName = "" }) {
                 </NavLink>
                 <NavLink to="/userGeneralForums" className={getActiveLink("/userGeneralForums")}>
                     General Forum
+                </Link>
+                <Link to="/adminFeedback" className={getActiveLink("/adminFeedback")}>
+                    Manage Feedback
+                </Link>
+            </div>
+
+            <div className="mt-3">
+                <Link to="/submitFeedback" className={getActiveLink("/submitFeedback")}>
+                    Submit Feedback
+                </Link>
+                <hr/>
+                <button className="admin-sidebar__logout" onClick={handleLogout}>
                 </NavLink>
                 <NavLink to="/adminFeedback" className={getActiveLink("/adminFeedback")}>
                     Feedback
                 </NavLink>
-            </div>
-
-            <div className="mt-3">
-                <button className="dashboard-sidebar__logout" onClick={handleLogout}>
-                    Logout
-                </button>
             </div>
         </div>
     );
