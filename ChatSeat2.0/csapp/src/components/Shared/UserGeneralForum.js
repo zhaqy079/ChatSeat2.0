@@ -60,6 +60,19 @@ export default function UserGeneralForum() {
         window.location.reload();
     }
 
+    const deletePost = async (post_id) => {
+        console.log(post_id);
+        const { error } = await supabase
+            .from('general_forum')
+            .update({
+                user_id: "d7c48149-6553-4dd2-ae95-ad9b5274ade1",
+                content: "THIS MESSAGE HAS BEEN DELETED"
+            })
+            .eq('general_forum_id', post_id);
+
+        console.log(error);
+    }
+
 
     // Links posts with their replies
     function Post({post, posts}) {
@@ -84,9 +97,13 @@ export default function UserGeneralForum() {
                         </div>
                         <div className="d-flex align-items-center">
                             <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
-                            <button type="button" className="btn btn-secondary ms-auto" onClick={() => {
-                                setActivePostId(prevId => (prevId === post.general_forum_id ? null : post.general_forum_id));
-                            } }>Reply</button>
+                            <div className="ms-auto">
+                                {sessionStorage.getItem('user_id') === post.user_profiles.profile_id
+                                    ? <button type="button" className="btn btn-danger me-2" onClick={() => deletePost(post.general_forum_id) }>Delete</button> : null}
+                                <button type="button" className="btn btn-secondary" onClick={() => {
+                                    setActivePostId(prevId => (prevId === post.general_forum_id ? null : post.general_forum_id));
+                                }}>Reply</button>
+                            </div>
                         </div>
                     </div>
                     <p className="card-text">{post.content}</p>
