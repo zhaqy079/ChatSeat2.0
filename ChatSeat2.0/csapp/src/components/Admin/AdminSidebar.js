@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../state/loggedInUser";
 import { createClient } from "@supabase/supabase-js";
 
@@ -8,10 +8,11 @@ const supabase = createClient(
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-export default function AdminSidebar({ userName = "" }) {
+export default function AdminSidebar() {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const user = useSelector((s) => s.loggedInUser?.success);
 
     const getActiveLink = (url) =>
         location.pathname === url
@@ -31,7 +32,7 @@ export default function AdminSidebar({ userName = "" }) {
     return (
         <div className="dashboard-sidebar">
             <div className="dashboard-sidebar__greeting">
-                Hello, {userName}!
+                Hello, {user?.firstName ? `${user.firstName}` : ""}!
             </div>
 
             <div className="dashboard-sidebar__nav">
