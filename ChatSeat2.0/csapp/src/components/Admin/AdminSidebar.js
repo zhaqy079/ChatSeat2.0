@@ -44,7 +44,7 @@ export default function AdminSidebar({ userName = "" }) {
                 <NavLink to="/adminViewUsers" className={getActiveLink("/adminViewUsers")}>
                     View All Users
                 </NavLink>
-                <NavLink to="/userGeneralForums" className={getActiveLink("/userGeneralForums")}>
+                <NavLink to="/adminlistenerchatroom" className={getActiveLink("/adminlistenerchatroom")}>
                     General Forum
                 </NavLink>
                 <NavLink to="/adminFeedback" className={getActiveLink("/adminFeedback")}>

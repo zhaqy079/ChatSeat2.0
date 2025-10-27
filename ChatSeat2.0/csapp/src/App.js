@@ -16,22 +16,22 @@ import CoordinatorDashboard from "./components/Coordinator/CoordinatorDashboard"
 import AdminViewUsers from "./components/Admin/AdminViewUsers";
 import AdminManageUser from "./components/Admin/AdminManageUser";
 import AdminHelp from "./components/Admin/AdminHelp";
+import AdminListenerChatroom from "./components/Admin/AdminListenerChatroom";
 
 import ListenerDashboard from "./components/Listener/ListenerDashboard";
 import ListenerScheduling from "./components/Listener/ListenerScheduling";
 //import ListenerSidebar from "./components/Listener/ListenerSideBar";
 import CoordinatorsListInListener from "./components/Listener/CoordinatorsListInListener";
+import ListenerChatroom from "./components/Listener/ListenerChatroom";
 import ListenerHelp from "./components/Listener/ListenerHelp";
 import PrivateMessage from "./components/Listener/Privatemessage";
 
-import UserGeneralForum from "./components/Shared/UserGeneralForum";
 import CoordinatorForum from "./components/Coordinator/CoordinatorForum";
 import AdminFeedback from "./components/Admin/AdminFeedback";
 import SubmitFeedback from "./components/Shared/SubmitFeedback";
 
 import CoordinatorAppointments from "./components/Coordinator/CoordinatorAppointments";
 import CoordinatorAvailability from "./components/Coordinator/CoordinatorAvailability";
-import CoordinatorChatroom from "./components/Coordinator/CoordinatorChatroom";
 import CoordinatorListenerChatroom from "./components/Coordinator/CoordinatorListenerChatroom";
 import CoordinatorAddListener from "./components/Coordinator/CoordinatorAddListener"; 
 import CoordinatorHelp from "./components/Coordinator/CoordinatorHelp";
@@ -53,6 +53,7 @@ export default function App() {
 
                 <Route path="/admindashboard" element={<AdminDashboard />} />
                 <Route path="/adminSchedulingSetting" element={<AdminSchedulingSetting />} />
+                <Route path="/adminlistenerchatroom" element={<AdminListenerChatroom />} />
                 <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
                 <Route path="/coordinatorforum" element={<CoordinatorForum />} />
                 <Route path="/adminViewUsers" element={<AdminViewUsers />} />
@@ -61,10 +62,10 @@ export default function App() {
                 <Route path="/listenerdashboard" element={<ListenerDashboard />} />
                 <Route path="/listenerscheduling" element={<ListenerScheduling />} />
                 <Route path="/coordinatorslistinlistener" element={< CoordinatorsListInListener />} />
+                <Route path="/listenerchatroom" element={<ListenerChatroom />} />
                 <Route path="/listenerhelp" element={<ListenerHelp />} />
                 <Route path="/privatemessage" element={<PrivateMessage />} />
 
-                <Route path="/userGeneralForums" element={<UserGeneralForum />} />
                 <Route path="/adminFeedback" element={<AdminFeedback />} />
                 <Route path="/submitFeedback" element={<SubmitFeedback />} />
                 <Route path="/manageUser/:id" element={<AdminManageUser />} />
@@ -72,7 +73,7 @@ export default function App() {
                 <Route path="/coordinatorappointments" element={< CoordinatorAppointments />} />
                 <Route path="/coordinatoravailability" element={< CoordinatorAvailability />} />
                 <Route path="/coordinatoraddlistener" element={< CoordinatorAddListener />} />
-                <Route path="/coordinatorchatroom" element={< CoordinatorChatroom />} />
+                <Route path="/coordinatorchatroom" element={< CoordinatorForum />} />
                 <Route path="/coordinatorlistenerchatroom" element={< CoordinatorListenerChatroom />} />
                 <Route path="/coordinatorhelp" element={< CoordinatorHelp />} />
 

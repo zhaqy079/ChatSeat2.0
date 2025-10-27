@@ -47,10 +47,10 @@ export default function CoordinatorSidebar({ userName = "" }) {
                 <NavLink to="coordinatoraddlistener" className={getActiveLink("coordinatoraddlistener")}>
                     Add A Listener
                 </NavLink>
-                <NavLink to="coordinatorchatroom" className={getActiveLink("coordinatorchatroom")}>
+                <NavLink to="/coordinatorchatroom" className={getActiveLink("/coordinatorchatroom")}>
                     Coordinator Chat Room
                 </NavLink>
-                <NavLink to="coordinatorlistenerchatroom" className={getActiveLink("coordinatorlistenerchatroom")}>
+                <NavLink to="/coordinatorlistenerchatroom" className={getActiveLink("/coordinatorlistenerchatroom")}>
                     Listener Chat Room
                 </NavLink>
             </div>
