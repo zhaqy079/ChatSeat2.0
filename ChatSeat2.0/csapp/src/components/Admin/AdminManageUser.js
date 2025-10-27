@@ -1,4 +1,3 @@
-import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect } from "react";
 import { createClient } from '@supabase/supabase-js';
@@ -204,7 +203,6 @@ export default function AdminManageUser() {
 
     return (
         <div>
-            <AdminNavbar title="Display Users" />
             <div className="d-flex">
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">

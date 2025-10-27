@@ -1,4 +1,3 @@
-import AdminNavbar from "../Admin/AdminNavbar";
 import AdminSidebar from "../Admin/AdminSidebar";
 import { useState } from "react";
 import { createClient } from '@supabase/supabase-js';
@@ -34,7 +33,6 @@ export default function SubmitFeedback() {
 
     return (
         <div>
-            <AdminNavbar title="Post Feedback" />
             <div className="d-flex">
 
                 <AdminSidebar userName="userName" />

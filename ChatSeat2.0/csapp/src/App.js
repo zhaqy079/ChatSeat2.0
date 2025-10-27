@@ -14,7 +14,6 @@ import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminSchedulingSetting from "./components/Admin/AdminSchedulingSetting";
 import CoordinatorDashboard from "./components/Coordinator/CoordinatorDashboard";
 import AdminViewUsers from "./components/Admin/AdminViewUsers";
-import AdminManageLocations from "./components/Admin/AdminManageLocations";
 import AdminManageUser from "./components/Admin/AdminManageUser";
 import AdminHelp from "./components/Admin/AdminHelp";
 
@@ -57,7 +56,6 @@ export default function App() {
                 <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
                 <Route path="/coordinatorforum" element={<CoordinatorForum />} />
                 <Route path="/adminViewUsers" element={<AdminViewUsers />} />
-                <Route path="/adminManageLocations" element={<AdminManageLocations />} />
                 <Route path="/adminhelp" element={<AdminHelp />} />
                 
                 <Route path="/listenerdashboard" element={<ListenerDashboard />} />

@@ -1,4 +1,3 @@
-import AdminNavbar from "../Admin/AdminNavbar";
 import AdminSidebar from "../Admin/AdminSidebar";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
@@ -120,7 +119,6 @@ export default function CoordinatorForum() {
 
     return (
         <div>
-            <AdminNavbar title="Coordinator Forum" />
             <div className="d-flex">
 
                 <AdminSidebar userName="userName" />
