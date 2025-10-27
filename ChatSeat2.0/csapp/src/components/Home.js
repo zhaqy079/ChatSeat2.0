@@ -123,7 +123,7 @@ export default function Home() {
                 )}
                 {messageSent && (
                     <div className="pm-alert" role="alert">
-                         Message sent! Thank you for reaching out.
+                         Message sent! We’ll be in touch soon.
                     </div>
                 )}
 
