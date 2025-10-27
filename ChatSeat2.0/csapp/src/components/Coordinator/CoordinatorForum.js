@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
-
 import CoordinatorSidebar from "./CoordinatorSidebar";
 
 const supabase = createClient(
@@ -8,7 +7,7 @@ const supabase = createClient(
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-// Requests a list of all general forum posts from the database
+// Requests a list of all coordinator forum posts from the database
 export const fetchAllCoordForumPosts = async () => {
     const { data, error } = await supabase.from("coordinator_forum")
         .select(`*, user_profiles(*)`)
@@ -29,14 +28,14 @@ export default function CoordinatorForum() {
     const replyRef = useRef(null);
     const postRef = useRef(null);
 
-    // Stores the list of general forum posts from the database
+    // Stores the list of coord forum posts from the database
     useEffect(() => {
         const getCoordForumPosts = async () => {
             try {
                 const data = await fetchAllCoordForumPosts();
                 setCoordforumlist(data);
             } catch (err) {
-                console.error("Error fetching general forum posts:", err);
+                console.error("Error fetching coordinator forum posts:", err);
             }
         };
 
@@ -57,6 +56,17 @@ export default function CoordinatorForum() {
                 content: message,
                 reply_to: reply
             });
+        
+        window.location.reload();
+    }
+
+    const deletePost = async (post_id) => {
+        const { error } = await supabase
+            .from('coordinator_forum')
+            .update({
+                content: "THIS MESSAGE HAS BEEN DELETED"
+            })
+            .eq('coord_forum_id', post_id);
 
         window.location.reload();
     }
@@ -85,9 +95,15 @@ export default function CoordinatorForum() {
                         </div>
                         <div className="d-flex align-items-center">
                             <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
-                            <button type="button" className="btn btn-secondary ms-auto" onClick={() => {
-                                setActivePostId(prevId => (prevId === post.coord_forum_id ? null : post.coord_forum_id));
-                            }}>Reply</button>
+                            {post.user_profiles.profile_id !== "d7c48149-6553-4dd2-ae95-ad9b5274ade1"
+                                ? <div className="ms-auto">
+                                    {sessionStorage.getItem('user_id') === post.user_profiles.profile_id
+                                        ? <button type="button" className="btn btn-danger me-2" onClick={() => deletePost(post.coord_forum_id)}>Delete</button> : null}
+                                    <button type="button" className="btn btn-secondary" onClick={() => {
+                                        setActivePostId(prevId => (prevId === post.coord_forum_id ? null : post.coord_forum_id));
+                                    }}>Reply</button>
+                                </div>
+                                : null}
                         </div>
                     </div>
                     <p className="card-text">{post.content}</p>
@@ -119,41 +135,40 @@ export default function CoordinatorForum() {
     }
 
     return (
-        <div>
-            <div className="d-flex dashboard-page-content">
-                <aside>
-                    <CoordinatorSidebar />
-                </aside>
-                <div className="p-4 flex-grow-1">
-                    <h4 className="fw-bold mb-4 text-primary">Coordinator Forum</h4>
-                    <form className="mb-2" onSubmit={async (e) => {
-                        e.preventDefault();
+        <div className="d-flex  dashboard-page-content ">
+            <aside>
+                <CoordinatorSidebar />
+            </aside>
+            <div className="flex-grow-1 px-3 px-md-4 py-4">
+                <h4 className="fw-bold mb-4 text-primary">Coordinator Forum</h4>
+                <form className="mb-2" onSubmit={async (e) => {
+                    e.preventDefault();
 
-                        const message = postRef.current?.value;
-                        const reply = null;
-                        await createPost({ message, reply });
-                    }}>
-                        <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
-                        <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
-                    </form>
+                    const message = postRef.current?.value;
+                    const reply = null;
+                    await createPost({ message, reply });
+                }}>
+                    <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
+                    <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
+                </form>
 
-                    <hr />
+                <hr />
 
-                    { // Forum display logic, if no forum posts display special message otherwise display all posts
-                        !coordforumlist.length > 0 ? (
-                            // If no posts are found, show a message
-                            <h5 className="p-4 text-center">
-                                No posts found.
-                            </h5>
-                        ) : (
-                            coordforumlist
-                                .filter(post => post.reply_to === null) // Only top-level posts
-                                .map(post => (
-                                    <Post key={post.id} post={post} posts={coordforumlist} />
-                                ))
-                        )}
-                </div>
+                { // Forum display logic, if no forum posts display special message otherwise display all posts
+                    !coordforumlist.length > 0 ? (
+                        // If no posts are found, show a message
+                        <h5 className="p-4 text-center">
+                            No posts found.
+                        </h5>
+                    ) : (
+                        coordforumlist
+                            .filter(post => post.reply_to === null) // Only top-level posts
+                            .map(post => (
+                                <Post key={post.id} post={post} posts={coordforumlist} />
+                            ))
+                    )}
             </div>
         </div>
+
     );
 }
