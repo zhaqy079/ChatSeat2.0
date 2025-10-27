@@ -117,7 +117,7 @@ export default function HomePMForm({ onClose, onSent, onError }) {
             <div className="mb-3">
                 <label className="form-label p-1">Your name </label>
                 <input className="form-control" value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+                    onChange={onNameChange} required />
             </div>
             <div className="mb-3">
                 <label className="form-label p-1">Email (required)</label>
