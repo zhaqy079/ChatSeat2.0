@@ -8,17 +8,34 @@ import Signup from "./components/Signup";
 import ResetRequest from "./components/ResetRequest"
 import Resetpassword from "./components/Resetpassword"
 import Venues from "./components/Venues";
+import AboutUs from "./components/AboutUs";
+
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminSchedulingSetting from "./components/Admin/AdminSchedulingSetting";
 import CoordinatorDashboard from "./components/Coordinator/CoordinatorDashboard";
 import AdminViewUsers from "./components/Admin/AdminViewUsers";
 import AdminManageLocations from "./components/Admin/AdminManageLocations";
 import AdminManageUser from "./components/Admin/AdminManageUser";
+import AdminHelp from "./components/Admin/AdminHelp";
+
+import ListenerDashboard from "./components/Listener/ListenerDashboard";
+import ListenerScheduling from "./components/Listener/ListenerScheduling";
+//import ListenerSidebar from "./components/Listener/ListenerSideBar";
+import CoordinatorsListInListener from "./components/Listener/CoordinatorsListInListener";
+import ListenerHelp from "./components/Listener/ListenerHelp";
+import PrivateMessage from "./components/Listener/Privatemessage";
+
 import UserGeneralForum from "./components/Shared/UserGeneralForum";
 import CoordinatorForum from "./components/Coordinator/CoordinatorForum";
 import AdminFeedback from "./components/Admin/AdminFeedback";
 import SubmitFeedback from "./components/Shared/SubmitFeedback";
 
+import CoordinatorAppointments from "./components/Coordinator/CoordinatorAppointments";
+import CoordinatorAvailability from "./components/Coordinator/CoordinatorAvailability";
+import CoordinatorChatroom from "./components/Coordinator/CoordinatorChatroom";
+import CoordinatorListenerChatroom from "./components/Coordinator/CoordinatorListenerChatroom";
+import CoordinatorAddListener from "./components/Coordinator/CoordinatorAddListener"; 
+import CoordinatorHelp from "./components/Coordinator/CoordinatorHelp";
 
 
 export default function App() {
@@ -33,18 +50,37 @@ export default function App() {
                 <Route path="/resetrequest" element={<ResetRequest />} />
                 <Route path="/reset-password" element={<Resetpassword />} />
                 <Route path="/venues" element={<Venues />} />
+                <Route path="/about" element={<AboutUs />} />
+
                 <Route path="/admindashboard" element={<AdminDashboard />} />
                 <Route path="/adminSchedulingSetting" element={<AdminSchedulingSetting />} />
                 <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
                 <Route path="/coordinatorforum" element={<CoordinatorForum />} />
                 <Route path="/adminViewUsers" element={<AdminViewUsers />} />
                 <Route path="/adminManageLocations" element={<AdminManageLocations />} />
+                <Route path="/adminhelp" element={<AdminHelp />} />
+                
+                <Route path="/listenerdashboard" element={<ListenerDashboard />} />
+                <Route path="/listenerscheduling" element={<ListenerScheduling />} />
+                <Route path="/coordinatorslistinlistener" element={< CoordinatorsListInListener />} />
+                <Route path="/listenerhelp" element={<ListenerHelp />} />
+                <Route path="/privatemessage" element={<PrivateMessage />} />
+
                 <Route path="/userGeneralForums" element={<UserGeneralForum />} />
                 <Route path="/adminFeedback" element={<AdminFeedback />} />
                 <Route path="/submitFeedback" element={<SubmitFeedback />} />
                 <Route path="/manageUser/:id" element={<AdminManageUser />} />
+
+                <Route path="/coordinatorappointments" element={< CoordinatorAppointments />} />
+                <Route path="/coordinatoravailability" element={< CoordinatorAvailability />} />
+                <Route path="/coordinatoraddlistener" element={< CoordinatorAddListener />} />
+                <Route path="/coordinatorchatroom" element={< CoordinatorChatroom />} />
+                <Route path="/coordinatorlistenerchatroom" element={< CoordinatorListenerChatroom />} />
+                <Route path="/coordinatorhelp" element={< CoordinatorHelp />} />
+
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
+
     );
 }

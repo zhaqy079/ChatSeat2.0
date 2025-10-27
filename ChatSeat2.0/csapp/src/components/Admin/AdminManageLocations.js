@@ -1,4 +1,3 @@
-import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect } from "react";
 import { createClient } from '@supabase/supabase-js';
@@ -69,12 +68,13 @@ export default function AdminManageLocations() {
     }, []);
 
     return (
-        <div>
-            <AdminNavbar title="Location Management" />
-            <div className="d-flex">
-
-                <AdminSidebar userName="userName" />
-                <div className="p-4 flex-grow-1">
+        <div className="d-flex  dashboard-page-content ">
+            {/* Sidebar on the left */}
+            <aside>
+                <AdminSidebar />
+            </aside>
+            {/* Right content area */}
+            <div className="flex-grow-1 px-3 px-md-4 py-4">
                     <h4 className="fw-bold mb-4 text-primary">Manage Locations</h4>
 
                     {!locationlist.length > 0 ? (
@@ -126,6 +126,6 @@ export default function AdminManageLocations() {
                     )}              
                 </div>
             </div>
-        </div>
+        
     );
 }

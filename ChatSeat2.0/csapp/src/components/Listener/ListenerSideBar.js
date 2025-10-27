@@ -1,5 +1,5 @@
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+﻿import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useSelector,useDispatch } from "react-redux";
 import { logoutUser } from "../../state/loggedInUser";
 import { createClient } from "@supabase/supabase-js";
 
@@ -8,10 +8,11 @@ const supabase = createClient(
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-export default function CoordinatorSidebar({ userName = "" }) {
+export default function ListenerSidebar() {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const user = useSelector((s) => s.loggedInUser?.success);
 
 
     const getActiveLink = (url) =>
@@ -25,33 +26,30 @@ export default function CoordinatorSidebar({ userName = "" }) {
 
         // Clear Redux state
         dispatch(logoutUser());
-        navigate("/");
+        navigate("/");                          
     };
 
     return (
         <div className="dashboard-sidebar">
             <div className="dashboard-sidebar__greeting">
-                Hello, {userName}!
+                Hello, {user?.firstName ? `${user.firstName}` : ""}!
             </div>
 
             <div className="dashboard-sidebar__nav">
-                <NavLink to="/coordinatordashboard" className={getActiveLink("/coordinatordashboard")}>
+                <NavLink to="/listenerdashboard" className={getActiveLink("/listenerdashboard")}>
                     Dashboard
                 </NavLink>
-                <NavLink to="/coordinatorappointments" className={getActiveLink("coordinatorappointments")}>
-                    Appointments
+                <NavLink to="/coordinatorslistinlistener" className={getActiveLink("/coordinatorslistinlistener")}>
+                    List of Coordinators
                 </NavLink>
-                <NavLink to="coordinatoravailability" className={getActiveLink("coordinatoravailability")}>
-                    Availability
+                <NavLink to="/listenerscheduling" className={getActiveLink("/listenerscheduling")}>
+                    Scheduling
                 </NavLink>
-                <NavLink to="coordinatoraddlistener" className={getActiveLink("coordinatoraddlistener")}>
-                    Add A Listener
+                <NavLink to="/listenerchatroom" className={getActiveLink("/listenerchatroom")}>
+                    Let’s Talk
                 </NavLink>
-                <NavLink to="coordinatorchatroom" className={getActiveLink("coordinatorchatroom")}>
-                    Coordinator Chat Room
-                </NavLink>
-                <NavLink to="coordinatorlistenerchatroom" className={getActiveLink("coordinatorlistenerchatroom")}>
-                    Listener Chat Room
+                <NavLink to="/privatemessage" className={getActiveLink("/privatemessage")}>
+                    Inbox
                 </NavLink>
             </div>
             <div className="mt-3">
@@ -59,6 +57,6 @@ export default function CoordinatorSidebar({ userName = "" }) {
                     Logout
                 </button>
             </div>
-        </div>
+       </div>
     );
 }

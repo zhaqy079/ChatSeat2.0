@@ -1,4 +1,3 @@
-import AdminNavbar from "../Admin/AdminNavbar";
 import AdminSidebar from "../Admin/AdminSidebar";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
@@ -87,19 +86,25 @@ export default function AdminFeedback() {
 
 
     return (
-        <div key="1">
-            <AdminNavbar title="Manage Feedback" />
-            <div key="2" className="d-flex">
 
-                <AdminSidebar userName="userName" />
-                <div className="p-4 flex-grow-1">
-                    <h4 className="fw-bold mb-4 text-primary">Manage Feedback</h4>
+        <div className="d-flex  dashboard-page-content " key = "1">
+            {/* Sidebar on the left */}
+            <aside>
+                <AdminSidebar />
+            </aside>
+            {/* Right content area */}
+            <div className="flex-grow-1 px-3 px-md-4 py-4" key = "2">
+
+                    <h4 className="fw-bold mb-4 text-primary">Feedback</h4>
 
                     {/* Dropdown menu to refine posts displayed */}
-                    <div className="mb-2">
-                        <select value={searchdata} onChange={(e) => setSearchdata(e.target.value)}>
-                            <option value="unresolved" >Unresolved</option>
-                            <option value="resolved">Resolved</option>
+                    <div className="mb-3">
+                    <select
+                        className="form-select fw-semibold mb-2 w-auto "
+                        value={searchdata}
+                        onChange={(e) => setSearchdata(searchdata)}>
+                          <option value="unresolved" >Unresolved</option>
+                          <option value="resolved">Resolved</option>
                             <option value="all">All Posts</option>
                         </select>
                     </div>
@@ -161,6 +166,6 @@ export default function AdminFeedback() {
                     )}
                 </div>
             </div>
-        </div>
+       
     );
 }

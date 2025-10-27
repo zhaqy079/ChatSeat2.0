@@ -1,12 +1,25 @@
-﻿import { useEffect } from "react";
+﻿import { useEffect, useState } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import Seat from "../assets/Seat.JPG";
+import HomePMBtn from "../components/HomePMBtn";
+import HomePMForm from "../components/HomePMForm";
 
 export default function Home() {
+    const [showForm, setShowForm] = useState(false);
+    const [messageSent, setMessageSent] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
     useEffect(() => {
         Aos.init({ duration: 800, once: false, mirror: true });
     }, []);
+
+    useEffect(() => {
+        if (messageSent || errorMessage) {
+            const timer = setTimeout(() => setMessageSent(false), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [messageSent, errorMessage]);
 
     return (
         <div className="bg-white">
@@ -93,6 +106,32 @@ export default function Home() {
                         style={{ maxWidth: 420 }}
                     />
                 </div>
+
+                {/*PM feature*/}
+                <div className="d-flex justify-content-end">
+                    <HomePMBtn onOpen={() => setShowForm(true)} />
+                </div>
+                {showForm && (
+                    <div className="form-container-floating">
+                        <HomePMForm
+                            onClose={() => setShowForm(false)}
+                            onSent={() => setMessageSent(true)}
+                            onError={(msg) => setErrorMessage(msg)}
+                        />
+                    </div>
+                   
+                )}
+                {messageSent && (
+                    <div className="pm-alert" role="alert">
+                         Message sent! Thank you for reaching out.
+                    </div>
+                )}
+
+                {errorMessage && (
+                    <div className="pm-alert bg-danger-subtle" role="alert">
+                        {errorMessage}
+                    </div>
+                )}
 
                 {/* Closing */}
                 <div className="p-4 rounded-3 text-center shadow-sm bg-light" data-aos="fade-up">

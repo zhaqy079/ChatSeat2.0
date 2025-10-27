@@ -1,8 +1,9 @@
 ﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import { createClient } from '@supabase/supabase-js';
+import { useDispatch } from "react-redux";
+import { setloggedInUserSuccess } from "../state/loggedInUser"; 
 
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
@@ -12,6 +13,7 @@ const supabase = createClient(
 
 export default function Login() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [user, setUser] = useState({ email: "", password: ""}); // Combined to make more practical and streamlined
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -40,38 +42,58 @@ export default function Login() {
             sessionStorage.setItem('user_id', authData.user.id)
             navigate("/admindashboard");
 
-            //// Retrieve user data for redirection via role
-            //const { data: profileData, error: profileError } = await supabase
-            //    .from("profiles")
-            //    .select("*")
-            //    .eq("id", authData.user.id)
-            //    .single();
 
-            //if (profileError) throw profileError;
 
             //// Store user session info for protected routes
             //localStorage.setItem("userRole", profileData.role);
 
-            //if (profileData.role !== "pending") { 
+            //if (profileData.role !== "pending") {
             //    toast.success("Login successful!");
             //} else {
             //    toast.warning("Awaiting approval");
             //}
 
-            //// Navigation for specfic user role
-            //// TO BE COMPLETED
-            //localStorage.setItem("userRole", profileData.role);
+            //// Navigation for specfic user role after user login
+            // reference: https://stackoverflow.com/questions/73175525/what-is-the-use-of-dispatch-in-redux
+            // https://supabase.com/docs/guides/auth/passwords
+            const authedUser = authData.user;
 
-            //// Redirect based on role
-            //if (profileData.role === "admin") {
-            //    navigate("/admindashboard");
-            //} else if (profileData.role === "coordinator") {
-            //    navigate("/coordinatordashboard");
-            //} else if (profileData.role === "listener") {
-            //    navigate("/listenerdashboard");
-            //} else {
-            //    navigate("/"); 
-            //}
+            // Retrieve user data for redirection via role
+            // Load profile (includes role) by email 
+            const { data: profile, error: profErr } = await supabase
+                .from("user_profiles")
+                .select("first_name,last_name,email,role")
+                .eq("email", authedUser.email)
+                .single();
+
+            if (profErr) {
+                console.warn("profile load warn:", profErr.message);
+            }
+
+            // Prefer table role; fallback to user_metadata; final fallback 'listener'
+            const role =
+                (profile?.role || authedUser?.user_metadata?.role || "listener").toLowerCase();
+
+            // Dispatch to Redux in the shape your app expects
+            dispatch(
+                setloggedInUserSuccess({
+                    id: authedUser.id,
+                    email: authedUser.email,
+                    firstName: profile?.first_name ?? null,
+                    lastName: profile?.last_name ?? null,
+                    role,
+                })
+            );
+            // Redirect based on role
+            if (role === "admin") {
+                navigate("/admindashboard");
+            } else if (role === "coordinator") {
+                navigate("/coordinatordashboard");
+            } else if (role === "listener") {
+                navigate("/listenerdashboard");
+            } else {
+                navigate("/"); 
+            }
 
         } catch (err) {
             console.error("Login error: ", err.message);
