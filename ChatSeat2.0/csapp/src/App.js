@@ -15,6 +15,7 @@ import CoordinatorDashboard from "./components/Coordinator/CoordinatorDashboard"
 import AdminViewUsers from "./components/Admin/AdminViewUsers";
 import AdminManageLocations from "./components/Admin/AdminManageLocations";
 import AdminHelp from "./components/Admin/AdminHelp";
+import AdminEditResource from "./components/Admin/AdminEditResource";
 
 import ListenerDashboard from "./components/Listener/ListenerDashboard";
 import ListenerScheduling from "./components/Listener/ListenerScheduling";
@@ -22,6 +23,9 @@ import ListenerScheduling from "./components/Listener/ListenerScheduling";
 import CoordinatorsListInListener from "./components/Listener/CoordinatorsListInListener";
 import ListenerHelp from "./components/Listener/ListenerHelp";
 import PrivateMessage from "./components/Listener/Privatemessage";
+import ListeningSkills from "./components/Listener/ListeningSkills";
+import ConversationSkills from "./components/Listener/ConversationSkills";
+import MakePeopleComfortable from "./components/Listener/MakePeopleComfortable";
 
 import UserGeneralForum from "./components/Shared/UserGeneralForum";
 import AdminFeedback from "./components/Admin/AdminFeedback";
@@ -32,6 +36,8 @@ import CoordinatorChatroom from "./components/Coordinator/CoordinatorChatroom";
 import CoordinatorListenerChatroom from "./components/Coordinator/CoordinatorListenerChatroom";
 import CoordinatorAddListener from "./components/Coordinator/CoordinatorAddListener"; 
 import CoordinatorHelp from "./components/Coordinator/CoordinatorHelp";
+
+
 
 
 export default function App() {
@@ -53,12 +59,16 @@ export default function App() {
                 <Route path="/adminViewUsers" element={<AdminViewUsers />} />
                 <Route path="/adminManageLocations" element={<AdminManageLocations />} />
                 <Route path="/adminhelp" element={<AdminHelp />} />
+                <Route path="/admineditresource" element={<AdminEditResource />} />
                 
                 <Route path="/listenerdashboard" element={<ListenerDashboard />} />
                 <Route path="/listenerscheduling" element={<ListenerScheduling />} />
                 <Route path="/coordinatorslistinlistener" element={< CoordinatorsListInListener />} />
                 <Route path="/listenerhelp" element={<ListenerHelp />} />
                 <Route path="/privatemessage" element={<PrivateMessage />} />
+                <Route path="/listeningskills" element={<ListeningSkills />} />
+                <Route path="/conversationskills" element={<ConversationSkills />} />
+                <Route path="/makepeoplecomfortable" element={<MakePeopleComfortable />} />
 
                 <Route path="/userGeneralForums" element={<UserGeneralForum />} />
                 <Route path="/adminFeedback" element={<AdminFeedback />} />
