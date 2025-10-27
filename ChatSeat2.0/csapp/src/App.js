@@ -17,6 +17,7 @@ import AdminManageUser from "./components/Admin/AdminManageUser";
 import UserGeneralForum from "./components/Shared/UserGeneralForum";
 import CoordinatorForum from "./components/Coordinator/CoordinatorForum";
 import AdminFeedback from "./components/Admin/AdminFeedback";
+import SubmitFeedback from "./components/Shared/SubmitFeedback";
 
 
 
@@ -40,6 +41,7 @@ export default function App() {
                 <Route path="/adminManageLocations" element={<AdminManageLocations />} />
                 <Route path="/userGeneralForums" element={<UserGeneralForum />} />
                 <Route path="/adminFeedback" element={<AdminFeedback />} />
+                <Route path="/submitFeedback" element={<SubmitFeedback />} />
                 <Route path="/manageUser/:id" element={<AdminManageUser />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

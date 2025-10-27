@@ -88,12 +88,12 @@ export default function AdminFeedback() {
 
     return (
         <div key="1">
-            <AdminNavbar title="Feedback" />
+            <AdminNavbar title="Manage Feedback" />
             <div key="2" className="d-flex">
 
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
-                    <h4 className="fw-bold mb-4 text-primary">Feedback</h4>
+                    <h4 className="fw-bold mb-4 text-primary">Manage Feedback</h4>
 
                     {/* Dropdown menu to refine posts displayed */}
                     <div className="mb-2">

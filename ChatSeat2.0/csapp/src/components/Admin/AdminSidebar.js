@@ -41,11 +41,15 @@ export default function AdminSidebar({ userName = "" }) {
                     General Forum
                 </Link>
                 <Link to="/adminFeedback" className={getActiveLink("/adminFeedback")}>
-                    Feedback
+                    Manage Feedback
                 </Link>
             </div>
 
             <div className="mt-3">
+                <Link to="/submitFeedback" className={getActiveLink("/submitFeedback")}>
+                    Submit Feedback
+                </Link>
+                <hr/>
                 <button className="admin-sidebar__logout" onClick={handleLogout}>
                     Logout
                 </button>
