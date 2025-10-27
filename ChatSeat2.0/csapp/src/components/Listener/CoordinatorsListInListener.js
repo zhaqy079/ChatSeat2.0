@@ -16,37 +16,9 @@ export default function CoordinatorsListInListener() {
     // Fetch coordinators from Supabase
     useEffect(() => {
         const fetchCoordinators = async () => {
-            const { data, error } = await supabase.from("coordinators").select("*");
-            if (!error && data.length > 0) {
-                setCoordinators(data);
-            } else {
-                // Temporary hardcoded fallback
-                setCoordinators([
-                    {
-                        id: 1,
-                        name: "Noel Fraser",
-                        place: "Campbelltown Library",
-                        email: "noel.g.fraser@gmail.com",
-                        phone: "0444 444 444"
-                    },
-                    {
-                        id: 2,
-                        name: "Tricia Vilkinnas",
-                        place: "Campbelltown Library",
-                        email: "Triciav0849@gmail.com",
-                        phone: "0411 111 111"
-                    },
-                    {
-                        id: 3,
-                        name: "Coordinator C",
-                        place: "Campbelltown Library",
-                        email: "CoordinatorC@gmail.com",
-                        phone: "0422 222 222"
-                    }
+            const { data, error } = await supabase.from("coordinator_profiles").select("*, user_profiles(*), venue_locations(*)");
 
-
-                ]);
-            }
+            setCoordinators(data);
         };
 
         fetchCoordinators();
@@ -66,12 +38,12 @@ export default function CoordinatorsListInListener() {
                     <p className="text-muted">No coordinators available.</p>
                 ) : (
                     coordinators.map((coordinator) => (
-                        <div className="col-12 col-md-6" key={coordinator.id}>
+                        <div className="col-12 col-md-6" key={coordinator.coordinator_id}>
                             <div className="coordinator-card">
-                                <h5>{coordinator.name}</h5>
-                                <p>📍 {coordinator.place}</p>
-                                <p>✉️ {coordinator.email}</p>
-                                <p>📞 {coordinator.phone}</p>
+                                <h5>{coordinator.user_profiles.first_name} {coordinator.user_profiles.last_name}</h5>
+                                <p>📍 Location {coordinator.venue_locations.location_name}</p>
+                                <p>✉️ {coordinator.user_profiles.email}</p>
+                                <p>📞 {coordinator.user_profiles.phone}</p>
                             </div>
                         </div>
                     ))

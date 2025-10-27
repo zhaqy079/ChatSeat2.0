@@ -1,5 +1,6 @@
 import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { createClient } from '@supabase/supabase-js';
 import {useNavigate, useParams } from "react-router-dom";
 
@@ -61,10 +62,6 @@ const deleteUser = async (userID, navigate) => {
 };
 
 
-
-
-
-
 export default function AdminManageUser() {
     const navigate = useNavigate();
     const [user, setUser] = useState([]);
@@ -102,16 +99,20 @@ export default function AdminManageUser() {
 
         // User role update
         var roleError = '';
-        if (isAdmin === true && user.role !== 'admin') {
-            roleError = await supabase
-                .from('user_profiles')
-                .update({ role: 'admin' })
-                .eq('profile_id', user.profile_id)
-        } else if (updateLocationIds.length > 0 && user.role !== 'coordinator') {
-            roleError = await supabase
-                .from('user_profiles')
-                .update({ role: 'coordinator' })
-                .eq('profile_id', user.profile_id)
+        if (isAdmin === true) {
+            if (user.role !== 'admin') {
+                roleError = await supabase
+                    .from('user_profiles')
+                    .update({ role: 'admin' })
+                    .eq('profile_id', user.profile_id)
+            }
+        } else if (updateLocationIds.length > 0) {
+            if (user.role !== 'coordinator') {
+                roleError = await supabase
+                    .from('user_profiles')
+                    .update({ role: 'coordinator' })
+                    .eq('profile_id', user.profile_id)
+            }
         } else if (user.role !== 'listener') {
             roleError = await supabase
                 .from('user_profiles')

@@ -25,8 +25,7 @@ export const fetchAllUsers = async () => {
 // Function call to approve a user
 async function approveUser(userID) {
     const { error: profileError } = await supabase.from("user_profiles").update({
-            // Needs to become dynamic, dependent on user approving. Defaulting to Admin Istrator
-            approved_by: "73fd19d1-5665-479b-8500-5ea691b0e1be"
+        approved_by: sessionStorage.getItem('user_id')
          }).eq('profile_id', userID);
 
         if (profileError) {
