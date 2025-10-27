@@ -57,29 +57,37 @@ export default function ResetPassword() {
     };
 
     return (
-        <>
-            <div className="min-h-screen flex justify-center items-center bg-gray-100">
-                <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-                    <h2 className="text-2xl font-bold mb-4">Reset Password</h2>
-                    {message && <p className="mb-4 text-red-500">{message}</p>}
-                    <form onSubmit={handleReset}>
-                        <input
-                            type="password"
-                            placeholder="Enter new password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded mb-4"
-                            required
-                        />
-                        <button
-                            type="submit"
-                            className="w-full bg-blue-600 text-white py-2 rounded"
-                        >
-                            Reset Password
-                        </button>
+        <div className="min-vh-100 d-flex flex-column">
+            <div className="flex-grow-1 d-flex align-items-center justify-content-center login-page">
+                <div className="bg-white shadow p-4 p-md-5 rounded-3">
+                    <h2 className="fw-bold text-center mb-4 intro-title">
+                        Reset Password
+                    </h2>
+                    {message && <p className="mb-4 text-danger">{message}</p>}
+                    <form
+                        onSubmit={handleReset}>
+                        <div className="row">
+                            <input
+                                type="password"
+                                placeholder="Enter new password"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                className=" p-3 border border-gray-300 rounded mb-4"
+                                required
+                            />
+                        </div>
+                        <div className="row">
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                            >
+                                Reset Password
+                            </button>
+                        </div>
+                        
                     </form>
                 </div>
             </div>
-        </>
+      </div>
     );
 }

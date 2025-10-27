@@ -34,7 +34,7 @@ export default function ResetRequest() {
             <div className="flex-grow-1 d-flex align-items-center justify-content-center login-page">
                 <div className="bg-white shadow p-4 p-md-5 rounded-3">
                     <h2 className="fw-bold text-center mb-4 intro-title">
-                        Forgot Password
+                        Reset Request
                     </h2>
 
                     <form
