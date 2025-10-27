@@ -1,4 +1,3 @@
-import AdminSidebar from "../Admin/AdminSidebar";
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
 
@@ -64,7 +63,6 @@ export default function UserGeneralForum() {
         const { error } = await supabase
             .from('general_forum')
             .update({
-                user_id: "d7c48149-6553-4dd2-ae95-ad9b5274ade1",
                 content: "THIS MESSAGE HAS BEEN DELETED"
             })
             .eq('general_forum_id', post_id);
