@@ -4,6 +4,10 @@
 import { useEffect, useState } from "react";
 import { createClient } from '@supabase/supabase-js';
 import libraryIcon from "../assets/icons/icons8-library-48.png";
+import timeIcon from "../assets/icons/icons8-clock-48.png";
+import dateIcon from "../assets/icons/icons8-today-48.png";
+import listenerIcon from "../assets/icons/icons8-people-48.png";
+
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
     process.env.REACT_APP_SUPABASE_ANON_KEY
@@ -158,13 +162,16 @@ export default function Venues() {
                                                     {appointment.location}
                                                 </h5>
                                                 <p className="mb-1">
-                                                    <strong>Time:</strong> {appointment.time}
+                                                    <strong> <img src={timeIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                        Time:</strong> {appointment.time}
                                                 </p>
                                                 <p className="mb-1">
-                                                    <strong>Date:</strong> {appointment.dateLabel}
+                                                    <strong> <img src={dateIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                        Date:</strong> {appointment.dateLabel}
                                                 </p>
                                                 <p className="mb-0">
-                                                    <strong>Listeners:</strong>{" "}
+                                                    <strong> <img src={listenerIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                        Listeners:</strong>{" "}
                                                     {(appointment.bookedUsers || ["Unassigned"]).join(", ")}
                                                 </p>
                                             </div>
