@@ -46,7 +46,7 @@ export default function Navbar() {
                         />
                     
                     </button>
-                <span className="brand-center-title fw-bold text-white fs-5 mb-0" onClick={() => navigate("/")}>Have a Chat Seat</span>
+                <span className="brand-center-title fw-bold text-white fs-5 mb-0 position-absolute start-50 translate-middle-x d-none d-lg-inline" onClick={() => navigate("/")}>Have a Chat Seat</span>
                 
                 <button
                     className="navbar-toggler"

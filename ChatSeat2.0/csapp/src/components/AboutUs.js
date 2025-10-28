@@ -1,5 +1,6 @@
 ﻿import React from "react";
 import { useNavigate } from "react-router-dom";
+import teamIcon from "../assets/icons/icons8-smiling-face-48.png";
 
 export default function AboutUs() {
     const navigate = useNavigate();
@@ -92,9 +93,53 @@ export default function AboutUs() {
                         <button onClick={() => navigate("/signup")} className="btn btn-primary px-4">
                             Become a Listener
                         </button>
-                        <button onClick={() => navigate("/venues")} className="btn btn-outline-success px-4">
+                        <button className="btn btn-outline-success px-4" data-bs-toggle="collapse" data-bs-target="#creditsCollapse">
                             Learn More
                         </button>
+                    </div>
+                    <div id="creditsCollapse" className="collapse mt-3">
+                        <div className="card shadow-sm border-0" style={{ maxWidth: 760, margin: "0 auto" }}>
+                            <div className="card-body">
+                                <h5 className="fw-semibold mb-3 text-center text-secondary">
+                                    Project Acknowledgements
+                                </h5>
+                                <p className="text-muted text-center mb-4">
+                                    Developed in collaboration with the <strong>Have a Chat Seat</strong> community
+                                    program as part of the University of South Australia (UniSA) Capstone Project
+                                    for the final year of the Bachelor of Information Technology.
+                                </p>
+
+                                <ul
+                                    className="list-unstyled text-muted mb-0"
+                                    style={{ lineHeight: 1.8, fontSize: "0.95rem" }}
+                                >
+                                    <li><strong>Project:</strong> ChatSeat 2.0 Scheduling Platform Revamp</li>
+                                    <li><strong>Client:</strong> Dr. Tricia Wilkins</li>
+                                    <li><strong>Supervisor:</strong> Dr. Douglas Kelly</li>
+                                    <li><strong>Current Team:</strong> Qianting Zhang, Jordon Cursaro, Callum Malycha</li>
+                                    <li><strong>Contact:</strong> qiantingzhang978@gmail.com · Jorcursa@gmail.com · callummalycha@gmail.com</li>
+                                    <li><strong>Technologies:</strong> React · Supabase · .NET Core · Bootstrap</li>
+                                    <li>
+                                        <strong>Icons:</strong>{" "}
+                                        <a
+                                            href="https://icons8.com/icons"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            style={{ color: "#198754" }}
+                                        >
+                                            Icons8
+                                        </a>
+                                    </li>
+                                    <li><strong>Previous Development:</strong>Darshi Gabani, Chun Ho Chan</li>
+                                    <li><strong>Contact:</strong> darshi.gabani2001@gmail.com · chacy239@gmail.com</li>
+                                </ul>
+
+                                <p className="text-center text-secondary mt-4" style={{ fontSize: "0.85rem" }}>
+                                    © {new Date().getFullYear()} ChatSeat 2.0 · Developed by ICT 28 Team with  
+                                    <img src={teamIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
