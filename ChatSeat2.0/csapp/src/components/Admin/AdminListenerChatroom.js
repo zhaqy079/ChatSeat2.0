@@ -134,13 +134,13 @@ export default function AdminListenerChatroom() {
     }
 
     return (
-        <div className="d-flex dashboard-page-content ">
+        <div className="d-flex dashboard-page-content">
             {/* Sidebar on the left */}
             <aside>
                 <AdminSidebar />
             </aside>
             {/* Right content area */}
-            <div className="d-flex  dashboard-page-content ">
+            <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
                 <div className="flex-grow-1 px-3 px-md-4 py-4">
                     <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
                     <form className="mb-2" onSubmit={async (e) => {

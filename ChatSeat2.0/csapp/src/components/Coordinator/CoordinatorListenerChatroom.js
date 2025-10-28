@@ -4,7 +4,7 @@ import UserGeneralForum from "../Shared/UserGeneralForum";
 
 export default function CoordinatorListenerChatroom() {
     return (
-        <div className="d-flex dashboard-page-content ">
+        <div className="d-flex dashboard-page-content">
             {/* Sidebar on the left */}
             <aside>
                 <CoordinatorSidebar />

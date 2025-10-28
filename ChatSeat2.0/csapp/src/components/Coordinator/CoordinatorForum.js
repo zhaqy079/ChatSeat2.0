@@ -135,38 +135,42 @@ export default function CoordinatorForum() {
     }
 
     return (
-        <div className="d-flex  dashboard-page-content ">
+        <div className="d-flex dashboard-page-content">
             <aside>
                 <CoordinatorSidebar />
             </aside>
-            <div className="flex-grow-1 px-3 px-md-4 py-4">
-                <h4 className="fw-bold mb-4 text-primary">Coordinator Forum</h4>
-                <form className="mb-2" onSubmit={async (e) => {
-                    e.preventDefault();
 
-                    const message = postRef.current?.value;
-                    const reply = null;
-                    await createPost({ message, reply });
-                }}>
-                    <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
-                    <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
-                </form>
 
-                <hr />
+            <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
+                <div className="flex-grow-1 px-3 px-md-4 py-4">
+                    <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
+                    <form className="mb-2" onSubmit={async (e) => {
+                        e.preventDefault();
 
-                { // Forum display logic, if no forum posts display special message otherwise display all posts
-                    !coordforumlist.length > 0 ? (
-                        // If no posts are found, show a message
-                        <h5 className="p-4 text-center">
-                            No posts found.
-                        </h5>
-                    ) : (
-                        coordforumlist
-                            .filter(post => post.reply_to === null) // Only top-level posts
-                            .map(post => (
-                                <Post key={post.id} post={post} posts={coordforumlist} />
-                            ))
-                    )}
+                        const message = postRef.current?.value;
+                        const reply = null;
+                        await createPost({ message, reply });
+                    }}>
+                        <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
+                        <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
+                    </form>
+
+                    <hr />
+
+                    { // Forum display logic, if no forum posts display special message otherwise display all posts
+                        !coordforumlist.length > 0 ? (
+                            // If no posts are found, show a message
+                            <h5 className="p-4 text-center">
+                                No posts found.
+                            </h5>
+                        ) : (
+                            coordforumlist
+                                .filter(post => post.reply_to === null) // Only top-level posts
+                                .map(post => (
+                                    <Post key={post.id} post={post} posts={coordforumlist} />
+                                ))
+                        )}
+                </div>
             </div>
         </div>
 
