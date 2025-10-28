@@ -18,9 +18,12 @@ export default function Venues() {
     const [venue, setVenue] = useState(null);
     const [showMap, setShowMap] = useState(false);
     const [appointments, setAppointments] = useState([]);
+    const [locations, setLocations] = useState([]);
+    const [selectedLocation, setSelectedLocation] = useState("all");
+    const [expandedMaps, setExpandedMaps] = useState({});
 
     useEffect(() => {
-        fetch("/api/venues") 
+        fetch("/api/venues")
             .then((res) => res.json())
             .then((data) => setVenue(data))
             .catch((err) => console.error("Error fetching venue:", err));
@@ -32,6 +35,12 @@ export default function Venues() {
         )}&output=embed`
         : "";
 
+    const toggleMap = (id) => {
+        setExpandedMaps((prev) => ({
+            ...prev,
+            [id]: !prev[id],
+        }));
+    };
     // Display the venues slots (booked by listeners)
     useEffect(() => {
         const fetchData = async () => {
@@ -41,6 +50,7 @@ export default function Venues() {
                     .from("venue_locations")
                     .select("location_id, location_name, location_address")
                     .order("location_name", { ascending: true });
+                setLocations(locs || []);
 
                 // Fetch bookings
                 const { data: bookings, error } = await supabase
@@ -73,7 +83,7 @@ export default function Venues() {
 
                         if (eventDate < today) return null;
 
-                        
+
                         let listenerIds = [];
                         try {
                             listenerIds = Array.isArray(b.listener_ids)
@@ -117,50 +127,74 @@ export default function Venues() {
         fetchData();
     }, []);
 
+    // Group by location, then display by location
+    const filteredAppointments =
+        selectedLocation === "all"
+            ? appointments
+            : appointments.filter((a) => a.location_id === selectedLocation);
+
+    const groupedByLocation = locations
+        .map((loc) => ({
+            ...loc,
+            slots: filteredAppointments.filter(
+                (a) => a.location_id === loc.location_id
+            ),
+        }))
+        .filter((loc) => loc.slots.length > 0);
+
     return (
         <div className="bg-white min-h-screen">
             <div className="container py-5">
-                {venue ? (
+                {venue && (
                     <div className="bg-white shadow p-4 mb-6 rounded">
-                        <h3 className="fw-bold text-primary">{venue.name}</h3>
-                        <p className="text"> <img src={libraryIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                            <button
-                                type="button"
-                                className="btn btn-link p-0 link-secondary"
-                                onClick={() => setShowMap((s) => !s)}
-                                aria-expanded={showMap}
-                                title="Show on map"
-                            >
-                                {venue.location}
-                            </button>
-                        </p>
-
-                        {/* Inline, responsive map inside the card */}
-                        {showMap && (
-                            <div className="ratio ratio-16x9 mt-3">
-                                <iframe
-                                    src={mapSrc}
-                                    style={{ border: 10 }}
-                                    loading="lazy"
-                                    allowFullScreen
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                    title={`${venue.name} location map`}
-                                />
-                            </div>
-                        )}
-                        
-                        <h4 className="fw-bold text-primary mb-3">Upcoming Chat Seats</h4>
-                        {appointments.length === 0 ? (
-                            <p className="text-muted">No upcoming slots yet.</p>
+                        {/*Display each loaction with map*/}
+                        {groupedByLocation.length === 0 ? (
+                            <p className="text-muted">No upcoming slots found.</p>
                         ) : (
+                            groupedByLocation.map((group) => { 
+                                const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(
+                                group.location_address || group.location_name
+                                )}&output=embed`;
+
+                        return (
+                             
+                            <div key={group.location_id} className="mb-5">
+                                {/*show each library location and opening hours */}   
+                            <h4 className="fw-bold text-primary mb-3">
+                                {group.location_name}
+                                <img
+                                src={libraryIcon}
+                                alt="Map icon"
+                                className="icon ms-2"
+                                style={{ width: 20, height: 20, cursor: "pointer" }}
+                                onClick={() => toggleMap(group.location_id)} 
+                                title="Show on map"
+                                  />
+                             </h4>
+                                {
+                                    expandedMaps[group.location_id] && ( 
+                                        <div className="ratio ratio-16x9 mb-3">
+                                            <iframe
+                                                src={mapSrc}
+                                                style={{ border: 0 }}
+                                                loading="lazy"
+                                                allowFullScreen
+                                                referrerPolicy="no-referrer-when-downgrade"
+                                                title={`${group.location_name} map`}
+                                            />
+                                        </div>
+                                    )
+                                }
+
                             <div className="row g-3">
-                                {appointments.map((appointment) => (
-                                    <div key={appointment.id} className="col-sm-6 col-md-4 col-lg-3">
+                                {group.slots.map((appointment) => (
+                                    <div
+                                        key={appointment.id}
+                                        className="col-sm-6 col-md-4 col-lg-3"
+                                    >
                                         <div className="card shadow-sm border-0 h-100">
                                             <div className="card-body">
-                                                <h5 className="card-title fw-bold text-dark">
-                                                    {appointment.location}
-                                                </h5>
+
                                                 <p className="mb-1">
                                                     <strong> <img src={timeIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
                                                         Time:</strong> {appointment.time}
@@ -169,7 +203,7 @@ export default function Venues() {
                                                     <strong> <img src={dateIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
                                                         Date:</strong> {appointment.dateLabel}
                                                 </p>
-                                                <p className="mb-0">
+                                                <p className="mb-1">
                                                     <strong> <img src={listenerIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
                                                         Listeners:</strong>{" "}
                                                     {(appointment.bookedUsers || ["Unassigned"]).join(", ")}
@@ -179,13 +213,17 @@ export default function Venues() {
                                     </div>
                                 ))}
                             </div>
+                        </div>
+                        );
+                        })
                         )}
                     </div>
-                ) : (
-                    <p className="text-muted">Current no Venue...</p>
+
                 )}
+
             </div>
+
         </div>
     );
-}
 
+}
