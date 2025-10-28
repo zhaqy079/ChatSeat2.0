@@ -1,9 +1,10 @@
-﻿// When user click "Forget Password" at the login page,
-// after using enter their login account email, will send a password reset link to their email
+﻿import { useState } from "react";
+import { createClient } from '@supabase/supabase-js';
 
-import { useState } from "react";
-//import supabase from "../supabase";
-import { toast } from "react-toastify";
+const supabase = createClient(
+    process.env.REACT_APP_SUPABASE_URL,
+    process.env.REACT_APP_SUPABASE_ANON_KEY
+);
 
 export default function ResetRequest() {
     const [email, setEmail] = useState("");
@@ -12,16 +13,20 @@ export default function ResetRequest() {
     // Function to handle password reset request
     const handleResetRequest = async (e) => {
         e.preventDefault();
-        // Supabase part may need update 
-        //const { error } = await supabase.auth.resetPasswordForEmail(email, {
-         //   redirectTo: "https://chatseats.com.au/reset-password",
-       // });
 
-        //setMessage(
-        //    error
-        //        ? "Error: " + error.message
-        //        : "Password reset link sent to your email."
-        //);
+        document.getElementById("resetSubmit").disabled = true;
+
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: "https://chatseats.com.au/reset-password",
+        });
+
+        setMessage(
+            error
+                ? "Error: " + error.message
+                : "Password reset link sent to your email."
+        );
+
+        document.getElementById("resetSubmit").disabled = false;
     };
 
     return (
@@ -29,7 +34,7 @@ export default function ResetRequest() {
             <div className="flex-grow-1 d-flex align-items-center justify-content-center login-page">
                 <div className="bg-white shadow p-4 p-md-5 rounded-3">
                     <h2 className="fw-bold text-center mb-4 intro-title">
-                        Forget Password
+                        Reset Request
                     </h2>
 
                     <form
@@ -50,16 +55,19 @@ export default function ResetRequest() {
                             <button
                                 type="submit"
                                 className="btn w-100 fw-bold text-white login-btn"
+                                id="resetSubmit"
                             >
                                 Send Reset Link
                             </button>
                         </div>
+
                         <div className="text-center mt-4">
                             <a href="/login" className="btn btn-link p-0">
                                 Back to Login
                             </a>
                         </div>
-                </form>
+                        {message && <p className="mt-4 text-center">{message}</p>}
+                    </form>
                 </div>
             </div>
       </div>

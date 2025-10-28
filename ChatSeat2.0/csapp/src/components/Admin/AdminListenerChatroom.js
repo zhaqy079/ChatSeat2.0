@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
+import AdminSidebar from "./AdminSidebar";
+import UserGeneralForum from "../Shared/UserGeneralForum";
 
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
@@ -20,8 +22,7 @@ export const fetchAllGeneralForumPosts = async () => {
 };
 
 
-
-export default function UserGeneralForum() {
+export default function AdminListenerChatroom() {
     const [generalforumlist, setGeneralforumlist] = useState([]);
     const [activePostId, setActivePostId] = useState(null);
     const replyRef = useRef(null);
@@ -38,10 +39,10 @@ export default function UserGeneralForum() {
             }
         };
 
-        getGeneralForumPosts(); 
+        getGeneralForumPosts();
     }, []);
 
-    
+
     const createPost = async ({ message, reply }) => {
         if (!message) {
             alert("Please input something into the reply field.");
@@ -72,7 +73,7 @@ export default function UserGeneralForum() {
 
 
     // Links posts with their replies
-    function Post({post, posts}) {
+    function Post({ post, posts }) {
         // Find direct replies to this post
         const replies = posts.filter(p => p.reply_to === post.general_forum_id);
 
@@ -96,13 +97,12 @@ export default function UserGeneralForum() {
                             <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
                             {post.user_profiles.profile_id !== "d7c48149-6553-4dd2-ae95-ad9b5274ade1"
                                 ? <div className="ms-auto">
-                                    {sessionStorage.getItem('user_id') === post.user_profiles.profile_id
-                                        ? <button type="button" className="btn btn-danger me-2" onClick={() => deletePost(post.general_forum_id)}>Delete</button> : null}
+                                    <button type="button" className="btn btn-danger me-2" onClick={() => deletePost(post.general_forum_id)}>Delete</button>
                                     <button type="button" className="btn btn-secondary" onClick={() => {
                                         setActivePostId(prevId => (prevId === post.general_forum_id ? null : post.general_forum_id));
                                     }}>Reply</button>
-                                </div>                        
-                            : null}
+                                </div>
+                                : null}
                         </div>
                     </div>
                     <p className="card-text">{post.content}</p>
@@ -127,15 +127,21 @@ export default function UserGeneralForum() {
                     )}
                 </div>
                 {replies.map(reply => (
-                    <Post key={reply.id} post={reply} posts={posts}/>
+                    <Post key={reply.id} post={reply} posts={posts} />
                 ))}
             </div>
         );
     }
 
     return (
-        <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
-            <div className="flex-grow-1 px-3 px-md-4 py-4">
+        <div className="d-flex dashboard-page-content">
+            {/* Sidebar on the left */}
+            <aside>
+                <AdminSidebar />
+            </aside>
+            {/* Right content area */}
+            <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
+                <div className="flex-grow-1 px-3 px-md-4 py-4">
                     <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
                     <form className="mb-2" onSubmit={async (e) => {
                         e.preventDefault();
@@ -144,27 +150,27 @@ export default function UserGeneralForum() {
                         const reply = null;
                         await createPost({ message, reply });
                     }}>
-                        <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef}/>
+                        <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
                         <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
                     </form>
 
-                    <hr/>
+                    <hr />
 
                     { // Forum display logic, if no forum posts display special message otherwise display all posts
                         !generalforumlist.length > 0 ? (
-                        // If no posts are found, show a message
-                        <h5 className="p-4 text-center">
-                            No posts found.
-                        </h5>
-                    ) : (
-                    generalforumlist
-                        .filter(post => post.reply_to === null) // Only top-level posts
-                        .map(post => (
-                            <Post key={post.id} post={post} posts={generalforumlist} />
-                        ))
-                    )}
+                            // If no posts are found, show a message
+                            <h5 className="p-4 text-center">
+                                No posts found.
+                            </h5>
+                        ) : (
+                            generalforumlist
+                                .filter(post => post.reply_to === null) // Only top-level posts
+                                .map(post => (
+                                    <Post key={post.id} post={post} posts={generalforumlist} />
+                                ))
+                        )}
                 </div>
             </div>
-
+        </div>
     );
 }

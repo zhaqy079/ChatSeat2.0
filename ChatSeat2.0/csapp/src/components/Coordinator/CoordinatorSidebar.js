@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../state/loggedInUser";
 import { createClient } from "@supabase/supabase-js";
 
@@ -8,10 +8,11 @@ const supabase = createClient(
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
-export default function CoordinatorSidebar({ userName = "" }) {
+export default function CoordinatorSidebar() {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const user = useSelector((s) => s.loggedInUser?.success);
 
 
     const getActiveLink = (url) =>
@@ -31,7 +32,7 @@ export default function CoordinatorSidebar({ userName = "" }) {
     return (
         <div className="dashboard-sidebar">
             <div className="dashboard-sidebar__greeting">
-                Hello, {userName}!
+                Hello, {user?.firstName ? `${user.firstName}` : ""}!
             </div>
 
             <div className="dashboard-sidebar__nav">
@@ -47,14 +48,18 @@ export default function CoordinatorSidebar({ userName = "" }) {
                 <NavLink to="coordinatoraddlistener" className={getActiveLink("coordinatoraddlistener")}>
                     Add A Listener
                 </NavLink>
-                <NavLink to="coordinatorchatroom" className={getActiveLink("coordinatorchatroom")}>
+                <NavLink to="/coordinatorchatroom" className={getActiveLink("/coordinatorchatroom")}>
                     Coordinator Chat Room
                 </NavLink>
-                <NavLink to="coordinatorlistenerchatroom" className={getActiveLink("coordinatorlistenerchatroom")}>
+                <NavLink to="/coordinatorlistenerchatroom" className={getActiveLink("/coordinatorlistenerchatroom")}>
                     Listener Chat Room
                 </NavLink>
             </div>
             <div className="mt-3">
+                <NavLink to="/submitFeedback" className={getActiveLink("/submitFeedback")}>
+                    Submit Feedback
+                </NavLink>
+                <hr />
                 <button className="dashboard-sidebar__logout" onClick={handleLogout}>
                     Logout
                 </button>

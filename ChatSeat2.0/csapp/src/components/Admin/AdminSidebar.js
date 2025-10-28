@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../state/loggedInUser";
 import { createClient } from "@supabase/supabase-js";
 
@@ -8,10 +8,11 @@ const supabase = createClient(
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51YXJpbXVuaHV0d3ptY2tuaHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTk2MjIsImV4cCI6MjA3MTIzNTYyMn0.fwdTA0n_vSrT_kUqlExIPdDpPrHo_fRIkOUcd5aHi0c"
 );
 
-export default function AdminSidebar({ userName = "" }) {
+export default function AdminSidebar() {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const user = useSelector((s) => s.loggedInUser?.success);
 
     const getActiveLink = (url) =>
         location.pathname === url
@@ -31,7 +32,7 @@ export default function AdminSidebar({ userName = "" }) {
     return (
         <div className="dashboard-sidebar">
             <div className="dashboard-sidebar__greeting">
-                Hello, {userName}!
+                Hello, {user?.firstName ? `${user.firstName}` : ""}!
             </div>
 
             <div className="dashboard-sidebar__nav">
@@ -44,14 +45,11 @@ export default function AdminSidebar({ userName = "" }) {
                 <NavLink to="/adminViewUsers" className={getActiveLink("/adminViewUsers")}>
                     View All Users
                 </NavLink>
-                <NavLink to="/adminManageLocations" className={getActiveLink("/adminManageLocations")}>
-                    Manage Locations
-                </NavLink>
-                <NavLink to="/userGeneralForums" className={getActiveLink("/userGeneralForums")}>
+                <NavLink to="/adminlistenerchatroom" className={getActiveLink("/adminlistenerchatroom")}>
                     General Forum
                 </NavLink>
                 <NavLink to="/adminFeedback" className={getActiveLink("/adminFeedback")}>
-                    Feedback
+                    Manage Feedback
                 </NavLink>
                 <NavLink to="/admineditresource" className={getActiveLink("/admineditresource")}>
                     Edit Resources
@@ -59,6 +57,10 @@ export default function AdminSidebar({ userName = "" }) {
             </div>
 
             <div className="mt-3">
+                <NavLink to="/submitFeedback" className={getActiveLink("/submitFeedback")}>
+                    Submit Feedback
+                </NavLink>
+                <hr/>
                 <button className="dashboard-sidebar__logout" onClick={handleLogout}>
                     Logout
                 </button>

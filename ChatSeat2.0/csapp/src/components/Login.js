@@ -39,6 +39,7 @@ export default function Login() {
 
             if (authError) throw authError;
 
+            sessionStorage.setItem('user_id', authData.user.id)
             navigate("/admindashboard");
 
 

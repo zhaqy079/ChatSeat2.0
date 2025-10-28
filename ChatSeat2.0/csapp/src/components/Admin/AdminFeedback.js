@@ -21,9 +21,45 @@ export const fetchAllFeedbackPosts = async () => {
     return data;
 };
 
+// Function call to resolve a post
+async function resolvePost(feedbackID) {
+    const { error: profileError } = await supabase.from("feedback_forum").update(
+        {
+            resolved_at: new Date()
+        }
+    ).eq('feedback_forum_id', feedbackID);
+
+    if (profileError) {
+        throw new Error("Failed to resolve post: " + profileError.message);
+    }
+
+    window.location.reload();
+}
+
+// Function call to unresolve a post
+async function unresolvePost(feedbackID) {
+    const { error: profileError } = await supabase.from("feedback_forum").update(
+        {
+            resolved_at: null
+        }
+    ).eq('feedback_forum_id', feedbackID);
+
+    if (profileError) {
+        throw new Error("Failed to unresolve post: " + profileError.message);
+    }
+
+    window.location.reload();
+}
+
 export default function AdminFeedback() {
     const [feedbacklist, setFeedbacklist] = useState([]);
-    const [searchdata, setSearchdata] = useState({resolveState: 'unresolved'});
+    const [searchdata, setSearchdata] = useState(() => {
+        return sessionStorage.getItem('feedback') || 'unresolved';
+    });
+
+    useEffect(() => {
+        sessionStorage.setItem('feedback', searchdata);
+    }, [searchdata]);
 
     // Stores the list of feedback posts from the database
     useEffect(() => {
@@ -43,9 +79,9 @@ export default function AdminFeedback() {
     // Filters posts according to inputted criteria
     const filteredFeedbackposts = feedbacklist
         .filter((post) => (
-            searchdata.resolveState === "all" || searchdata.resolveState === ""
+            searchdata === "all" || searchdata === ""
                 ? true
-                : (searchdata.resolveState === "unresolved" ? post.resolved_at === null : post.resolved_at !== null)
+                : (searchdata === "unresolved" ? post.resolved_at === null : post.resolved_at !== null)
         ));
 
 
@@ -65,10 +101,10 @@ export default function AdminFeedback() {
                     <div className="mb-3">
                     <select
                         className="form-select fw-semibold mb-2 w-auto "
-                        value={searchdata.resolveState}
-                        onChange={(e) => setSearchdata({ ...searchdata, resolveState: e.target.value })}>
-                        <option value="unresolved" >Unresolved</option>
-                        <option value="resolved">Resolved</option>
+                        value={searchdata}
+                        onChange={(e) => setSearchdata(searchdata)}>
+                          <option value="unresolved" >Unresolved</option>
+                          <option value="resolved">Resolved</option>
                             <option value="all">All Posts</option>
                         </select>
                     </div>
@@ -101,21 +137,26 @@ export default function AdminFeedback() {
                                                         })} </small>
                                             </div>
 
-                                            <div className="row">
+                                            <div className="">
                                                 { // Logic to check whether a post has been resolved, if it has display resolve time otherwise display resolve button
                                                 post.resolved_at === null
-                                                    ? // Placeholder resolve button, back end logic still needs to be added 
-                                                    <button type="button" className="btn btn-secondary">Resolve</button>
-                                                    :
-                                                    <small className="text-muted text-center">Resolved: { 
-                                                        // Logic to adjust displayed date to '27 Nov 2025' format
-                                                            new Date(post.resolved_at).toLocaleDateString("en-AU", {
-                                                            year: "numeric",
-                                                            month: "short",
-                                                            day: "numeric",
-                                                            })}
-                                                    </small>
-                                                }
+                                                        ? // Placeholder resolve button, back end logic still needs to be added 
+                                                        <div className="row">
+                                                            <button type="button" className="btn btn-secondary" onClick={() => resolvePost(post.feedback_forum_id)}>Resolve</button>
+                                                        </div>
+                                                    : (
+                                                    <div className="row">
+                                                        <small className="text-muted text-center">Resolved: { 
+                                                            // Logic to adjust displayed date to '27 Nov 2025' format
+                                                                new Date(post.resolved_at).toLocaleDateString("en-AU", {
+                                                                year: "numeric",
+                                                                month: "short",
+                                                                day: "numeric",
+                                                                })}
+                                                        </small>
+                                                        <button type="button" className="btn btn-dark" onClick={() => unresolvePost(post.feedback_forum_id)}>Unresolve</button>
+                                                    </div>
+                                                    )}
                                             </div>
                                         </div>
                                     </div>

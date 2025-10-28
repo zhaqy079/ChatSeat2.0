@@ -1,16 +1,16 @@
 ﻿import { useSelector } from "react-redux";
-import CoordinatorSidebar from "./CoordinatorSidebar";
+import UserGeneralForum from "../Shared/UserGeneralForum";
+import ListenerSidebar from "./ListenerSideBar";
 
-export default function CoordinatorChatroom() {
+export default function ListenerChatroom() {
     return (
         <div className="d-flex dashboard-page-content ">
             {/* Sidebar on the left */}
             <aside>
-                <CoordinatorSidebar />
+                <ListenerSidebar />
             </aside>
             {/* Right content area */}
-            <div className="flex-grow-1 px-3 px-md-4 py-4">
-            </div>
+            <UserGeneralForum/>
         </div>
     );
 }
