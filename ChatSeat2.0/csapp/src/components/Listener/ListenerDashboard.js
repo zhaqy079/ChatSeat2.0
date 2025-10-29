@@ -6,8 +6,8 @@ import { createClient } from '@supabase/supabase-js';
 import { useEffect, useState } from "react";
 
 const supabase = createClient(
-    "https://nuarimunhutwzmcknhwj.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51YXJpbXVuaHV0d3ptY2tuaHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTk2MjIsImV4cCI6MjA3MTIzNTYyMn0.fwdTA0n_vSrT_kUqlExIPdDpPrHo_fRIkOUcd5aHi0c"
+    process.env.REACT_APP_SUPABASE_URL,
+    process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
 export default function ListenerDashboard() {
@@ -31,38 +31,39 @@ export default function ListenerDashboard() {
 
     return (
 
-        <div className="d-flex">
+        <div className="d-flex dashboard-content">
             {/* Sidebar */}
-            <div className="col-12 col-md-3 col-lg-3 p-0">
+            <div>
                 <ListenerSideBar />
             </div>
 
             {/* Main Content */}
-            <main className="p-4">
-                <div className="card shadow-sm rounded-3 p-4">
+            <main className="p-4 d-flex justify-content-center flex-grow-1 my-4">
+                <div className="dashboard-content-wrap">
+                    <div className="dashboard-card p-4">
+                        <div className="card-body">
 
-                    <h2 className="fw-bold text-primary mb-4 text-center">
-                        Welcome Listener: {user?.firstName ? user.firstName : ""}
-                    </h2>
+                            <h2 className="fw-bold intro-title mb-4 text-center">
+                        Welcome Listener, {user?.firstName ? user.firstName : ""}!
+                            </h2>
+                            <p className="text-secondary mb-4 text-center">
+                                Thank you for agreeing to volunteer some of your time as a Listener on our Chat Seats.
+                                On this page you will find useful guides and resources to help you in your role.
+                            </p>
 
-                    <div className="text-center">
-                        <p className="text-secondary mb-4">
-                            Thank you for agreeing to volunteer some of your time as a Listener on our Chat Seats.
-                            On this page you will find useful guides and resources to help you in your role.
-                        </p>
-
-                        <h2 className="fw-bold text-primary mb-4">
-                            Guide for Chat Seat
-                        </h2>
-                    </div>
+                       
+                           
+                                <h2 className="intro-title text-center text-bold"> Guide for Chat Seat
+                                </h2>
+                    
 
 
                     {/* Guides Section */}
                     <div className="row g-3 mb-4">
                         <div className="col-12 col-md-6">
                             <div className="card border-primary bg-primary-subtle p-3 h-100">
-                                <h5 className="card-title text-primary">Learn More About Listening</h5>
-                                <ul className="ms-3 mb-0">
+                                        <h5 className="intro-title mb-3">Learn More About Listening</h5>
+                                        <ul className="list-clean mt-2 mb-0">
                                     <li>
                                         <Link to="/listeningskills" className="text-decoration-none text-primary">
                                             Good Listening Skills
@@ -84,7 +85,7 @@ export default function ListenerDashboard() {
 
                         <div className="col-12 col-md-6">
                             <div className="card border-success bg-success-subtle p-3 h-100">
-                                <h5 className="card-title text-success mb-3">Tools and Support</h5>
+                                <h5 className="intro-title text-success mb-3">Tools and Support</h5>
                                 <p>Use the <strong>Booking tab</strong> to choose your Chat Seat venue and time.</p>
                                 <p>Use the <strong>Chat room</strong> to exchange ideas with other Listeners.</p>
                                 <p>Provide your <strong>Feedback</strong> through the <strong>Feedback tab</strong>.</p>
@@ -93,8 +94,8 @@ export default function ListenerDashboard() {
                     </div>
 
                     <div className="card border-secondary bg-secondary-subtle p-3 h-100">
-                        <h5 className="card-title">External Resources</h5>
-                        <ul className="ms-3 mb-0">
+                        <h5 className="intro-title text-dark">External Resources</h5>
+                        <ul className="list-clean mt-2 mb-0">
                             {resources.map((r) => (
                                 <li key={r.resource_id}>
                                     <Link to={r.link} className="text-decoration-none" target="_blank" rel="noreferrer">
@@ -105,7 +106,10 @@ export default function ListenerDashboard() {
                         </ul>
                     </div>
 
+                        </div>
+                    </div>
                 </div>
+        
             </main>
         </div>
     );
