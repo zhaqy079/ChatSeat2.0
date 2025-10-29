@@ -54,10 +54,6 @@ export default function AdminSidebar() {
             </div>
 
             <div className="mt-3">
-                <NavLink to="/submitFeedback" className={getActiveLink("/submitFeedback")}>
-                    Submit Feedback
-                </NavLink>
-                <hr/>
                 <button className="dashboard-sidebar__logout" onClick={handleLogout}>
                     Logout
                 </button>

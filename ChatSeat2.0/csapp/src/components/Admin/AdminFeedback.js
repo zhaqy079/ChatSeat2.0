@@ -102,10 +102,10 @@ export default function AdminFeedback() {
                     <select
                         className="form-select fw-semibold mb-2 w-auto "
                         value={searchdata}
-                        onChange={(e) => setSearchdata(searchdata)}>
+                        onChange={(e) => setSearchdata(e.target.value)}>
                           <option value="unresolved" >Unresolved</option>
                           <option value="resolved">Resolved</option>
-                            <option value="all">All Posts</option>
+                          <option value="all">All Posts</option>
                         </select>
                     </div>
 

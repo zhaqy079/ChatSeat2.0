@@ -269,40 +269,42 @@ export default function AdminViewUsers() {
     
 
     return (
-        <div className="d-flex  dashboard-page-content ">
+        <div className="d-flex dashboard-page-content ">
             {/* Sidebar on the left */}
             <aside>
                 <AdminSidebar />
             </aside>
             {/* Right content area */}
-            <div className="flex-grow-1 px-3 px-md-4 py-4">
+            <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
+                <div className="flex-grow-1 px-3 px-md-4 py-4">
 
-                    <h4 className="fw-bold mb-4 text-primary">View All Users</h4>
+                        <h4 className="fw-bold mb-4 text-primary">View All Users</h4>
 
-                    {/* Dropdown menu to refine the displayed users */}
-                    <div className="mb-3">
-                    <select className="form-select fw-semibold mb-2 w-auto"
-                            value={searchrole}
-                            onChange={(e) => setSearchrole(e.target.value)}>
-                            <option value="pending">Pending Users</option>
-                            <option value="all">All Users</option>
-                            <option value="coordinator">Coordinators</option>
-                            <option value="admin">Admins</option>
-                        </select>
-                    </div>
+                        {/* Dropdown menu to refine the displayed users */}
+                        <div className="mb-3">
+                        <select className="form-select fw-semibold mb-2 w-auto"
+                                value={searchrole}
+                                onChange={(e) => setSearchrole(e.target.value)}>
+                                <option value="pending">Pending Users</option>
+                                <option value="all">All Users</option>
+                                <option value="coordinator">Coordinators</option>
+                                <option value="admin">Admins</option>
+                            </select>
+                        </div>
                     
-                    { // User display logic, if no users display message otherwise display users and their details 
-                        !filtereduserList.length > 0 ? (
-                        // If no users are found for the selected role, show a message
-                        <h5 className="text-center">
-                            No {searchrole} users found.
-                        </h5>
-                        ) : ((
-                            searchrole === "admin"
-                                ? adminTable(filtereduserList)
-                                : (searchrole === "coordinator" ? coordinatorTable(filtereduserList)
-                                    : <UserTable userlist={filtereduserList} />
-                        )))}
+                        { // User display logic, if no users display message otherwise display users and their details 
+                            !filtereduserList.length > 0 ? (
+                            // If no users are found for the selected role, show a message
+                            <h5 className="text-center">
+                                No {searchrole} users found.
+                            </h5>
+                            ) : ((
+                                searchrole === "admin"
+                                    ? adminTable(filtereduserList)
+                                    : (searchrole === "coordinator" ? coordinatorTable(filtereduserList)
+                                        : <UserTable userlist={filtereduserList} />
+                            )))}
+                    </div>
                 </div>
             </div>
         
