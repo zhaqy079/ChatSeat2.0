@@ -150,7 +150,8 @@ export default function CoordinatorForum() {
 
             <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
                 <div className="flex-grow-1 px-3 px-md-4 py-4">
-                    <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
+                    <h2 className="fw-bold dashboard-title fs-3 mb-4">Coordinator Hub</h2>
+                    
                     <form className="mb-2" onSubmit={async (e) => {
                         e.preventDefault();
 

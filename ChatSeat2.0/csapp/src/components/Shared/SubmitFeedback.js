@@ -37,7 +37,8 @@ export default function SubmitFeedback() {
 
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
-                    <h4 className="fw-bold mb-4 text-primary">Post Feedback</h4>
+                    <h2 className="fw-bold dashboard-title fs-3 mb-4">Your feedback</h2>
+                   
                     <form className="mb-2" onSubmit={createFeedback}>
                         <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new feedback..." onChange={(e) => setContent(e.target.value)} />
                         <button type="submit" className="w-full btn btn-primary">Post New Feedback</button>

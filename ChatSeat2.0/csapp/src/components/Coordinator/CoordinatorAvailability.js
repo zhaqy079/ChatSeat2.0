@@ -112,7 +112,7 @@ export default function CoordinatorAvailability() {
                 <CoordinatorSidebar />
             </aside>
             <div className="flex-grow-1 px-3 px-md-4 py-4">
-                <h4 className="fw-bold mb-4 text-primary">Calendar View</h4>
+                <h2 className="fw-bold dashboard-title fs-3 mb-4">Calendar View</h2>
                 <div className="card-panel p-4 sm:p-6 rounded shadow w-full">
                     <select
                         className="location-dropdown mb-3"
