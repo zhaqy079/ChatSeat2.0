@@ -61,11 +61,18 @@ export default function CoordinatorForum() {
     }
 
     const deletePost = async (post_id) => {
+        // Deletes the messages replies
+        const post_replies = coordforumlist.filter(p => p.reply_to === post_id);
+        {
+            post_replies.map(reply => (
+                deletePost(reply.coord_forum_id)
+            ))
+        }
+
+        // Deletes primary message
         const { error } = await supabase
             .from('coordinator_forum')
-            .update({
-                content: "THIS MESSAGE HAS BEEN DELETED"
-            })
+            .delete()
             .eq('coord_forum_id', post_id);
 
         window.location.reload();

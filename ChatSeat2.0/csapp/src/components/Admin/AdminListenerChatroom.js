@@ -61,11 +61,18 @@ export default function AdminListenerChatroom() {
     }
 
     const deletePost = async (post_id) => {
+        // Deletes the messages replies
+        const post_replies = generalforumlist.filter(p => p.reply_to === post_id);
+        {
+            post_replies.map(reply => (
+                deletePost(reply.general_forum_id)
+            ))
+        }
+
+        // Deletes primary message
         const { error } = await supabase
             .from('general_forum')
-            .update({
-                content: "THIS MESSAGE HAS BEEN DELETED"
-            })
+            .delete()
             .eq('general_forum_id', post_id);
 
         window.location.reload();
