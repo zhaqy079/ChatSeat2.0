@@ -84,7 +84,7 @@ export default function UserGeneralForum() {
         const replies = posts.filter(p => p.reply_to === post.general_forum_id);
 
         return (
-            <div key={post.general_forum_id} className="card mb-2" style={{ marginLeft: 10, marginRight: 1, padding: "1px 0" }}>
+            <div key={post.general_forum_id} className="card mb-2 " style={{ marginLeft: 10, marginRight: 1, padding: "1px 0" }}>
                 <div className="card-body py-2">
                     {/* Main content of a feedback post */}
                     <div>

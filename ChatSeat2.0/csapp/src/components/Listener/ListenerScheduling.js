@@ -7,8 +7,8 @@ import '../../index.css';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
-    "https://nuarimunhutwzmcknhwj.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51YXJpbXVuaHV0d3ptY2tuaHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTk2MjIsImV4cCI6MjA3MTIzNTYyMn0.fwdTA0n_vSrT_kUqlExIPdDpPrHo_fRIkOUcd5aHi0c"
+    process.env.REACT_APP_SUPABASE_URL,
+    process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
 export default function ListenerScheduling() {
@@ -223,7 +223,7 @@ export default function ListenerScheduling() {
     };
 
     return (
-         <div className="d-flex dashboard-page-content ">
+        <div className="d-flex dashboard-page-scheduling">
                   {/* Sidebar*/}
                   <aside>
                         <ListenerSideBar />

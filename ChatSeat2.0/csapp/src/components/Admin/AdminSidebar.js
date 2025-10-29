@@ -4,8 +4,8 @@ import { logoutUser } from "../../state/loggedInUser";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
-    "https://nuarimunhutwzmcknhwj.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51YXJpbXVuaHV0d3ptY2tuaHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTk2MjIsImV4cCI6MjA3MTIzNTYyMn0.fwdTA0n_vSrT_kUqlExIPdDpPrHo_fRIkOUcd5aHi0c"
+    process.env.REACT_APP_SUPABASE_URL,
+    process.env.REACT_APP_SUPABASE_ANON_KEY
 );
 
 export default function AdminSidebar() {
@@ -45,15 +45,16 @@ export default function AdminSidebar() {
                 <NavLink to="/adminViewUsers" className={getActiveLink("/adminViewUsers")}>
                     View All Users
                 </NavLink>
+                <NavLink to="/admineditresource" className={getActiveLink("/admineditresource")}>
+                    Edit Resources
+                </NavLink>
                 <NavLink to="/adminlistenerchatroom" className={getActiveLink("/adminlistenerchatroom")}>
                     General Forum
                 </NavLink>
                 <NavLink to="/adminFeedback" className={getActiveLink("/adminFeedback")}>
                     Manage Feedback
                 </NavLink>
-                <NavLink to="/admineditresource" className={getActiveLink("/admineditresource")}>
-                    Edit Resources
-                </NavLink>
+
             </div>
 
             <div className="mt-3">
