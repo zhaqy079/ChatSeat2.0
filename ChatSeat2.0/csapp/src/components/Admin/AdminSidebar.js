@@ -45,15 +45,16 @@ export default function AdminSidebar() {
                 <NavLink to="/adminViewUsers" className={getActiveLink("/adminViewUsers")}>
                     View All Users
                 </NavLink>
+                <NavLink to="/admineditresource" className={getActiveLink("/admineditresource")}>
+                    Edit Resources
+                </NavLink>
                 <NavLink to="/adminlistenerchatroom" className={getActiveLink("/adminlistenerchatroom")}>
                     General Forum
                 </NavLink>
                 <NavLink to="/adminFeedback" className={getActiveLink("/adminFeedback")}>
                     Manage Feedback
                 </NavLink>
-                <NavLink to="/admineditresource" className={getActiveLink("/admineditresource")}>
-                    Edit Resources
-                </NavLink>
+
             </div>
 
             <div className="mt-3">
