@@ -134,7 +134,7 @@ export default function AdminListenerChatroom() {
     }
 
     return (
-        <div className="d-flex dashboard-page-content">
+        <div className="d-flex dashboard-page-forum">
             {/* Sidebar on the left */}
             <aside>
                 <AdminSidebar />
