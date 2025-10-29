@@ -7,6 +7,7 @@ import libraryIcon from "../assets/icons/icons8-library-48.png";
 import timeIcon from "../assets/icons/icons8-clock-48.png";
 import dateIcon from "../assets/icons/icons8-today-48.png";
 import listenerIcon from "../assets/icons/icons8-people-48.png";
+import listenerIntroIcon from "../assets/icons/icons8-dash-48.png";
 
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
@@ -205,8 +206,20 @@ export default function Venues() {
                                                 </p>
                                                 <p className="mb-1">
                                                     <strong> <img src={listenerIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                                        Listeners:</strong>{" "}
-                                                    {(appointment.bookedUsers || ["Unassigned"]).join(", ")}
+                                                        Listeners: </strong>
+
+                                                    {/*{(appointment.bookedUsers || ["Unassigned"]).join(", ")}*/}
+                                                    <div className="ms-3 mt-1">
+                                                        {(appointment.bookedUsers && appointment.bookedUsers.length > 0
+                                                            ? appointment.bookedUsers
+                                                            : ["Unassigned"]
+                                                        ).map((user, index) => (
+                                                            <div key={index} className="d-flex align-items-center text-dark mb-1">
+                                                                <img src={listenerIntroIcon} alt="Listener" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />  
+                                                                <span>{typeof user === "string" ? user : user.name}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </p>
                                             </div>
                                         </div>
