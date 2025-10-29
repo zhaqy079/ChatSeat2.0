@@ -2,6 +2,9 @@
 import ListenerSideBar from "./ListenerSideBar";
 import { useSelector } from "react-redux";
 import { createClient } from '@supabase/supabase-js';
+import mapIcon from "../../assets/icons/icons8-map-48.png";
+import phoneIcon from "../../assets/icons/icons8-phone-48.png";
+import messageIcon from "../../assets/icons/icons8-email-48.png";
 
 // Implement supabase logic later
 const supabase = createClient(
@@ -40,10 +43,17 @@ export default function CoordinatorsListInListener() {
                     coordinators.map((coordinator) => (
                         <div className="col-12 col-md-6" key={coordinator.coordinator_id}>
                             <div className="coordinator-card">
-                                <h5>{coordinator.user_profiles.first_name} {coordinator.user_profiles.last_name}</h5>
-                                <p>📍 Location {coordinator.venue_locations.location_name}</p>
-                                <p>✉️ {coordinator.user_profiles.email}</p>
-                                <p>📞 {coordinator.user_profiles.phone}</p>
+                                <h5>
+                                   
+                                    {coordinator.user_profiles.first_name} {coordinator.user_profiles.last_name}</h5>
+                                <p>  <img src={mapIcon} alt="Map" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                    Location {coordinator.venue_locations.location_name}</p>
+
+                                <p> <img src={messageIcon} alt="Map" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                    {coordinator.user_profiles.email}</p>
+
+                                <p> <img src={phoneIcon} alt="Map" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                    {coordinator.user_profiles.phone}</p>
                             </div>
                         </div>
                     ))

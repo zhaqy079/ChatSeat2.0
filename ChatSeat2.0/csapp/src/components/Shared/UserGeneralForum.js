@@ -86,7 +86,8 @@ export default function UserGeneralForum() {
         const replies = posts.filter(p => p.reply_to === post.general_forum_id);
 
         return (
-            <div key={post.general_forum_id} className="card mb-2 " style={{ marginLeft: 10, marginRight: 1, padding: "1px 0" }}>
+           
+                <div key={post.general_forum_id} className="card post-card mb-2">
                 <div className="card-body py-2">
                     {/* Main content of a feedback post */}
                     <div>
@@ -136,16 +137,18 @@ export default function UserGeneralForum() {
                     )}
                 </div>
                 {replies.map(reply => (
-                    <Post key={reply.id} post={reply} posts={posts}/>
+                    //<Post key={reply.id} post={reply} posts={posts}/>
+                    <Post key={reply.general_forum_id} post={reply} posts={posts} />
                 ))}
             </div>
         );
     }
 
     return (
-        <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
-            <div className="flex-grow-1 px-3 px-md-4 py-4">
-                    <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
+       
+        <div className="flex-grow-1 p-4 forum forum-general">
+            <h2 className="fw-bold dashboard-title fs-3 mb-4">General Forum</h2>
+            <div className="forum-hero p-3 p-md-4 mb-3">
                     <form className="mb-2" onSubmit={async (e) => {
                         e.preventDefault();
 
@@ -153,9 +156,10 @@ export default function UserGeneralForum() {
                         const reply = null;
                         await createPost({ message, reply });
                     }}>
-                        <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef}/>
-                        <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
-                    </form>
+                    <textarea id="newDiscussion" className="form-control textarea-soft mb-2" rows="5" placeholder="Create new discussion..." ref={postRef}/>
+                    <button type="submit" className="btn btn-forum">Post New Discussion</button>
+                </form>
+            </div>
 
                     <hr/>
 
@@ -168,12 +172,16 @@ export default function UserGeneralForum() {
                     ) : (
                     generalforumlist
                         .filter(post => post.reply_to === null) // Only top-level posts
-                        .map(post => (
-                            <Post key={post.id} post={post} posts={generalforumlist} />
+                            .map(post => (
+                                <div className="thread-indent">
+                                    <Post key={post.general_forum_id} post={post} posts={generalforumlist} />
+                            </div>
                         ))
                     )}
                 </div>
-            </div>
+         
 
     );
 }
+
+//  .map(post => (<Post key={post.id} post={post} posts={generalforumlist} />)) orginal 

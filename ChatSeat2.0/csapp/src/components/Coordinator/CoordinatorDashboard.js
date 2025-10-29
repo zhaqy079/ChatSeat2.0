@@ -6,18 +6,19 @@ export default function CoordinatorDashboard() {
     const user = useSelector((s) => s.loggedInUser?.success);
 
     return (
-        <div className="d-flex">
+        <div className="d-flex dashboard-content">
             {/* Sidebar */}
-            <div className="col-12 col-md-3 col-lg-3">
+            <div>
                 <CoordinatorSidebar />
             </div>
 
             {/* Main Content */}
-            <main className="p-4 d-flex justify-content-center flex-grow-1">
-                <div className="card shadow-sm rounded-3 p-4 w-75">
-
+            <main className="p-4 d-flex justify-content-center flex-grow-1 my-4">
+                <div className="dashboard-content-wrap">
+                <div className="dashboard-card p-4">
+                    <div className="card-body">
                     {/* Welcome Section */}
-                    <h2 className="fw-bold text-primary mb-4 text-center">
+                    <h2 className="intro-title text-center text-bold">
                         Welcome, Coordinators!
                     </h2>
 
@@ -28,10 +29,11 @@ export default function CoordinatorDashboard() {
                         community effectively.
                     </p>
 
-                    {/* Role Section */}
-                    <div className="card border-primary bg-primary-subtle p-3 mb-4">
-                        <h5 className="card-title text-primary mb-3">Your Role</h5>
-                        <ul className="ms-3 mb-0">
+                        {/* Role Section */}
+
+                        <div className="section-soft bg-primary-subtle border-primary mb-4" >
+                        <h5 className="intro-title mb-3">Your Role</h5>
+                            <ul className="list-clean mt-2 mb-0">
                             <li>Identify venues where Chat Seats can be placed</li>
                             <li>Obtain permission from the venue manager or owner</li>
                             <li>Recruit Listeners and assess their suitability</li>
@@ -45,11 +47,11 @@ export default function CoordinatorDashboard() {
                                 Encourage use of the Chat Room to connect with fellow volunteers
                             </li>
                         </ul>
-                    </div>
+                        </div>
 
                     {/* Coordinator Resources Section */}
-                    <div className="card border-info bg-info-subtle p-3 mb-4">
-                        <h5 className="card-title text-info mb-3">Coordinator Resources</h5>
+                        <div className="section-soft bg-info-subtle border-info mb-4" >
+                            <h5 className="intro-title mb-3">Coordinator Help</h5>
                         <p className="mb-0">
                             This section includes useful tips from experienced coordinators,
                             examples of successful outreach strategies, and branding
@@ -59,13 +61,14 @@ export default function CoordinatorDashboard() {
                     </div>
 
                     {/* Tools and Support Section */}
-                    <div className="card border-success bg-success-subtle p-3 mb-4">
-                        <h5 className="card-title text-success mb-3">Tools and Support</h5>
+                        <div className="section-soft bg-success-subtle border-success mb-4">
+                        <h5 className="intro-title text-success mb-3">Tools and Support</h5>
                         <p>Use the <strong>Availability</strong> tab to schedule times and manage locations.</p>
                         <p>Use the <strong>Coordinator Chat Room</strong> to collaborate and exchange ideas with other coordinators.</p>
                         <p>Submit your thoughts or report issues through the <strong>Feedback</strong> tab.</p>
                     </div>
-
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>

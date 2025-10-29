@@ -87,7 +87,8 @@ export default function CoordinatorForum() {
         const replies = posts.filter(p => p.reply_to === post.coord_forum_id);
 
         return (
-            <div key={post.coord_forum_id} className="card mb-2" style={{ marginLeft: 10, marginRight: 1, padding: "1px 0" }}>
+           
+                <div key={post.coord_forum_id} className="card post-card mb-2">
                 <div className="card-body py-2">
                     {/* Main content of a feedback post */}
                     <div>
@@ -150,9 +151,10 @@ export default function CoordinatorForum() {
             </aside>
 
 
-            <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
+            <div className="flex-grow-1 p-4 forum forum-coord">
                 <div className="flex-grow-1 px-3 px-md-4 py-4">
-                    <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
+                    <h2 className="fw-bold dashboard-title fs-3 mb-4">Coordinator Hub</h2>
+                    
                     <form className="mb-2" onSubmit={async (e) => {
                         e.preventDefault();
 
@@ -160,7 +162,7 @@ export default function CoordinatorForum() {
                         const reply = null;
                         await createPost({ message, reply });
                     }}>
-                        <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
+                        <textarea id="newDiscussion" className="form-control textarea-soft mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
                         <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
                     </form>
 

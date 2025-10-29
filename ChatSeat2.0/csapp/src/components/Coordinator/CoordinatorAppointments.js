@@ -2,7 +2,8 @@
 import { useSelector } from "react-redux";
 import CoordinatorSidebar from "./CoordinatorSidebar";
 import { createClient } from '@supabase/supabase-js';
-
+import editIcon from "../../assets/icons/icons8-edit-48.png";
+import userIcon from "../../assets/icons/icons8-user-48.png";
 
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
@@ -186,7 +187,7 @@ export default function CoordinatorAppointments() {
                 <CoordinatorSidebar />
             </aside>
             <main className="flex-grow-1 p-4">
-                <h2 className="fw-bold text-primary mb-4">Upcoming Listener Bookings</h2>
+                <h2 className="fw-bold dashboard-title fs-3 mb-4">Manage Upcoming Bookings</h2>
                 <div className="row g-3">
                     {appointments.length === 0 ? (
                         <p>No upcoming bookings found.</p>
@@ -195,11 +196,16 @@ export default function CoordinatorAppointments() {
                             <div key={appointment.id} className="col-sm-6 col-md-4 col-lg-3">
                                 <div className="card shadow-sm border-0 h-100">
                                     <div className="card-body position-relative">
+                                        {/*className="btn btn-sm position-absolute top-0 end-0 text-secondary"*/}
                                         <button
                                             onClick={() => toggleDropdown(appointment.id)}
-                                            className="btn btn-sm position-absolute top-0 end-0 text-secondary"
+                                            className="btn btn-sm position-absolute top-0 end-0 text-secondary d-flex flex-column align-items-center"
+                                            style={{ lineHeight: "1", gap: "2px" }}
                                         >
-                                            ⋮
+                                            <img src={editIcon} alt="Edit at here" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                            <small className="text-muted" style={{ fontSize: "0.75rem" }}>
+                                                Edit
+                                            </small>
                                         </button>
 
                                         {openDropdown === appointment.id && (
@@ -211,12 +217,25 @@ export default function CoordinatorAppointments() {
 
                                         <h5 className="card-title fw-bold text-dark">{appointment.location}</h5>
 
-                                        <p className="mb-1">
-                                            <strong>Booked Users:</strong>{" "}
-                                            {(appointment.bookedUsers || ["Unassigned"]).join(", ")}
-                                        </p>
-                                        <p className="mb-1"><strong>Time:</strong> {appointment.time}</p>
+                                        {/*<p className="mb-1">*/}
+                                        {/*    <strong>Booked Users:</strong>{" "}*/}
+                                        {/*    {(appointment.bookedUsers || ["Unassigned"]).join(", ")}*/}
+                                        {/*</p>*/}
+
+
+                                        <p className="mb-1"><strong>Time:</strong> {appointment.time} am</p>
                                         <p className="mb-1"><strong>Date:</strong> {new Date(appointment.date).toLocaleDateString()}</p>
+                                        <p className="mb-1"><strong>Booked Users:</strong></p>
+                                        <div className="ms-2">
+                                            {(appointment.bookedUsers && appointment.bookedUsers.length > 0
+                                                ? appointment.bookedUsers
+                                                : ["Unassigned"]
+                                            ).map((user, index) => (
+                                                <div key={index} className="text-dark">
+                                                    <img src={userIcon} alt="Edit at here" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />   {user}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
