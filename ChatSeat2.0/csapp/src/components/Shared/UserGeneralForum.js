@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
+import { useSelector } from "react-redux";
 
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
@@ -22,6 +23,7 @@ export const fetchAllGeneralForumPosts = async () => {
 
 
 export default function UserGeneralForum() {
+    const user = useSelector((state) => state.loggedInUser?.success);
     const [generalforumlist, setGeneralforumlist] = useState([]);
     const [activePostId, setActivePostId] = useState(null);
     const replyRef = useRef(null);
@@ -51,7 +53,7 @@ export default function UserGeneralForum() {
         const { error } = await supabase
             .from('general_forum')
             .insert({
-                user_id: sessionStorage.getItem('user_id'),
+                user_id: user.id,
                 content: message,
                 reply_to: reply
             });
@@ -104,7 +106,7 @@ export default function UserGeneralForum() {
                             <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
                             {post.user_profiles.profile_id !== "d7c48149-6553-4dd2-ae95-ad9b5274ade1"
                                 ? <div className="ms-auto">
-                                    {sessionStorage.getItem('user_id') === post.user_profiles.profile_id
+                                    {user.id === post.user_profiles.profile_id
                                         ? <button type="button" className="btn btn-danger me-2" onClick={() => deletePost(post.general_forum_id)}>Delete</button> : null}
                                     <button type="button" className="btn btn-secondary" onClick={() => {
                                         setActivePostId(prevId => (prevId === post.general_forum_id ? null : post.general_forum_id));

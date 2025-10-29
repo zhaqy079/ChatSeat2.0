@@ -63,6 +63,7 @@ const deleteUser = async (userID, navigate) => {
 
 
 export default function AdminManageUser() {
+    const currentuser = useSelector((state) => state.loggedInUser?.success);
     const navigate = useNavigate();
     const [user, setUser] = useState([]);
     const [locationlist, setLocationlist] = useState([]);
@@ -136,7 +137,7 @@ export default function AdminManageUser() {
                 .from('admin_profiles')
                 .insert({
                     admin_id: user.profile_id,
-                    approved_by: sessionStorage.getItem('user_id')
+                    approved_by: currentuser.id
                 })
         } else {
             adminError = await supabase
@@ -159,7 +160,7 @@ export default function AdminManageUser() {
                 .insert({
                     coordinator_id: user.profile_id,
                     location_id: locationID,
-                    approved_by: sessionStorage.getItem('user_id')
+                    approved_by: currentuser.id
                 })
         } else {
             coordError = await supabase
@@ -174,7 +175,7 @@ export default function AdminManageUser() {
     }
 
 
-    // Stores the list of users from the database
+    // Stores the list of locations from the database
     useEffect(() => {
         const getLocations = async () => {
             try {

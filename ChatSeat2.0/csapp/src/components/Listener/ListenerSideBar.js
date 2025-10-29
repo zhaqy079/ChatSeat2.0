@@ -53,7 +53,7 @@ export default function ListenerSidebar() {
                 </NavLink>
             </div>
             <div className="mt-3">
-                <NavLink to="/submitFeedback" className={getActiveLink("/submitFeedback")}>
+                <NavLink to="/listenerFeedback" className={getActiveLink("/listenerFeedback")}>
                     Submit Feedback
                 </NavLink>
                 <hr />
