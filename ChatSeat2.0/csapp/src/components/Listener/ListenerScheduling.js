@@ -223,7 +223,7 @@ export default function ListenerScheduling() {
     };
 
     return (
-         <div className="d-flex dashboard-page-content ">
+        <div className="d-flex dashboard-page-scheduling">
                   {/* Sidebar*/}
                   <aside>
                         <ListenerSideBar />

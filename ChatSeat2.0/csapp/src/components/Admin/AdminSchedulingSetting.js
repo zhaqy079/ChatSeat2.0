@@ -639,24 +639,22 @@ export default function AdminSchedulingSetting() {
     };
 
     return (
-        <div className="d-flex  dashboard-page-content ">
+        <div className="d-flex dashboard-page-scheduling ">
             {/* Sidebar */}
             <aside>
                 <AdminSidebar />
             </aside>
 
-            <div className="flex-grow-1 px-3 px-md-4 py-4">
-                    <h4 className="fw-bold mb-4 text-primary">Admin Scheduling Settings</h4>
-
-                    {/* Manage Locations */}
-                    <div className="card shadow-sm mb-4">
-                        <div className="card-body">
-                            <h3 className="h5 fw-semibold text-primary mb-3">Manage Locations</h3>
-                            <div className="input-group mb-3">
+            <div className="dashboard-content-wrap">
+                <h4 className="dashboard-title">Admin Scheduling Settings</h4>
+                <div className="dashboard-card">
+                                <div className="card-body">
+                                    <h3 className="dashboard-title">Manage Locations</h3>
+                                    <div className="input-group mb-3">
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Enter location name"
+                                    placeholder="Enter new location name"
                                     value={newLocation}
                                     onChange={(e) => setNewLocation(e.target.value)}
                                 />
@@ -670,31 +668,34 @@ export default function AdminSchedulingSetting() {
                                         key={loc.id}
                                         className="list-group-item d-flex justify-content-between align-items-center"
                                     >
-                                        <div>
+                                        <div className="me-3">
                                             <strong>{loc.name}</strong>
 
                                             {/* ensures only actual location displays opening hours */}
                                             {loc.name !== "FULL DAY UNAVAILABLE" && loc.availability && (
-                                                <small className="d-block text-muted">
+                                                <div className="dashboard-badges ">
                                                     {Object.entries(loc.availability) // coverts the avaibility to day and times e.g Monday: {open, close}
                                                         .map(([day, times]) => {
                                                             const shortDay = shortenName[day] || day.charAt(0).toUpperCase() + day.slice(1);
-                                                            return times.open
-                                                                ? `${shortDay}: ${formatToAmPm(times.open)}–${formatToAmPm(times.close)}`
-                                                                : `${shortDay}: Closed`;
-                                                        })
-                                                        .join(" | ")}
-                                                </small>
+                                                            return (
+                                                                    <span key={day} className="badge">
+                                                                      {shortDay}: {times.open ? `${formatToAmPm(times.open)}–${formatToAmPm(times.close)}` : "Closed"}
+                                                                    </span>
+                                                                  );
+                                                        })}
+
+                                       </div>
+                                                
                                             )}
                                         </div>
 
-                                        <div>
+                                        <div className="d-flex flex-wrap justify-content-end gap-2">
                                             {loc.name !== "FULL DAY UNAVAILABLE" && (
                                                 <button
-                                                    className="btn btn-sm btn-outline-primary me-2"
+                                                    className="btn btn-sm btn-outline-primary"
                                                     onClick={() => openAvailabilityModal(loc)}
                                                 >
-                                                    Set Opening Hours
+                                                    Set Hours
                                                 </button>
                                             )}
                                             <button
@@ -716,9 +717,12 @@ export default function AdminSchedulingSetting() {
                     </div>
 
                     {/* Select Week and then displays calendar */}
-                    <div className="card shadow-sm mb-4">
+                     <div className="dashboard-card">
                         <div className="card-body">
-                            <h3 className="h5 fw-semibold text-primary mb-3">Select Week</h3>
+                        <h3 className="dashboard-title">Schedule Next Week</h3>
+                        <p className="text-muted mb-4 small">
+                            Pick a week. Click the calendar to add slots.
+                        </p>
                             <input
                                 type="week"
                                 className="form-control mb-3"

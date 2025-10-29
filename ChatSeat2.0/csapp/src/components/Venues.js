@@ -168,7 +168,7 @@ export default function Venues() {
                                 className="icon ms-2"
                                 style={{ width: 20, height: 20, cursor: "pointer" }}
                                 onClick={() => toggleMap(group.location_id)} 
-                                title="Show on map"
+                                title="View Map"
                                   />
                              </h4>
                                 {
@@ -197,7 +197,7 @@ export default function Venues() {
 
                                                 <p className="mb-1">
                                                     <strong> <img src={timeIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                                        Time:</strong> {appointment.time}
+                                                        Time:</strong> {appointment.time} am
                                                 </p>
                                                 <p className="mb-1">
                                                     <strong> <img src={dateIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />

@@ -181,7 +181,7 @@ export default function CoordinatorAppointments() {
     };
 
     return (
-        <div className="d-flex dashboard-page-content">
+        <div className="d-flex dashboard-page-scheduling">
             <aside>
                 <CoordinatorSidebar />
             </aside>
