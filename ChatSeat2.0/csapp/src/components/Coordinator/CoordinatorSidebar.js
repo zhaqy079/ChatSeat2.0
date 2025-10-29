@@ -39,14 +39,11 @@ export default function CoordinatorSidebar() {
                 <NavLink to="/coordinatordashboard" className={getActiveLink("/coordinatordashboard")}>
                     Dashboard
                 </NavLink>
-                <NavLink to="/coordinatorappointments" className={getActiveLink("coordinatorappointments")}>
+                <NavLink to="/coordinatorappointments" className={getActiveLink("/coordinatorappointments")}>
                     Appointments
                 </NavLink>
-                <NavLink to="coordinatoravailability" className={getActiveLink("coordinatoravailability")}>
+                <NavLink to="/coordinatoravailability" className={getActiveLink("/coordinatoravailability")}>
                     Availability
-                </NavLink>
-                <NavLink to="coordinatoraddlistener" className={getActiveLink("coordinatoraddlistener")}>
-                    Add A Listener
                 </NavLink>
                 <NavLink to="/coordinatorchatroom" className={getActiveLink("/coordinatorchatroom")}>
                     Coordinator Chat Room
