@@ -87,83 +87,85 @@ export default function AdminFeedback() {
 
     return (
 
-        <div className="d-flex  dashboard-page-content " key = "1">
+        <div className="d-flex  dashboard-page-content" key = "1">
             {/* Sidebar on the left */}
             <aside>
                 <AdminSidebar />
             </aside>
             {/* Right content area */}
-            <div className="flex-grow-1 px-3 px-md-4 py-4" key = "2">
+            <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
+                <div className="flex-grow-1 px-3 px-md-4 py-4" key = "2">
 
-                    <h4 className="fw-bold mb-4 text-primary">Feedback</h4>
+                        <h4 className="fw-bold mb-4 text-primary">Feedback</h4>
 
-                    {/* Dropdown menu to refine posts displayed */}
-                    <div className="mb-3">
-                    <select
-                        className="form-select fw-semibold mb-2 w-auto "
-                        value={searchdata}
-                        onChange={(e) => setSearchdata(e.target.value)}>
-                          <option value="unresolved" >Unresolved</option>
-                          <option value="resolved">Resolved</option>
-                          <option value="all">All Posts</option>
-                        </select>
-                    </div>
+                        {/* Dropdown menu to refine posts displayed */}
+                        <div className="mb-3">
+                        <select
+                            className="form-select fw-semibold mb-2 w-auto "
+                            value={searchdata}
+                            onChange={(e) => setSearchdata(e.target.value)}>
+                              <option value="unresolved" >Unresolved</option>
+                              <option value="resolved">Resolved</option>
+                              <option value="all">All Posts</option>
+                            </select>
+                        </div>
 
-                    { // Post display logic, if no posts display special message otherwise display all posts
-                        !filteredFeedbackposts.length > 0 ? (
-                            // If no posts are found, show a message
-                        <h5 className="p-4 text-center">
-                            No posts found.
-                        </h5>
-                    ) : (
-                        <div className="card-group gap-4 overflow-auto">
-                            {filteredFeedbackposts.map((post) => (
-                                <div key={post.feedback_forum_id} className="col-md-2">
-                                    <div className="card">
-                                        <div className="card-body">
-                                            {/* Main content of a feedback post */}
-                                            <h5 className="card-title text-center">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
-                                            <h6 className="card-subtitle mb-2 text-muted text-center">{post.user_profiles.email}</h6>
-                                            <p className="card-text overflow-auto h-50">{post.content}</p>
-                                        </div>
-                                        <div className="card-footer">
-                                            <div className="row">
-                                                <small className="text-muted text-center">Created: {
-                                                // Logic to adjust displayed date to '27 Nov 2025' format
-                                                        new Date(post.created_at).toLocaleDateString("en-AU", {
-                                                            year: "numeric",
-                                                            month: "short",
-                                                            day: "numeric",
-                                                        })} </small>
+                        { // Post display logic, if no posts display special message otherwise display all posts
+                            !filteredFeedbackposts.length > 0 ? (
+                                // If no posts are found, show a message
+                            <h5 className="p-4 text-center">
+                                No posts found.
+                            </h5>
+                        ) : (
+                            <div className="card-group gap-4 overflow-auto">
+                                {filteredFeedbackposts.map((post) => (
+                                    <div key={post.feedback_forum_id} className="col-md-2">
+                                        <div className="card">
+                                            <div className="card-body">
+                                                {/* Main content of a feedback post */}
+                                                <h5 className="card-title text-center">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
+                                                <h6 className="card-subtitle mb-2 text-muted text-center">{post.user_profiles.email}</h6>
+                                                <p className="card-text overflow-auto h-50">{post.content}</p>
                                             </div>
-
-                                            <div className="">
-                                                { // Logic to check whether a post has been resolved, if it has display resolve time otherwise display resolve button
-                                                post.resolved_at === null
-                                                        ? // Placeholder resolve button, back end logic still needs to be added 
-                                                        <div className="row">
-                                                            <button type="button" className="btn btn-secondary" onClick={() => resolvePost(post.feedback_forum_id)}>Resolve</button>
-                                                        </div>
-                                                    : (
-                                                    <div className="row">
-                                                        <small className="text-muted text-center">Resolved: { 
-                                                            // Logic to adjust displayed date to '27 Nov 2025' format
-                                                                new Date(post.resolved_at).toLocaleDateString("en-AU", {
+                                            <div className="card-footer">
+                                                <div className="row">
+                                                    <small className="text-muted text-center">Created: {
+                                                    // Logic to adjust displayed date to '27 Nov 2025' format
+                                                            new Date(post.created_at).toLocaleDateString("en-AU", {
                                                                 year: "numeric",
                                                                 month: "short",
                                                                 day: "numeric",
-                                                                })}
-                                                        </small>
-                                                        <button type="button" className="btn btn-dark" onClick={() => unresolvePost(post.feedback_forum_id)}>Unresolve</button>
-                                                    </div>
-                                                    )}
+                                                            })} </small>
+                                                </div>
+
+                                                <div className="">
+                                                    { // Logic to check whether a post has been resolved, if it has display resolve time otherwise display resolve button
+                                                    post.resolved_at === null
+                                                            ? // Placeholder resolve button, back end logic still needs to be added 
+                                                            <div className="row">
+                                                                <button type="button" className="btn btn-secondary" onClick={() => resolvePost(post.feedback_forum_id)}>Resolve</button>
+                                                            </div>
+                                                        : (
+                                                        <div className="row">
+                                                            <small className="text-muted text-center">Resolved: { 
+                                                                // Logic to adjust displayed date to '27 Nov 2025' format
+                                                                    new Date(post.resolved_at).toLocaleDateString("en-AU", {
+                                                                    year: "numeric",
+                                                                    month: "short",
+                                                                    day: "numeric",
+                                                                    })}
+                                                            </small>
+                                                            <button type="button" className="btn btn-dark" onClick={() => unresolvePost(post.feedback_forum_id)}>Unresolve</button>
+                                                        </div>
+                                                        )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
        
