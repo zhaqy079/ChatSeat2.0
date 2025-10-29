@@ -556,3 +556,11 @@ h2.intro-title, h3.intro-title, p.intro-title {
     word-wrap: break-word; 
     overflow-wrap: break-word; 
 }
+
+/*displays upcoming events in listeners*/
+.upcoming-scroll-container {
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 10px;
+}

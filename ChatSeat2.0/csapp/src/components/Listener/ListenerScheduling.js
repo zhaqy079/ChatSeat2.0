@@ -326,7 +326,7 @@ export default function ListenerScheduling() {
                                 {events.filter(e => new Date(e.start) > new Date()).length === 0 ? (
                                     <p>No upcoming bookings.</p>
                                 ) : (
-                                    <div className="row">
+                                    <div className="row upcoming-scroll-container">
                                         {events
                                             .filter(e => new Date(e.start) > new Date())
                                             .sort((a, b) => new Date(a.start) - new Date(b.start))

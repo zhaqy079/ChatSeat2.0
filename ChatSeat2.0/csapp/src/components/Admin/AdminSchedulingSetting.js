@@ -665,7 +665,7 @@ export default function AdminSchedulingSetting() {
                                 </button>
                             </div>
                             <ul className="list-group">
-                                {locations.map((loc) => (
+                            {locations.filter(loc => loc.name !== "FULL DAY UNAVAILABLE").map((loc) => (
                                     <li
                                         key={loc.id}
                                         className="list-group-item d-flex justify-content-between align-items-center"
