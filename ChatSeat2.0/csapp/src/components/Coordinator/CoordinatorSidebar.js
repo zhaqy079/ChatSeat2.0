@@ -56,7 +56,7 @@ export default function CoordinatorSidebar() {
                 </NavLink>
             </div>
             <div className="mt-3">
-                <NavLink to="/submitFeedback" className={getActiveLink("/submitFeedback")}>
+                <NavLink to="/coordFeedback" className={getActiveLink("/coordFeedback")}>
                     Submit Feedback
                 </NavLink>
                 <hr />

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
+import { useSelector } from "react-redux";
 import CoordinatorSidebar from "./CoordinatorSidebar";
 
 const supabase = createClient(
@@ -23,6 +24,7 @@ export const fetchAllCoordForumPosts = async () => {
 
 
 export default function CoordinatorForum() {
+    const user = useSelector((state) => state.loggedInUser?.success);
     const [coordforumlist, setCoordforumlist] = useState([]);
     const [activePostId, setActivePostId] = useState(null);
     const replyRef = useRef(null);
@@ -52,7 +54,7 @@ export default function CoordinatorForum() {
         const { error } = await supabase
             .from('coordinator_forum')
             .insert({
-                coordinator_id: sessionStorage.getItem('user_id'),
+                coordinator_id: user.id,
                 content: message,
                 reply_to: reply
             });
@@ -104,7 +106,7 @@ export default function CoordinatorForum() {
                             <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
                             {post.user_profiles.profile_id !== "d7c48149-6553-4dd2-ae95-ad9b5274ade1"
                                 ? <div className="ms-auto">
-                                    {sessionStorage.getItem('user_id') === post.user_profiles.profile_id
+                                    {user.id === post.user_profiles.profile_id
                                         ? <button type="button" className="btn btn-danger me-2" onClick={() => deletePost(post.coord_forum_id)}>Delete</button> : null}
                                     <button type="button" className="btn btn-secondary" onClick={() => {
                                         setActivePostId(prevId => (prevId === post.coord_forum_id ? null : post.coord_forum_id));
