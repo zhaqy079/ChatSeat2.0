@@ -144,7 +144,7 @@ export default function UserGeneralForum() {
 
     return (
        
-            <div className="flex-grow-1 p-4 forum-general">
+        <div className="flex-grow-1 p-4 forum forum-general">
             <h2 className="fw-bold dashboard-title fs-3 mb-4">General Forum</h2>
             <div className="forum-hero p-3 p-md-4 mb-3">
                     <form className="mb-2" onSubmit={async (e) => {
