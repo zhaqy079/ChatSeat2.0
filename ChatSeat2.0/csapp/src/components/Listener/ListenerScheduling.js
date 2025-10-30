@@ -5,11 +5,13 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import '../../index.css';
 import { createClient } from '@supabase/supabase-js';
+import userIcon from "../../assets/icons/icons8-user-48.png";
 
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
+
 
 export default function ListenerScheduling() {
     const [activeTab, setActiveTab] = useState("Upcoming");
@@ -267,10 +269,11 @@ export default function ListenerScheduling() {
 
                                             {/* Booked Users */}
                                             <p>
-                                                <strong>Booked Users:</strong>{" "}
+                                               <strong>Booked Users:</strong>{" "}
                                                 {clickedEvent.bookedUsers?.length > 0
                                                     ? clickedEvent.bookedUsers.map(u => u.name).join(", ")
-                                                    : "None"}
+                                            : "None"}
+                               
                                             </p>
 
                                             {/* Date */}
@@ -334,10 +337,23 @@ export default function ListenerScheduling() {
                                                 const isBooked = e.listener_ids.includes(user?.id);
                                                 return (
                                                     <div key={e.id} className="border p-4 rounded shadow-sm card-panel w-25">
-                                                        <p><strong>Date:</strong> {new Date(e.start).toLocaleDateString("en-AU")}</p>
-                                                        <p><strong>Time:</strong> {new Date(e.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} - {new Date(e.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
-                                                        <p><strong>Location:</strong> {locations.find(l => l.location_id === e.location_id)?.location_name || "Unknown"}</p>
-                                                        <p><strong>Booked Users:</strong> {e.bookedUsers?.length > 0 ? e.bookedUsers.map(u => u.name).join(", ") : "None"}</p>
+                                                        <p className="mb-1"><strong>Date:</strong> {new Date(e.start).toLocaleDateString("en-AU")}</p>
+                                                        <p className="mb-1"><strong>Time:</strong> {new Date(e.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} - {new Date(e.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                                                        <p className="mb-1"><strong>Location:</strong> {locations.find(l => l.location_id === e.location_id)?.location_name || "Unknown"}</p>
+
+                                                        {/*<p><strong>Booked Users:</strong> {e.bookedUsers?.length > 0 ? e.bookedUsers.map(u => u.name).join(", ") : "None"}</p>*/}
+                                                        
+                                                        <p className="mb-1"><strong>Booked Users:</strong></p>
+                                                        <div className="ms-2">
+                                                            {(e.bookedUsers?.length ? e.bookedUsers : [{ name: "Unassigned" }]).map((u, i) => (
+                                                                <div key={i} className="d-flex align-items-center text-dark mb-1">
+                                                                    <img src={userIcon} alt="" className="icon me-2" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                                    <span>{u.name}</span>
+                                                                </div>
+                                                            ))}
+                                                            </div>
+                                                        
+
                                                         <div className="mt-1 flex space-x-2">
                                                             {isBooked ? (
                                                                 <button

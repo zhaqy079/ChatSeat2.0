@@ -38,8 +38,9 @@ import SubmitFeedback from "./components/Shared/SubmitFeedback";
 import CoordinatorAppointments from "./components/Coordinator/CoordinatorAppointments";
 import CoordinatorAvailability from "./components/Coordinator/CoordinatorAvailability";
 import CoordinatorListenerChatroom from "./components/Coordinator/CoordinatorListenerChatroom";
-import CoordinatorAddListener from "./components/Coordinator/CoordinatorAddListener"; 
 import CoordinatorHelp from "./components/Coordinator/CoordinatorHelp";
+import CoordinatorFeedback from "./components/Coordinator/CoordinatorFeedback";
+import ListenerFeedback from "./components/Listener/ListenerFeedback";
 
 
 
@@ -78,12 +79,12 @@ export default function App() {
                 <Route path="/makepeoplecomfortable" element={<MakePeopleComfortable />} />
 
                 <Route path="/adminFeedback" element={<AdminFeedback />} />
-                <Route path="/submitFeedback" element={<SubmitFeedback />} />
+                <Route path="/coordFeedback" element={<CoordinatorFeedback />} />
+                <Route path="/listenerFeedback" element={<ListenerFeedback />} />
                 <Route path="/manageUser/:id" element={<AdminManageUser />} />
 
                 <Route path="/coordinatorappointments" element={< CoordinatorAppointments />} />
                 <Route path="/coordinatoravailability" element={< CoordinatorAvailability />} />
-                <Route path="/coordinatoraddlistener" element={< CoordinatorAddListener />} />
                 <Route path="/coordinatorchatroom" element={< CoordinatorForum />} />
                 <Route path="/coordinatorlistenerchatroom" element={< CoordinatorListenerChatroom />} />
                 <Route path="/coordinatorhelp" element={< CoordinatorHelp />} />

@@ -663,13 +663,9 @@ export default function AdminSchedulingSetting() {
                                     Add
                                 </button>
                             </div>
-<<<<<<< HEAD
                             <ul className="list-group">
                             {locations.filter(loc => loc.name !== "FULL DAY UNAVAILABLE").map((loc) => (
-=======
-                            <ul className="list-unstyled">
                                 {locations.map((loc) => (
->>>>>>> 75dab29f705fcaf00009fae4add0f1fc36f31759
                                     <li
                                         key={loc.id}
                                         className="d-flex justify-content-between align-items-center border rounded-2 p-3 mb-3 bg-white shadow-sm"

@@ -1,11 +1,13 @@
 import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect} from "react";
 import { createClient } from '@supabase/supabase-js';
+import { useSelector } from "react-redux";
 
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
     process.env.REACT_APP_SUPABASE_ANON_KEY
 );
+
 
 
 // Requests a list of all users from the database
@@ -23,10 +25,10 @@ export const fetchAllUsers = async () => {
 };
 
 // Function call to approve a user
-async function approveUser(userID) {
+async function approveUser(newuserID, approverID) {
     const { error: profileError } = await supabase.from("user_profiles").update({
-        approved_by: sessionStorage.getItem('user_id')
-         }).eq('profile_id', userID);
+        approved_by: approverID
+         }).eq('profile_id', newuserID);
 
         if (profileError) {
             throw new Error("Failed to approve user: " + profileError.message);
@@ -66,7 +68,7 @@ async function reactivateUser(userID) {
 }
 
 
-function UserTable({ userlist }) {
+function UserTable({ userlist, currentuser }) {
     return (
         <table className="table">
             <thead className="text-left">
@@ -103,7 +105,7 @@ function UserTable({ userlist }) {
                             </td>
                             <td>
                                 {/* Displays a variety of different buttons depending on whether the user is an admin or currently active/inactive */}
-                                {user_approver === null ? <button type="button" className="btn btn-success" onClick={() => approveUser(user.profile_id)}>Approve</button>
+                                {user_approver === null ? <button type="button" className="btn btn-success" onClick={() => approveUser(user.profile_id, currentuser.id)}>Approve</button>
                                 : <>
                                     <a href={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</a>
                                     {user.inactive_at === null ? (
@@ -233,6 +235,7 @@ function adminTable(userlist) {
 }
 
 export default function AdminViewUsers() {
+    const user = useSelector((state) => state.loggedInUser?.success);
     const [userlist, setUserlist] = useState([]);
     const [searchrole, setSearchrole] = useState(() => {
         return sessionStorage.getItem('role') || 'pending';
@@ -302,8 +305,8 @@ export default function AdminViewUsers() {
                                 searchrole === "admin"
                                     ? adminTable(filtereduserList)
                                     : (searchrole === "coordinator" ? coordinatorTable(filtereduserList)
-                                        : <UserTable userlist={filtereduserList} />
-                            )))}
+                                        : <UserTable userlist={filtereduserList} currentuser = {user} />
+                                )))}
                     </div>
                 </div>
             </div>

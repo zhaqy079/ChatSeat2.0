@@ -39,10 +39,12 @@ export default function CoordinatorSidebar() {
                 <NavLink to="/coordinatordashboard" className={getActiveLink("/coordinatordashboard")}>
                     Dashboard
                 </NavLink>
-                <NavLink to="/coordinatorappointments" className={getActiveLink("coordinatorappointments")}>
+                <NavLink to="/coordinatorappointments" className={getActiveLink("/coordinatorappointments")}>
                     Appointments
                 </NavLink>
-                <NavLink to="/coordinatoravailability" className={getActiveLink("coordinatoravailability")}>
+
+                <NavLink to="/coordinatoravailability" className={getActiveLink("/coordinatoravailability")}>
+
                     Availability
                 </NavLink>
                 <NavLink to="/coordinatorchatroom" className={getActiveLink("/coordinatorchatroom")}>
@@ -53,7 +55,7 @@ export default function CoordinatorSidebar() {
                 </NavLink>
             </div>
             <div className="mt-3">
-                <NavLink to="/submitFeedback" className={getActiveLink("/submitFeedback")}>
+                <NavLink to="/coordFeedback" className={getActiveLink("/coordFeedback")}>
                     Submit Feedback
                 </NavLink>
                 <hr />

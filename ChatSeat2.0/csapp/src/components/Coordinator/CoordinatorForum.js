@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
+import { useSelector } from "react-redux";
 import CoordinatorSidebar from "./CoordinatorSidebar";
 
 const supabase = createClient(
@@ -23,6 +24,7 @@ export const fetchAllCoordForumPosts = async () => {
 
 
 export default function CoordinatorForum() {
+    const user = useSelector((state) => state.loggedInUser?.success);
     const [coordforumlist, setCoordforumlist] = useState([]);
     const [activePostId, setActivePostId] = useState(null);
     const replyRef = useRef(null);
@@ -52,7 +54,7 @@ export default function CoordinatorForum() {
         const { error } = await supabase
             .from('coordinator_forum')
             .insert({
-                coordinator_id: sessionStorage.getItem('user_id'),
+                coordinator_id: user.id,
                 content: message,
                 reply_to: reply
             });
@@ -85,7 +87,8 @@ export default function CoordinatorForum() {
         const replies = posts.filter(p => p.reply_to === post.coord_forum_id);
 
         return (
-            <div key={post.coord_forum_id} className="card mb-2" style={{ marginLeft: 10, marginRight: 1, padding: "1px 0" }}>
+           
+                <div key={post.coord_forum_id} className="card post-card mb-2">
                 <div className="card-body py-2">
                     {/* Main content of a feedback post */}
                     <div>
@@ -104,7 +107,7 @@ export default function CoordinatorForum() {
                             <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
                             {post.user_profiles.profile_id !== "d7c48149-6553-4dd2-ae95-ad9b5274ade1"
                                 ? <div className="ms-auto">
-                                    {sessionStorage.getItem('user_id') === post.user_profiles.profile_id
+                                    {user.id === post.user_profiles.profile_id
                                         ? <button type="button" className="btn btn-danger me-2" onClick={() => deletePost(post.coord_forum_id)}>Delete</button> : null}
                                     <button type="button" className="btn btn-secondary" onClick={() => {
                                         setActivePostId(prevId => (prevId === post.coord_forum_id ? null : post.coord_forum_id));
@@ -148,9 +151,10 @@ export default function CoordinatorForum() {
             </aside>
 
 
-            <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
+            <div className="flex-grow-1 p-4 forum forum-coord">
                 <div className="flex-grow-1 px-3 px-md-4 py-4">
-                    <h4 className="fw-bold mb-4 text-primary">General Forum</h4>
+                    <h2 className="fw-bold dashboard-title fs-3 mb-4">Coordinator Hub</h2>
+                    
                     <form className="mb-2" onSubmit={async (e) => {
                         e.preventDefault();
 
@@ -158,7 +162,7 @@ export default function CoordinatorForum() {
                         const reply = null;
                         await createPost({ message, reply });
                     }}>
-                        <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
+                        <textarea id="newDiscussion" className="form-control textarea-soft mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
                         <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
                     </form>
 

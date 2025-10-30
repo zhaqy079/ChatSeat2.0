@@ -88,7 +88,7 @@ export default function CoordinatorHelp() {
                 return (
                     <div className="container bg-white rounded shadow-sm p-4 p-md-5 text-dark">
                         <div className="text-center mb-5">
-                            <h2 className="fw-bold text-primary mb-2">How to Use the Website</h2>
+                            <h2 className="fw-bold intro-title mb-2">How to Use the Website</h2>
                             <p>
                                 A quick guide to help you navigate and use the dashboard effectively.
                             </p>

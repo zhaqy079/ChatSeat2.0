@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from '@supabase/supabase-js';
+import { useSelector } from "react-redux";
 import AdminSidebar from "./AdminSidebar";
-import UserGeneralForum from "../Shared/UserGeneralForum";
 
 const supabase = createClient(
     process.env.REACT_APP_SUPABASE_URL,
@@ -23,6 +23,7 @@ export const fetchAllGeneralForumPosts = async () => {
 
 
 export default function AdminListenerChatroom() {
+    const user = useSelector((state) => state.loggedInUser?.success);
     const [generalforumlist, setGeneralforumlist] = useState([]);
     const [activePostId, setActivePostId] = useState(null);
     const replyRef = useRef(null);
@@ -52,7 +53,7 @@ export default function AdminListenerChatroom() {
         const { error } = await supabase
             .from('general_forum')
             .insert({
-                user_id: sessionStorage.getItem('user_id'),
+                user_id: user.id,
                 content: message,
                 reply_to: reply
             });
