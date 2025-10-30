@@ -665,7 +665,7 @@ export default function AdminSchedulingSetting() {
                             </div>
                             <ul className="list-group">
                             {locations.filter(loc => loc.name !== "FULL DAY UNAVAILABLE").map((loc) => (
-                                {locations.map((loc) => (
+                              
                                     <li
                                         key={loc.id}
                                         className="d-flex justify-content-between align-items-center border rounded-2 p-3 mb-3 bg-white shadow-sm"

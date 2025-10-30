@@ -44,16 +44,15 @@ export default function CoordinatorsListInListener() {
                         <div className="col-12 col-md-6" key={coordinator.coordinator_id}>
                             <div className="coordinator-card">
                                 <h5>
-                                   
-                                    {coordinator.user_profiles.first_name} {coordinator.user_profiles.last_name}</h5>
+                                     {coordinator.user_profiles.first_name} {coordinator.user_profiles.last_name}</h5>
                                 <p>  <img src={mapIcon} alt="Map" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                    Location {coordinator.venue_locations.location_name}</p>
+                                    {coordinator.venue_locations.location_name}</p>
 
                                 <p> <img src={messageIcon} alt="Map" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
                                     {coordinator.user_profiles.email}</p>
 
                                 <p> <img src={phoneIcon} alt="Map" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                    {coordinator.user_profiles.phone}</p>
+                                    {coordinator?.user_profiles?.phone || " Not Available"}</p>
                             </div>
                         </div>
                     ))

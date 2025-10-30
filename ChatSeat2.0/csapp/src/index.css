@@ -649,7 +649,7 @@ h3.intro-title, h4.intro-title, .intro-title {
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 10px;
-  
+}
 /*Pending info*/
 .pending-alert {
     background-color: #fef9c3;
