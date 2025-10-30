@@ -640,7 +640,7 @@ export default function AdminSchedulingSetting() {
             </aside>
 
             <div className="dashboard-content-wrap">
-                <h4 className="dashboard-title">Admin Scheduling Settings</h4>
+                <h2 className="fw-bold dashboard-title fs-3 mb-4">Admin Scheduling Settings</h2>
                 <div className="dashboard-card">
                                 <div className="card-body">
                                     <h3 className="dashboard-title">Manage Locations</h3>

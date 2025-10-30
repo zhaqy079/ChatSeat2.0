@@ -29,7 +29,7 @@ export default function AdminDashboard() {
             <div className="d-flex">
                 <AdminSidebar userName="userName" />
                 <main className="flex-grow-1 p-4">
-                    <h2 className="intro-title">Welcome</h2>
+                    <h2 className="fw-bold intro-title mb-2">Welcome</h2>
 
                     {pendingCount > 0 && (
                         <div className="pending-alert">

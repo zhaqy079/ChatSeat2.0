@@ -44,7 +44,7 @@ export default function AdminEditResource() {
             </aside>
 
             <div className="flex-grow-1 px-3 px-md-4 py-4">
-                <h4 className="fw-bold mb-4 text-primary">Edit Listener External Resources</h4>
+                <h2 className="fw-bold dashboard-title fs-3 mb-4">Edit Listener External Resources</h2>
 
                 <form onSubmit={handleAdd} className="mb-4">
                     <div className="mb-3">
