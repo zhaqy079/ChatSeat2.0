@@ -25,18 +25,14 @@ export default function Venues() {
             .catch((err) => console.error("Error fetching venue:", err));
     }, []);
 
-    const mapSrc = venue
-        ? `https://www.google.com/maps?q=${encodeURIComponent(
-            venue.location
-        )}&output=embed`
-        : "";
-
     const toggleMap = (id) => {
         setExpandedMaps((prev) => ({
             ...prev,
             [id]: !prev[id],
         }));
     };
+
+
     // Display the venues slots (booked by listeners)
     useEffect(() => {
         const fetchData = async () => {
@@ -141,101 +137,97 @@ export default function Venues() {
     return (
         <div className="bg-white min-h-screen">
             <div className="container py-5">
-                {venue && (
-                    <div className="bg-white shadow p-4 mb-6 rounded">
-                        {/*Display each loaction with map*/}
-                        {groupedByLocation.length === 0 ? (
-                            <p className="text-muted">No upcoming slots found.</p>
-                        ) : (
-                            groupedByLocation.map((group) => { 
-                                const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(
+                <div className="bg-white shadow p-4 mb-6 rounded">
+                    {/*Display each loaction with map*/}
+                    {groupedByLocation.length === 0 ? (
+                        <p className="text-muted">No upcoming slots found.</p>
+                    ) : (
+                        groupedByLocation.map((group) => {
+                            const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(
                                 group.location_address || group.location_name
-                                )}&output=embed`;
+                            )}&output=embed`;
 
-                        return (
-                             
-                            <div key={group.location_id} className="mb-5">
-                                {/*show each library location and opening hours */}   
-                            <h4 className="fw-bold text-primary mb-3">
-                                {group.location_name}
-                                <img
-                                src={libraryIcon}
-                                alt="Map icon"
-                                className="icon ms-2"
-                                style={{ width: 20, height: 20, cursor: "pointer" }}
-                                onClick={() => toggleMap(group.location_id)} 
-                                title="View Map"
-                                  />
-                             </h4>
-                                {
-                                    expandedMaps[group.location_id] && ( 
-                                        <div className="ratio ratio-16x9 mb-3">
-                                            <iframe
-                                                src={mapSrc}
-                                                style={{ border: 0 }}
-                                                loading="lazy"
-                                                allowFullScreen
-                                                referrerPolicy="no-referrer-when-downgrade"
-                                                title={`${group.location_name} map`}
-                                            />
-                                        </div>
-                                    )
-                                }
+                            return (
 
-                            <div className="row g-3">
-                                {group.slots.map((appointment) => (
-                                    <div
-                                        key={appointment.id}
-                                        className="col-sm-6 col-md-4 col-lg-3"
-                                    >
-                                        <div className="card shadow-sm border-0 h-100" style={{ backgroundColor: "#fdfdfd", borderRadius: "10px" }}>
-                                            <div className="card-body">
+                                <div key={group.location_id} className="mb-5">
+                                    {/*show each library location and opening hours */}
+                                    <h4 className="fw-bold text-primary mb-3">
+                                        {group.location_name}
+                                        <img
+                                            src={libraryIcon}
+                                            alt="Map icon"
+                                            className="icon ms-2"
+                                            style={{ width: 20, height: 20, cursor: "pointer" }}
+                                            onClick={() => toggleMap(group.location_id)}
+                                            title="View Map"
+                                        />
+                                    </h4>
+                                    {
+                                        expandedMaps[group.location_id] && (
+                                            <div className="ratio ratio-16x9 mb-3">
+                                                <iframe
+                                                    src={mapSrc}
+                                                    style={{ border: 0 }}
+                                                    loading="lazy"
+                                                    allowFullScreen
+                                                    referrerPolicy="no-referrer-when-downgrade"
+                                                    title={`${group.location_name} map`}
+                                                />
+                                            </div>
+                                        )
+                                    }
 
-                                                <div className="mb-1 d-flex align-items-center">
-                                                   <strong> <img src={timeIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                                        Time:</strong>
-                                                    {appointment.time} a.m.
-                                                </div>
+                                    <div className="row g-3">
+                                        {group.slots.map((appointment) => (
+                                            <div
+                                                key={appointment.id}
+                                                className="col-sm-6 col-md-4 col-lg-3"
+                                            >
+                                                <div className="card shadow-sm border-0 h-100" style={{ backgroundColor: "#fdfdfd", borderRadius: "10px" }}>
+                                                    <div className="card-body">
 
-                                                <div className="mb-1 d-flex align-items-center">
-                                                    <strong> <img src={dateIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                                        Date:</strong>
-                                                    {appointment.dateLabel}
-                                                </div>
+                                                        <div className="mb-1 d-flex align-items-center">
+                                                            <strong> <img src={timeIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                                Time:</strong>
+                                                            {appointment.time} a.m.
+                                                        </div>
 
-                                                <div className="mb-1">
-                                                    <div className="d-flex align-items-center">
-                                                    <strong> <img src={listenerIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                                        Listeners: </strong>
+                                                        <div className="mb-1 d-flex align-items-center">
+                                                            <strong> <img src={dateIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                                Date:</strong>
+                                                            {appointment.dateLabel}
+                                                        </div>
+
+                                                        <div className="mb-1">
+                                                            <div className="d-flex align-items-center">
+                                                                <strong> <img src={listenerIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                                    Listeners: </strong>
+                                                            </div>
+                                                            {/*{(appointment.bookedUsers || ["Unassigned"]).join(", ")}*/}
+                                                            <ul className="list-unstyled ms-3 mt-1 mb-0">
+                                                                {(appointment.bookedUsers && appointment.bookedUsers.length > 0
+                                                                    ? appointment.bookedUsers
+                                                                    : ["Unassigned"]
+                                                                ).map((user, index) => (
+                                                                    <li key={index} className="d-flex align-items-center text-dark mb-1">
+                                                                        <img src={listenerIntroIcon} alt="Listener" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                                        <span>{typeof user === "string" ? user : user.name}</span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
                                                     </div>
-                                                    {/*{(appointment.bookedUsers || ["Unassigned"]).join(", ")}*/}
-                                                    <ul className="list-unstyled ms-3 mt-1 mb-0">
-                                                        {(appointment.bookedUsers && appointment.bookedUsers.length > 0
-                                                            ? appointment.bookedUsers
-                                                            : ["Unassigned"]
-                                                        ).map((user, index) => (
-                                                            <li key={index} className="d-flex align-items-center text-dark mb-1">
-                                                                <img src={listenerIntroIcon} alt="Listener" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />  
-                                                                <span>{typeof user === "string" ? user : user.name}</span>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
                                                 </div>
                                             </div>
-                                        </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                        );
+                                </div>
+                            );
                         })
-                        )}
-                    </div>
-
-                )}
-
+                    )}
+                </div>
+                    
             </div>
-
         </div>
     );
 
