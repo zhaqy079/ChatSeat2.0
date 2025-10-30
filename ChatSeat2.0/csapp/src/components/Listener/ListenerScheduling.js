@@ -324,8 +324,10 @@ export default function ListenerScheduling() {
 
                                 {events.filter(e => new Date(e.start) > new Date()).length === 0 ? (
                                     <p>No upcoming bookings.</p>
-                                ) : (
-                                    <div className="row upcoming-scroll-container">
+                        ) : (
+
+                                    //<div className="row upcoming-scroll-container">
+                                <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 upcoming-scroll-container">
                                         {events
                                             .filter(e => new Date(e.start) > new Date())
                                             .sort((a, b) => new Date(a.start) - new Date(b.start))
@@ -337,8 +339,7 @@ export default function ListenerScheduling() {
                                                         <p className="mb-1"><strong>Time:</strong> {new Date(e.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} - {new Date(e.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
                                                         <p className="mb-1"><strong>Location:</strong> {locations.find(l => l.location_id === e.location_id)?.location_name || "Unknown"}</p>
 
-                                                        {/*<p><strong>Booked Users:</strong> {e.bookedUsers?.length > 0 ? e.bookedUsers.map(u => u.name).join(", ") : "None"}</p>*/}
-                                                        
+                                                      
                                                         <p className="mb-1"><strong>Booked Users:</strong></p>
                                                         <div className="ms-2">
                                                             {(e.bookedUsers?.length ? e.bookedUsers : [{ name: "Unassigned" }]).map((u, i) => (

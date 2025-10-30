@@ -91,8 +91,8 @@ export default function HomePMForm({ onClose, onSent, onError }) {
                 body: {
                     to: form.email.trim(),
                     subject: "Thanks for reaching out to ChatSeat",
-                    text: `\n\nThanks for contacting ChatSeat. \nOur Listener will review your message and reply soon.`
-                    
+                    text: `\n\nThanks for contacting ChatSeat. \nOur Listener will review your message and reply soon.`,
+                    name: form.name.trim() 
                 }
             });
         }
