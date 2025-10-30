@@ -5,7 +5,7 @@
 export default function AdminHelp() {
     return (
 
-        <divv>
+        <div>
 
 
             <div className="d-flex dashboard-page-content">
@@ -109,6 +109,6 @@ export default function AdminHelp() {
                     </div>
                 </div>
             </div>
-        </divv>
+        </div>
     );
 }

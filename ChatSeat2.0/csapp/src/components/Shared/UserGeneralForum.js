@@ -115,7 +115,7 @@ export default function UserGeneralForum() {
                             : null}
                         </div>
                     </div>
-                    <p className="card-text">{post.content}</p>
+                    <div className="card-text mt-2"> {post.content}</div>
 
                     {activePostId === post.general_forum_id && (
                         <form onSubmit={async (e) => {
@@ -137,10 +137,10 @@ export default function UserGeneralForum() {
                     )}
                 </div>
                 {replies.map(reply => (
-                    //<Post key={reply.id} post={reply} posts={posts}/>
-                    <Post key={reply.general_forum_id} post={reply} posts={posts} />
+                    <Post key={reply.id} post={reply} posts={posts} />
                 ))}
             </div>
+            //<Post key={reply.id} post={reply} posts={posts}/>
         );
     }
 
@@ -173,9 +173,9 @@ export default function UserGeneralForum() {
                     generalforumlist
                         .filter(post => post.reply_to === null) // Only top-level posts
                             .map(post => (
-                                <div className="thread-indent">
-                                    <Post key={post.general_forum_id} post={post} posts={generalforumlist} />
-                            </div>
+                                <div key={post.id} className="thread-indent">
+                                    <Post post={post} posts={generalforumlist} />
+                                </div>
                         ))
                     )}
                 </div>

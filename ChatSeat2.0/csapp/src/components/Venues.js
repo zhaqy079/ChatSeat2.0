@@ -196,31 +196,36 @@ export default function Venues() {
                                         <div className="card shadow-sm border-0 h-100" style={{ backgroundColor: "#fdfdfd", borderRadius: "10px" }}>
                                             <div className="card-body">
 
-                                                <p className="mb-1">
-                                                    <strong> <img src={timeIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                                        Time:</strong> {appointment.time} am
-                                                </p>
-                                                <p className="mb-1">
+                                                <div className="mb-1 d-flex align-items-center">
+                                                   <strong> <img src={timeIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                        Time:</strong>
+                                                    {appointment.time} a.m.
+                                                </div>
+
+                                                <div className="mb-1 d-flex align-items-center">
                                                     <strong> <img src={dateIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                                        Date:</strong> {appointment.dateLabel}
-                                                </p>
-                                                <p className="mb-1">
+                                                        Date:</strong>
+                                                    {appointment.dateLabel}
+                                                </div>
+
+                                                <div className="mb-1">
+                                                    <div className="d-flex align-items-center">
                                                     <strong> <img src={listenerIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
                                                         Listeners: </strong>
-
+                                                    </div>
                                                     {/*{(appointment.bookedUsers || ["Unassigned"]).join(", ")}*/}
-                                                    <div className="ms-3 mt-1">
+                                                    <ul className="list-unstyled ms-3 mt-1 mb-0">
                                                         {(appointment.bookedUsers && appointment.bookedUsers.length > 0
                                                             ? appointment.bookedUsers
                                                             : ["Unassigned"]
                                                         ).map((user, index) => (
-                                                            <div key={index} className="d-flex align-items-center text-dark mb-1">
+                                                            <li key={index} className="d-flex align-items-center text-dark mb-1">
                                                                 <img src={listenerIntroIcon} alt="Listener" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />  
                                                                 <span>{typeof user === "string" ? user : user.name}</span>
-                                                            </div>
+                                                            </li>
                                                         ))}
-                                                    </div>
-                                                </p>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
