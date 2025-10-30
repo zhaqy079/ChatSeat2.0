@@ -84,7 +84,7 @@ export default function CoordinatorForum() {
 
         return (
            
-                <div key={post.coord_forum_id} className="card post-card mb-2">
+                <div className="card post-card mb-2">
                 <div className="card-body py-2">
                     {/* Main content of a feedback post */}
                     <div>
@@ -134,7 +134,7 @@ export default function CoordinatorForum() {
                     )}
                 </div>
                 {replies.map(reply => (
-                    <Post key={reply.id} post={reply} posts={posts} />
+                    <Post key={reply.coord_forum_id} post={reply} posts={posts} />
                 ))}
             </div>
         );
@@ -173,8 +173,8 @@ export default function CoordinatorForum() {
                         ) : (
                             coordforumlist
                                 .filter(post => post.reply_to === null) // Only top-level posts
-                                .map(post => (
-                                    <Post key={post.id} post={post} posts={coordforumlist} />
+                                    .map(post => (
+                                        <Post key={post.coord_forum_id} post={post} posts={coordforumlist} />
                                 ))
                         )}
                 </div>

@@ -82,8 +82,7 @@ export default function UserGeneralForum() {
         const replies = posts.filter(p => p.reply_to === post.general_forum_id);
 
         return (
-           
-                <div key={post.general_forum_id} className="card post-card mb-2">
+            <div className="card post-card mb-2">
                 <div className="card-body py-2">
                     {/* Main content of a feedback post */}
                     <div>
@@ -133,10 +132,10 @@ export default function UserGeneralForum() {
                     )}
                 </div>
                 {replies.map(reply => (
-                    <Post key={reply.id} post={reply} posts={posts} />
+                    <Post key={reply.general_forum_id} post={reply} posts={posts} />
                 ))}
             </div>
-            //<Post key={reply.id} post={reply} posts={posts}/>
+            
         );
     }
 
@@ -169,7 +168,7 @@ export default function UserGeneralForum() {
                     generalforumlist
                         .filter(post => post.reply_to === null) // Only top-level posts
                             .map(post => (
-                                <div key={post.id} className="thread-indent">
+                                <div key={post.general_forum_id} className="thread-indent">
                                     <Post post={post} posts={generalforumlist} />
                                 </div>
                         ))
