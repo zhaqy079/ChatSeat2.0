@@ -68,6 +68,12 @@ export default function AdminManageUser() {
     const updatePrivileges = async (event) => {
         event.preventDefault();
         document.getElementById("updateSubmit").disabled = true;
+        // protect
+        if (!currentuser || !currentuser.id) {
+            alert("Current user not loaded yet. Please refresh or re-login.");
+            document.getElementById("updateSubmit").disabled = false;
+            return;
+        }
         const formData = new FormData(event.target);
         const isAdmin = formData.get('admin') === 'on';
         const updateLocationIds = locationlist
@@ -85,11 +91,11 @@ export default function AdminManageUser() {
                 coord => coord.location_id === location.location_id
             );
             const coordinatorState = updateLocationIds.includes(location.location_id);
-
+            // User privileges setting
             if (coordinatorState && !currentCoordinator) {
-                await updateCoord(true, location.location_id); // Add coordinator
+                await updateCoord(true, location.location_id); 
             } else if (!coordinatorState && currentCoordinator) {
-                await updateCoord(false, location.location_id); // Remove coordinator
+                await updateCoord(false, location.location_id); 
             }
         }
 
@@ -156,12 +162,13 @@ export default function AdminManageUser() {
                     coordinator_id: user.profile_id,
                     location_id: locationID,
                     approved_by: currentuser.id
-                })
+                });
         } else {
             coordError = await supabase
                 .from('coordinator_profiles')
                 .delete()
-                .eq('location_id', locationID, 'coordinator_id', user.profile_id)
+                .eq('location_id', locationID)
+                .eq('coordinator_id', user.profile_id);
         }
 
         if (coordError.error) {
@@ -200,59 +207,84 @@ export default function AdminManageUser() {
 
     return (
         <div>
-            <div className="d-flex">
+            <div className="d-flex dashboard-page-scheduling">
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
-                    <h4>Manage User</h4>
+                    <h4 className="intro-title">Manage User</h4>
                     {!user.profile_id ? <h3 className="text-center">Loading User Data.....</h3>
                         : <form onSubmit={updatePrivileges}>
-                            <hr />
-                            <h5>User Details: </h5>
-                            <div>Name: {user.first_name} {user.last_name}</div>
-                            <div>Email: {user.email}</div>
-                            <hr />
-                            <h5>Coordinator Locations</h5>
-                            <table className="table">
-                                <thead className="text-left">
-                                    <tr className="text-left">
-                                        <th className="p-3">Name</th>
-                                        <th className="p-3">Address</th>
-                                        <th className="p-3">Location Inactive</th>
-                                        <th className="text-center p-3">Coordinator at Location</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {locationlist.map((location) => {
-                                        return (
-                                            <tr key={location.location_id} className="border-t">
-                                                <td className="p-3">{location.location_name}</td>
-                                                <td className="p-3">{location.location_address}</td>
-                                                <td className="p-3">
-                                                    { // Changes incoming date format to '27 Nov 2025' format
-                                                        location.inactive_at === null
-                                                            ? "Active"
-                                                            : new Date(location.inactive_at).toLocaleDateString("en-AU", {
-                                                                year: "numeric",
-                                                                month: "short",
-                                                                day: "numeric",
-                                                            })}
+
+                            <hr className="mt-3 mb-4" />
+
+                            <h5 className="intro-title mb-3 mt-4 ">User Details</h5>
+                            <div className="ms-3 mb-4">
+                                <p className="mb-1"><strong>Name:</strong> {user.first_name} {user.last_name}</p>
+                                <p className="mb-0"><strong>Email:</strong> {user.email}</p>
+                            </div>
+                            <hr className="mt-3 mb-4" />
+                            <h5 className="intro-title mb-3 mt-4">Set Coordinator</h5>
+
+                            <div className="alert alert-warning px-4 py-2 mb-3" role="status">
+
+                                <small className="fw-semibold text-muted">
+                                    Tick a location to grant coordinator privileges for that venue. Untick to remove.
+                                    Admin role is managed below in <em>Admin Privileges</em>.
+                                </small>
+
+                            </div>
+
+                            <div className="table-responsive px-2">
+                                <table className="table table-hover align-middle ">
+                                    <thead className="table-light">
+                                        <tr>
+                                            <th scope="col" className="text-nowrap">Location</th>
+                                            <th scope="col" className="text-nowrap">Address</th>
+                                            <th scope="col" className="text-nowrap">Location Inactive</th>
+                                            <th scope="col" className="text-center text-nowrap">Make Coordinator</th>
+                                        </tr>
+         
+                                    </thead>
+                                    <tbody>
+                                        {locationlist.map((location) => (
+                                            <tr key={location.location_id}>
+                                                <td className="fw-medium">{location.location_name}</td>
+                                                <td className="text-muted">{location.location_address}</td>
+                                                <td>
+                                                    {location.inactive_at === null
+                                                        ? "Active"
+                                                        : new Date(location.inactive_at).toLocaleDateString("en-AU", {
+                                                            year: "numeric",
+                                                            month: "short",
+                                                            day: "numeric",
+                                                        })}
                                                 </td>
                                                 <td className="text-center">
-                                                    <div className="justify-content-center">
-                                                        <input type="checkbox" name={location.location_id} defaultChecked={(user.coordinator_profiles.some(coord_location => coord_location.location_id === location.location_id))} />
-                                                    </div>
+                                                    <input
+                                                        type="checkbox"
+                                                        name={location.location_id}
+                                                        defaultChecked={user.coordinator_profiles.some(
+                                                            coord => coord.location_id === location.location_id
+                                                        )}
+                                                        className="form-check-input"
+                                                    />
                                                 </td>
                                             </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
-                            <hr />
-                            <h5>Admin Privileges</h5>
+                                        ))}
+                                    </tbody>
+
+                                </table>
+                            </div>
+  
+                            <hr className="mt-3 mb-4" />
+
+                            <h5 className="intro-title mb-3 mt-4"> Admin Privileges</h5>
+                            <div className="ms-3 mb-4">
                             <label>
-                                Admin: <input type="checkbox" name="admin" defaultChecked={!(user.admin_profiles === null)} />
-                            </label>
-                            <hr/>
+                                <strong>Admin: <input type="checkbox" name="admin" defaultChecked={!(user.admin_profiles === null)} /></strong>
+                                </label>
+                            </div>
+                            <hr className="mt-3 mb-4" />
+
                             <div className="d-flex align-items-center">
                                 <div className="ms-auto">
                                     <button type="submit" className="btn btn-info me-2 col" id="updateSubmit">Update Privileges</button>

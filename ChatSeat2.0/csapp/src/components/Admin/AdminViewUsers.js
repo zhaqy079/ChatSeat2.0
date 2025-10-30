@@ -139,7 +139,7 @@ function coordinatorTable(userlist) {
                             <td className="p-3">
                                 {user.coordinator_profiles.map((coord_profile) => { 
                                     return (
-                                        <div className="row">{coord_profile.venue_locations.location_name}</div>
+                                        <div key={coord_profile.location_id} className="row">{coord_profile.venue_locations.location_name}</div>
                                 )})}
                             </td>
                             
