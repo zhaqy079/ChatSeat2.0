@@ -8,8 +8,8 @@ export default function Navbar() {
     const user = useSelector((state) => state.loggedInUser?.success);
     const isAuthenticated = !!user;
     const role = user?.role;
-    console.log("Logged-in user:", user);
-    console.log("User role:", user?.role);
+    //console.log("Logged-in user:", user);
+    //console.log("User role:", user?.role);
     // Set the dashboard and the help page swither route 
     const dashboardPath =
         role === "admin"
