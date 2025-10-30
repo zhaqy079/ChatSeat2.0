@@ -4,13 +4,9 @@ import ListenerSideBar from "./ListenerSideBar";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import '../../index.css';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../../supabaseClient";
 import userIcon from "../../assets/icons/icons8-user-48.png";
 
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 
 export default function ListenerScheduling() {

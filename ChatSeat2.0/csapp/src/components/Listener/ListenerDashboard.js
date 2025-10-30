@@ -2,13 +2,9 @@
 import Navbar from "../Navbar";
 import ListenerSideBar from "./ListenerSideBar";
 import { Link } from "react-router-dom";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../../supabaseClient";
 import { useEffect, useState } from "react";
 
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 export default function ListenerDashboard() {
     const user = useSelector((s) => s.loggedInUser?.success);

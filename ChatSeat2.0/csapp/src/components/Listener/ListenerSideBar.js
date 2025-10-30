@@ -1,12 +1,7 @@
 ﻿import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { logoutUser } from "../../state/loggedInUser";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
+import { supabase } from "../../supabaseClient";
 
 export default function ListenerSidebar() {
     const location = useLocation();

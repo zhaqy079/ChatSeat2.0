@@ -3,19 +3,13 @@ import { useState, useEffect, useRef } from "react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../../supabaseClient";
 
 
 // if you get an error for packages of fullcalendar not installed, run this command in terminal
 // npm install @fullcalendar/react @fullcalendar/timegrid @fullcalendar/interaction
 
 // had to make full day unavailable a location to make the blocking work properly
-
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 export default function AdminSchedulingSetting() {
     const [locations, setLocations] = useState([]); // locations are saved here so the DB can be updated

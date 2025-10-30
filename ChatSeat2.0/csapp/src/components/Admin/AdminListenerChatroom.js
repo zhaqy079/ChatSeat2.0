@@ -1,12 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { createClient } from '@supabase/supabase-js';
 import { useSelector } from "react-redux";
 import AdminSidebar from "./AdminSidebar";
+import { supabase } from "../../supabaseClient";
 
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 // Requests a list of all general forum posts from the database
 export const fetchAllGeneralForumPosts = async () => {

@@ -1,14 +1,10 @@
 ﻿import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CoordinatorSidebar from "./CoordinatorSidebar";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../../supabaseClient";
 import editIcon from "../../assets/icons/icons8-edit-48.png";
 import userIcon from "../../assets/icons/icons8-user-48.png";
 
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 
 export default function CoordinatorAppointments() {

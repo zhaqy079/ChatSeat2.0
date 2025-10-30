@@ -1,11 +1,7 @@
 import AdminSidebar from './AdminSidebar';
 import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../../supabaseClient";
 
-const supabase = createClient(
-    "https://nuarimunhutwzmcknhwj.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51YXJpbXVuaHV0d3ptY2tuaHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTk2MjIsImV4cCI6MjA3MTIzNTYyMn0.fwdTA0n_vSrT_kUqlExIPdDpPrHo_fRIkOUcd5aHi0c"
-);
 export default function AdminEditResource() {
 
     const [resources, setResources] = useState([]);

@@ -1,19 +1,12 @@
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import alarmIcon from "../../assets/icons/icons8-alarm-48.png";
-
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
+import { supabase } from "../../supabaseClient";
 
 export default function AdminDashboard() {
     const [pendingCount, setPendingCount] = useState(0);
     const navigate = useNavigate();
-
-   
 
     useEffect(() => {
         const fetchPending = async () => {

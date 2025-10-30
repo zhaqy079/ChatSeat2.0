@@ -1,12 +1,8 @@
 ﻿import CoordinatorSidebar from "./CoordinatorSidebar";
 import React, { useState, useEffect } from "react";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../../supabaseClient";
 //import { useSelector } from "react-redux";
 
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 export default function CoordinatorHelp() {
     const [activeTab, setActiveTab] = useState(0);

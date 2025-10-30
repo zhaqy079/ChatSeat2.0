@@ -1,17 +1,11 @@
 ﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { createClient } from '@supabase/supabase-js';
-// Keep same validation with former team programming
+import { supabase } from "../supabaseClient";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
-// Please update for supabase logic 
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 // Validation schema for the signup form
 const schema = Yup.object().shape({

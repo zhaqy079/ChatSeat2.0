@@ -1,12 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../../supabaseClient";
 import { useSelector } from "react-redux";
 import CoordinatorSidebar from "./CoordinatorSidebar";
 
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 // Requests a list of all coordinator forum posts from the database
 export const fetchAllCoordForumPosts = async () => {

@@ -1,13 +1,8 @@
 import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { createClient } from '@supabase/supabase-js';
 import {useNavigate, useParams } from "react-router-dom";
-
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
+import { supabase } from "../../supabaseClient";
 
 // Requests a user from the database
 export const fetchUser = async (userID) => {

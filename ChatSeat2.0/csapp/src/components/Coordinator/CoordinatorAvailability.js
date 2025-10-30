@@ -3,12 +3,8 @@ import React, { useState, useEffect } from "react";
 import CoordinatorSidebar from "./CoordinatorSidebar";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../../supabaseClient";
 
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 
 export default function CoordinatorAvailability() {

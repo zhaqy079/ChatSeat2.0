@@ -1,12 +1,6 @@
 import AdminSidebar from "../Admin/AdminSidebar";
 import { useState, useEffect, useRef } from "react";
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
-
+import { supabase } from "../../supabaseClient";
 
 // Requests a list of all feedback posts from the database
 export const fetchAllFeedbackPosts = async () => {

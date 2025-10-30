@@ -1,12 +1,8 @@
 import { useState } from "react";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../../supabaseClient";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 export default function SubmitFeedback() {
     const [content, setContent] = useState("");

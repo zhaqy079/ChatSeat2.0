@@ -1,16 +1,11 @@
 ﻿import React, { useEffect, useState } from "react";
 import ListenerSideBar from "./ListenerSideBar";
 import { useSelector } from "react-redux";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../../supabaseClient";
 import mapIcon from "../../assets/icons/icons8-map-48.png";
 import phoneIcon from "../../assets/icons/icons8-phone-48.png";
 import messageIcon from "../../assets/icons/icons8-email-48.png";
 
-// Implement supabase logic later
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 export default function CoordinatorsListInListener() {
     const [coordinators, setCoordinators] = useState([]);

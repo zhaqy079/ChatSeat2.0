@@ -2,17 +2,12 @@
 // Card ref: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details
 // Map ref: https://www.codu.co/articles/creating-links-to-locations-in-google-maps-and-apple-maps-eqj0ozor
 import { useEffect, useState } from "react";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "../supabaseClient";
 import libraryIcon from "../assets/icons/icons8-library-48.png";
 import timeIcon from "../assets/icons/icons8-clock-48.png";
 import dateIcon from "../assets/icons/icons8-today-48.png";
 import listenerIcon from "../assets/icons/icons8-people-48.png";
 import listenerIntroIcon from "../assets/icons/icons8-dash-48.png";
-
-const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL,
-    process.env.REACT_APP_SUPABASE_ANON_KEY
-);
 
 
 export default function Venues() {
