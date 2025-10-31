@@ -38,7 +38,7 @@ export default function SubmitFeedback() {
                 <div className="flex-grow-1 px-3 px-md-4 py-4">
                     <h4 className="fw-bold mb-4 text-primary">Post Feedback</h4>
                     <form className="mb-2 flex-grow" onSubmit={createFeedback}>
-                        <textarea id="newDiscussion" className="form-control border-4 mb-2" rows="5" placeholder="Create new feedback..." onChange={(e) => setContent(e.target.value)} />
+                        <textarea id="newDiscussion" name="newFeedback" className="form-control border-4 mb-2" rows="5" placeholder="Create new feedback..." onChange={(e) => setContent(e.target.value)} />
                         <button type="submit" className="w-full btn btn-primary">Post New Feedback</button>
                     </form>
                 </div>

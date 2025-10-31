@@ -385,6 +385,7 @@ export default function ListenerScheduling() {
                                 {/*location dropdown */}
                                 <select
                                     className="location-dropdown"
+                                    name="locationDropdown"
                                     value={selectedLocation}
                                     onChange={(e) => setSelectedLocation(e.target.value)}
                                 >

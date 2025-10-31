@@ -6,7 +6,8 @@ export async function restoreSessionAndHydrateRedux(dispatch) {
     // Get the current user/session
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error) {
-        console.warn("auth.getUser error:", error.message);
+        // test info
+        //console.warn("auth.getUser error:", error.message);
         return;
     }
     if (!user) {

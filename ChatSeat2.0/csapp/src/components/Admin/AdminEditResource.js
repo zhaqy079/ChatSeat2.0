@@ -51,6 +51,7 @@ export default function AdminEditResource() {
                         <label className="form-label">Role</label>
                         <input
                             type="text"
+                            name="enterRole"
                             className="form-control"
                             value={newResource.role}
                             onChange={(e) => setNewResource({ ...newResource, role: e.target.value })}
@@ -61,6 +62,7 @@ export default function AdminEditResource() {
                         <label className="form-label">Content Title</label>
                         <input
                             type="text"
+                            name="contentTitle"
                             className="form-control"
                             value={newResource.content}
                             onChange={(e) => setNewResource({ ...newResource, content: e.target.value })}
@@ -72,6 +74,7 @@ export default function AdminEditResource() {
                         <input
                             type="url"
                             className="form-control"
+                            name="resourceUrl"
                             value={newResource.link}
                             onChange={(e) => setNewResource({ ...newResource, link: e.target.value })}
                             required

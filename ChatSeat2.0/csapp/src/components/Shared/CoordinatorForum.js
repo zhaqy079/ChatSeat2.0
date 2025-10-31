@@ -129,7 +129,8 @@ export default function CoordinatorForum() {
                                 await createPost({ message, reply: post.coord_forum_id });
                         }}>
                             <textarea
-                                className="form-control border-2"
+                                    className="form-control border-2"
+                                    name="replyPost"
                                 placeholder="Write your reply..."
                                 ref={replyRef}
                             />
@@ -160,7 +161,7 @@ export default function CoordinatorForum() {
                         const reply = null;
                         await createPost({ message, reply });
                     }}>
-                        <textarea id="newDiscussion" className="form-control textarea-soft mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
+                    <textarea id="newDiscussion" name="newDiscussion" className="form-control textarea-soft mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
                         <button type="submit" className="btn btn-outline-primary">Post New Discussion</button>
                     </form>
 

@@ -65,6 +65,7 @@ export default function ResetPassword() {
                         <div className="row">
                             <input
                                 type="password"
+                                name="resetpwd"
                                 placeholder="Enter new password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}

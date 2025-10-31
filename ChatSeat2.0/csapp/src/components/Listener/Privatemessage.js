@@ -153,7 +153,7 @@ function ReplyForm({ to, onCancel, onSend, sending }) {
             </div>
             <div className="mb-3">
                 <label className="reply-label mb-2">Message</label>
-                <textarea className="form-control" rows={4} value={text} onChange={(e) => setText(e.target.value)} />
+                <textarea className="form-control" name="privateMessage" rows={4} value={text} onChange={(e) => setText(e.target.value)} />
             </div>
             <div className="d-flex gap-2">
                 <button

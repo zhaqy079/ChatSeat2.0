@@ -186,6 +186,7 @@ export default function UserGeneralForum() {
                             <textarea
                                 className="form-control border-2"
                                 placeholder="Write your reply..."
+                                name="replyDiscussion" 
                                 ref={replyRef}
                             />
                             <button type="submit" className="btn btn-outline-warning mt-2">
@@ -222,11 +223,12 @@ export default function UserGeneralForum() {
                 }}>
                     <input
                         className="form-control textarea-soft mb-2"
+                        name="title"
                         placeholder="Title (required)"
                         ref={newTitleRef}
                     />
 
-                    <textarea id="newDiscussion" className="form-control textarea-soft mb-2" rows="5" placeholder="Create new discussion..." ref={newContentRef}/>
+                    <textarea id="newDiscussion" className="form-control textarea-soft mb-2" rows="5" name="newDiscussion" placeholder="Create new discussion..." ref={newContentRef}/>
                     <button type="submit" className="btn btn-warning">Post New Discussion</button>
                 </form>
 

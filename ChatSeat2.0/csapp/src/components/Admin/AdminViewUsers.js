@@ -279,7 +279,8 @@ export default function AdminViewUsers() {
                         {/* Dropdown menu to refine the displayed users */}
                         <div className="mb-3">
                         <select className="form-select fw-semibold mb-2 w-auto"
-                                value={searchrole}
+                            value={searchrole}
+                                name="roles"
                                 onChange={(e) => setSearchrole(e.target.value)}>
                                 <option value="pending">Pending Users</option>
                                 <option value="all">All Users</option>

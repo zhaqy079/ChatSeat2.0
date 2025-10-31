@@ -132,7 +132,7 @@ export default function AdminSchedulingSetting() {
                     };
                 });
 
-                console.log("All fetched events:", eventsData);
+               // console.log("All fetched events:", eventsData);
 
                 setEvents(eventsData);
             } catch (error) {
@@ -645,13 +645,14 @@ export default function AdminSchedulingSetting() {
                                 <div className="card-body">
                                     <h3 className="dashboard-title">Manage Locations</h3>
                         <div className="d-flex gap-2 mb-4 align-items-stretch">
-                                <input
+                            <input
+                                    name="location"
                                     type="text"
-                                className="form-control form-control-lg rounded-2 shadow-sm"
+                                    className="form-control form-control-lg rounded-2 shadow-sm"
                                     placeholder="Enter location name"
                                     value={newLocation}
-                                onChange={(e) => setNewLocation(e.target.value)}
-                                style={{ borderWidth: '2px' }}  
+                                    onChange={(e) => setNewLocation(e.target.value)}
+                                    style={{ borderWidth: '2px' }}  
                                 />
                                 <button className="btn btn-success" onClick={handleAddLocation}>
                                     Add
@@ -720,7 +721,8 @@ export default function AdminSchedulingSetting() {
                             Pick a week. Click the calendar to add slots.
                         </p>
                             <input
-                                type="week"
+                            type="week"
+                                name="pickWeek"
                                 className="form-control mb-3"
                                 value={selectedWeek}
                                 onChange={(e) => setSelectedWeek(e.target.value)}
@@ -772,7 +774,8 @@ export default function AdminSchedulingSetting() {
                                     <div className="modal-body">
                                         <div className="mb-3">
                                             <label className="form-label">Date</label>
-                                            <input
+                                        <input
+                                                name="pickDate"
                                                 type="text"
                                                 className="form-control"
                                                 value={selectedSlot ? formatDateWithSuffix(selectedSlot) : ""}
@@ -785,7 +788,8 @@ export default function AdminSchedulingSetting() {
                                             <div className="mb-3">
                                                 <label className="form-label">Location</label>
                                                 <select
-                                                    className="form-select"
+                                                className="form-select"
+                                                    name= "locationSelect"
                                                     value={selectedLocation}
                                                     onChange={(e) => setSelectedLocation(e.target.value)}
                                                 >
@@ -814,7 +818,8 @@ export default function AdminSchedulingSetting() {
                                         )}
 
                                         <div className="form-check mb-3">
-                                            <input
+                                        <input
+                                                name="blockWholeDay"
                                                 className="form-check-input"
                                                 type="checkbox"
                                                 id="blockFullDayCheck"
@@ -831,6 +836,7 @@ export default function AdminSchedulingSetting() {
                                                 <input
                                                     className="form-check-input"
                                                     type="checkbox"
+                                                    name="checkRepeat"
                                                     id="recurringCheck"
                                                     checked={isRecurring}
                                                     onChange={(e) => setIsRecurring(e.target.checked)}
@@ -843,6 +849,7 @@ export default function AdminSchedulingSetting() {
                                                 {isRecurring && (
                                                     <input
                                                         type="number"
+                                                        name="setRepeat"
                                                         className="form-control mt-2"
                                                         min={1}
                                                         value={recurringWeeks}
@@ -861,6 +868,7 @@ export default function AdminSchedulingSetting() {
                                                     <input
                                                         type="time"
                                                         className="form-control"
+                                                        name="startTime"
                                                         value={selectedStartTime}
                                                         onChange={(e) => setSelectedStartTime(e.target.value)}
                                                     />
@@ -869,6 +877,7 @@ export default function AdminSchedulingSetting() {
                                                     <label className="form-label">End Time</label>
                                                     <input
                                                         type="time"
+                                                        name="endTime"
                                                         className="form-control"
                                                         value={selectedEndTime}
                                                         onChange={(e) => setSelectedEndTime(e.target.value)}
@@ -978,6 +987,7 @@ export default function AdminSchedulingSetting() {
                                             </label>
                                             <input
                                                 type="time"
+                                                name="availability"
                                                 className="form-control me-2"
                                                 value={tempAvailability[day].open || ""}
                                                 onChange={(e) =>
@@ -990,6 +1000,7 @@ export default function AdminSchedulingSetting() {
                                             <input
                                                 type="time"
                                                 className="form-control"
+                                                name="setAvailability"
                                                 value={tempAvailability[day].close || ""}
                                                 onChange={(e) =>
                                                     setTempAvailability((prev) => ({
