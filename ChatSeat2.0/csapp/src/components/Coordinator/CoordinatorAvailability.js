@@ -112,6 +112,7 @@ export default function CoordinatorAvailability() {
                 <div className="card-panel p-4 sm:p-6 rounded shadow w-full">
                     <select
                         className="location-dropdown mb-3"
+                        name="selectedlocation"
                         value={selectedLocation}
                         onChange={(e) => setSelectedLocation(e.target.value)}
                     >

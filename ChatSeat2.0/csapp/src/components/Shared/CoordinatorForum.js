@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "../../supabaseClient";
 import { useSelector } from "react-redux";
-import CoordinatorSidebar from "./CoordinatorSidebar";
+
 
 
 // Requests a list of all coordinator forum posts from the database
@@ -84,46 +84,53 @@ export default function CoordinatorForum() {
 
         return (
            
-                <div className="card post-card mb-2">
+                <div className="card post-card mb-3">
                 <div className="card-body py-2">
                     {/* Main content of a feedback post */}
                     <div>
-                        <div className="d-flex align-items-center">
-                            <h6 className="card-title col">{post.user_profiles.first_name} {post.user_profiles.last_name}</h6>
-                            <small className="text-muted col text-end">Created: {
-                                // Logic to adjust displayed date to '27 Nov 2025' format
-                                new Date(post.created_at).toLocaleDateString("en-AU", {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
+                        <div className="d-flex justify-content-between align-items-start post-meta">
+                        <div>
+                                <h6 className="card-title mb-1 author">{post.user_profiles.first_name} {post.user_profiles.last_name}</h6>
+                                <div className="card-subtitle email text-muted">{post.user_profiles.email}</div>
+                            </div>
+                            <small className="text-muted">
+                                {new Date(post.created_at).toLocaleDateString("en-AU", {
+                                    year: "numeric", month: "short", day: "numeric",
                                 })}
                             </small>
                         </div>
-                        <div className="d-flex align-items-center">
-                            <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
-                            {post.user_profiles.profile_id !== "d7c48149-6553-4dd2-ae95-ad9b5274ade1"
-                                ? <div className="ms-auto">
-                                    {user.id === post.user_profiles.profile_id
-                                        ? <button type="button" className="btn btn-danger me-2" onClick={() => deletePost(post.coord_forum_id)}>Delete</button> : null}
-                                    <button type="button" className="btn btn-secondary" onClick={() => {
-                                        setActivePostId(prevId => (prevId === post.coord_forum_id ? null : post.coord_forum_id));
-                                    }}>Reply</button>
-                                </div>
-                                : null}
-                        </div>
-                    </div>
-                    <p className="card-text">{post.content}</p>
 
+                        {/*Post content*/}
+                        <div className="card-text content-box mt-2">{post.content}</div>
+                        {/*Button*/}
+                        <div className="d-flex justify-content-end gap-2 mt-3">
+                            <button type="button" className="pm-btn-reply" onClick={() =>
+                                    setActivePostId(prev => prev === post.coord_forum_id ? null : post.coord_forum_id)
+                                }
+                            >
+                                Reply
+                            </button>
+                            {user.id === post.user_profiles.profile_id && (
+                                <button type="button" className="pm-btn-delete me-2"
+                                    onClick={() => deletePost(post.coord_forum_id)}
+                                >
+                                    Delete
+                                </button>
+                            )}
+                    </div>
+                  
+                    {/*Reply*/}
                     {activePostId === post.coord_forum_id && (
-                        <form onSubmit={async (e) => {
+                            <form className="mt-3"  onSubmit={async (e) => {
                             e.preventDefault();
 
                             const message = replyRef.current?.value;
                             const reply = post.coord_forum_id;
-                            await createPost({ message, reply });
+                                await createPost({ message, reply: post.coord_forum_id });
                         }}>
                             <textarea
-                                className="form-control border-2"
+                                    className="form-control border-2"
+                                    name="replyPost"
                                 placeholder="Write your reply..."
                                 ref={replyRef}
                             />
@@ -132,25 +139,21 @@ export default function CoordinatorForum() {
                             </button>
                         </form>
                     )}
+                    </div>
                 </div>
                 {replies.map(reply => (
-                    <Post key={reply.coord_forum_id} post={reply} posts={posts} />
+                    <Post key={reply.coord_forum_id} className="thread-indent mt-2" post={reply} posts={posts} />
                 ))}
             </div>
         );
     }
 
     return (
-        <div className="d-flex dashboard-page-content">
-            <aside>
-                <CoordinatorSidebar />
-            </aside>
-
-
-            <div className="flex-grow-1 p-4 forum forum-coord">
-                <div className="flex-grow-1 px-3 px-md-4 py-4">
+        <div className="flex-grow-1 dashboard-page-content">
+            <div className="flex-grow-1 px-3 px-md-4 py-4 forum forum-coord">
+               
                     <h2 className="fw-bold dashboard-title fs-3 mb-4">Coordinator Hub</h2>
-                    
+               
                     <form className="mb-2" onSubmit={async (e) => {
                         e.preventDefault();
 
@@ -158,11 +161,12 @@ export default function CoordinatorForum() {
                         const reply = null;
                         await createPost({ message, reply });
                     }}>
-                        <textarea id="newDiscussion" className="form-control textarea-soft mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
-                        <button type="submit" className="w-full btn btn-primary">Post New Discussion</button>
+                    <textarea id="newDiscussion" name="newDiscussion" className="form-control textarea-soft mb-2" rows="5" placeholder="Create new discussion..." ref={postRef} />
+                        <button type="submit" className="btn btn-outline-primary">Post New Discussion</button>
                     </form>
 
-                    <hr />
+               
+                <hr className="mt-3 mb-4" />
 
                     { // Forum display logic, if no forum posts display special message otherwise display all posts
                         !coordforumlist.length > 0 ? (
@@ -172,14 +176,17 @@ export default function CoordinatorForum() {
                             </h5>
                         ) : (
                             coordforumlist
-                                .filter(post => post.reply_to === null) // Only top-level posts
-                                    .map(post => (
-                                        <Post key={post.coord_forum_id} post={post} posts={coordforumlist} />
+                                .filter(post => post.reply_to === null) 
+                                .map(post => (
+                                    <div key={post.coord_forum_id} className="thread-indent">
+                                        <Post post={post} posts={coordforumlist} />
+                                    </div>
                                 ))
                         )}
-                </div>
+                
             </div>
         </div>
-
+      
+            
     );
 }

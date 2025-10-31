@@ -200,7 +200,7 @@ export default function CoordinatorHelp() {
                 return (
                     <div className="container bg-white rounded shadow-sm p-4 p-md-5 text-dark">
                         <h3 className="fw-bold text-primary mb-3">Image Gallery</h3>
-                        <input type="file" onChange={handleUpload} disabled={uploading} className="mb-4" />
+                        <input type="file" name="imageGallery" onChange={handleUpload} disabled={uploading} className="mb-4" />
                         {uploading && <p className="text-blue-500">Uploading...</p>}
                         <div className="row g-4">
                             {files.length === 0 && <p className="text-center">No images found.</p>}

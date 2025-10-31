@@ -77,16 +77,17 @@ export default function PrivateMessage() {
     }
 
     return (
-        <div className="d-flex  dashboard-page-content">
+        <div className="d-flex flex-row dashboard-page-content">
             <ListenerSideBar />
-            <main className="flex-grow-1 p-4">
+            <main className="flex-grow-1 p-4 container-fluid">
                 <h2 className="fw-bold mb-3 intro-title">
                     Unread Messages
                 </h2>
                 {messages.length === 0 && (
                     <div className="alert alert-info">No new messages</div>
                 )}
-                <div className="col-xl-8 ps-3">
+                <div className="row justify-content-center">
+                    <div className="col-12 col-md-10 col-lg-8">
                     {messages.map((m) => (
                         <div key={m.message_id} className="pm-card">
                             <div className="card-body">
@@ -130,6 +131,7 @@ export default function PrivateMessage() {
                         </div>
                     ))}
                 </div>
+        </div>
             </main>
         </div>
     );
@@ -151,7 +153,7 @@ function ReplyForm({ to, onCancel, onSend, sending }) {
             </div>
             <div className="mb-3">
                 <label className="reply-label mb-2">Message</label>
-                <textarea className="form-control" rows={4} value={text} onChange={(e) => setText(e.target.value)} />
+                <textarea className="form-control" name="privateMessage" rows={4} value={text} onChange={(e) => setText(e.target.value)} />
             </div>
             <div className="d-flex gap-2">
                 <button

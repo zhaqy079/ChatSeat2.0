@@ -38,6 +38,7 @@ export default function ResetRequest() {
                         <div className="mb-4">
                             <input
                                 type="email"
+                                name="enterEmail"
                                 className="form-control p-3 rounded"
                                 placeholder="Enter your email"
                                 value={email}

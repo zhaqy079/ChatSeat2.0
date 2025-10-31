@@ -166,6 +166,9 @@ h3.intro-title, h4.intro-title, .intro-title {
     min-height: calc(100vh - 4rem);
 }
 
+.dashboard-page-forum {
+    background: #FFF4E0;
+}
 
 /*Dashboard card */
 .dashboard-content-wrap {
@@ -560,9 +563,9 @@ h3.intro-title, h4.intro-title, .intro-title {
     }
 
 .pm-btn-reply {
-    background-color: #C8E6C9; 
+    background-color: #C8E6C9;
     color: #1B5E20;
-    border: 10px;
+    border: 10px solid transparent;
     padding: 0.5rem 1rem;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
@@ -575,6 +578,25 @@ h3.intro-title, h4.intro-title, .intro-title {
         background-color: #A5D6A7;
         transform: translateY(-1px);
     }
+
+.pm-btn-delete {
+    background-color: #dc3545;
+    color: #ffffff;
+    border: 10px solid transparent;
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    border-radius: 100px;
+    font-weight: 400;
+    border: none;
+}
+
+    .pm-btn-delete:hover {
+        background-color: #c82333;
+        transform: translateY(-1px);
+    }
+
+
 
 .form-cancel-btn {
     background-color: #CCCCCC;
@@ -743,6 +765,10 @@ h3.intro-title, h4.intro-title, .intro-title {
         border-radius: 8px;
         border: 1px solid #e5e7eb;
         margin-top: 0.25rem;
+        white-space: pre-wrap;
+        max-height: 8rem;
+        word-break: break-word;
+        overflow: auto;
     }
 
     .forum .thread-indent {

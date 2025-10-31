@@ -111,6 +111,7 @@ export default function Signup() {
                             <label className="form-label fw-semibold">First Name</label>
                             <input
                                 type="text"
+                                name="firstName"
                                 className="form-control"
                                 {...register("firstName")}
                             />
@@ -121,6 +122,7 @@ export default function Signup() {
                             <label className="form-label fw-semibold">Last Name</label>
                             <input
                                 type="text"
+                                name="lastName"
                                 className="form-control"
                                 {...register("lastName")}
                             />
@@ -131,6 +133,7 @@ export default function Signup() {
                             <label className="form-label fw-semibold">Email Address</label>
                             <input
                                 type="email"
+                                name="signupEmail"
                                 className="form-control"
                                 {...register("email")}
                             />
@@ -141,6 +144,7 @@ export default function Signup() {
                             <label className="form-label fw-semibold">Phone Number</label>
                             <input
                                 type="tel"
+                                name="signupPhone"
                                 className="form-control"
                                 {...register("phoneNumber")}
                             />
@@ -153,6 +157,7 @@ export default function Signup() {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     className="form-control pe-5"
+                                    name="signupPwd"
                                     {...register("password")}
                                 />
                                 <button

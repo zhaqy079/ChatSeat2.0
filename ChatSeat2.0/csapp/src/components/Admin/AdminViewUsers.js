@@ -274,12 +274,13 @@ export default function AdminViewUsers() {
             <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
                 <div className="flex-grow-1 px-3 px-md-4 py-4">
 
-                        <h4 className="fw-bold mb-4 text-primary">View All Users</h4>
+                    <h2 className="fw-bold dashboard-title fs-3 mb-4">View All Users</h2>
 
                         {/* Dropdown menu to refine the displayed users */}
                         <div className="mb-3">
                         <select className="form-select fw-semibold mb-2 w-auto"
-                                value={searchrole}
+                            value={searchrole}
+                                name="roles"
                                 onChange={(e) => setSearchrole(e.target.value)}>
                                 <option value="pending">Pending Users</option>
                                 <option value="all">All Users</option>

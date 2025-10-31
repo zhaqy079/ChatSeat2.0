@@ -116,6 +116,7 @@ export default function Login() {
                             <input
                                 type="email"
                                 className="form-control"
+                                name="emailAddress"
                                 placeholder="Enter your email"
                                 value={user.email}
                                 onChange={(e) => setUser({ ...user, email: e.target.value })}
@@ -130,6 +131,7 @@ export default function Login() {
                                 <input
                                     type={show ? "text" : "password"}
                                     className="form-control pe-5"
+                                    name="password"
                                     placeholder="Enter your password"
                                     value={user.password}
                                     onChange={(e) => setUser({ ...user, password: e.target.value })}

@@ -44,13 +44,14 @@ export default function AdminEditResource() {
             </aside>
 
             <div className="flex-grow-1 px-3 px-md-4 py-4">
-                <h4 className="fw-bold mb-4 text-primary">Edit Listener External Resources</h4>
+                <h2 className="fw-bold dashboard-title fs-3 mb-4">Edit Listener External Resources</h2>
 
                 <form onSubmit={handleAdd} className="mb-4">
                     <div className="mb-3">
                         <label className="form-label">Role</label>
                         <input
                             type="text"
+                            name="enterRole"
                             className="form-control"
                             value={newResource.role}
                             onChange={(e) => setNewResource({ ...newResource, role: e.target.value })}
@@ -61,6 +62,7 @@ export default function AdminEditResource() {
                         <label className="form-label">Content Title</label>
                         <input
                             type="text"
+                            name="contentTitle"
                             className="form-control"
                             value={newResource.content}
                             onChange={(e) => setNewResource({ ...newResource, content: e.target.value })}
@@ -72,6 +74,7 @@ export default function AdminEditResource() {
                         <input
                             type="url"
                             className="form-control"
+                            name="resourceUrl"
                             value={newResource.link}
                             onChange={(e) => setNewResource({ ...newResource, link: e.target.value })}
                             required

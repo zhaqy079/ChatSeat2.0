@@ -91,8 +91,8 @@ export default function HomePMForm({ onClose, onSent, onError }) {
                 body: {
                     to: form.email.trim(),
                     subject: "Thanks for reaching out to ChatSeat",
-                    text: `\n\nThanks for contacting ChatSeat. \nOur Listener will review your message and reply soon.`
-                    
+                    text: `\n\nThanks for contacting ChatSeat. \nOur Listener will review your message and reply soon.`,
+                    name: form.name.trim() 
                 }
             });
         }
@@ -112,12 +112,12 @@ export default function HomePMForm({ onClose, onSent, onError }) {
         <form onSubmit={submit} className="p-3 pm-form-container">
             <div className="mb-3">
                 <label className="form-label p-1">Your name </label>
-                <input className="form-control" value={form.name}
+                <input className="form-control" value={form.name} name="userName"
                     onChange={onNameChange} required />
             </div>
             <div className="mb-3">
                 <label className="form-label p-1">Email (required)</label>
-                <input type="email" className="form-control" value={form.email}
+                <input type="email" className="form-control" value={form.email} name="userEmail"
                     onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             </div>
             <div className="mb-3">
@@ -125,7 +125,7 @@ export default function HomePMForm({ onClose, onSent, onError }) {
                 <small className={`text-${wordsLimit ? "danger" : "muted"}`}>
                      {words}/{MESSAGE_LENGTH} words
                 </small>
-                <textarea className="form-control" rows={4} value={form.content}
+                <textarea className="form-control" rows={4} value={form.content} name="homePM"
                     onChange={onContentChange} required />
                 {removeChars && (
                     <small className="text-muted d-block mt-1">

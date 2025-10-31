@@ -252,24 +252,28 @@ export default function CoordinatorAppointments() {
                                     <div className="mb-3">
                                         <label className="form-label">Start Time</label>
                                         <input type="time" className="form-control"
+                                            name="setStartTime"
                                             value={selectedBooking.startTime || ""}
                                             onChange={e => setSelectedBooking({ ...selectedBooking, startTime: e.target.value })} />
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">End Time</label>
                                         <input type="time" className="form-control"
+                                            name="setEndTime"
                                             value={selectedBooking.endTime || ""}
                                             onChange={e => setSelectedBooking({ ...selectedBooking, endTime: e.target.value })} />
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Date</label>
                                         <input type="date" className="form-control"
+                                            name="setDate"
                                             value={selectedBooking.date || ""}
                                             onChange={e => setSelectedBooking({ ...selectedBooking, date: e.target.value })} />
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Location</label>
                                         <select className="form-control"
+                                            name="locationInfo"
                                             value={selectedBooking.location_id || ""}
                                             onChange={e => setSelectedBooking({
                                                 ...selectedBooking,

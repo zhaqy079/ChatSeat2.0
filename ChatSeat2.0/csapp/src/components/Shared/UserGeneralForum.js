@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 // Requests a list of all general forum posts from the database
 export const fetchAllGeneralForumPosts = async () => {
     const { data, error } = await supabase.from("general_forum")
-        .select(`*, user_profiles(*)`)
+        .select(`general_forum_id, content, title, reply_to, created_at, user_id, user_profiles(*)`)
         .order('created_at', { ascending: false });
 
     if (error) {
@@ -20,17 +20,20 @@ export const fetchAllGeneralForumPosts = async () => {
 
 export default function UserGeneralForum() {
     const user = useSelector((state) => state.loggedInUser?.success);
-    const [generalforumlist, setGeneralforumlist] = useState([]);
     const [activePostId, setActivePostId] = useState(null);
+    const [posts, setPosts] = useState([]);
+
     const replyRef = useRef(null);
-    const postRef = useRef(null);
+    const newTitleRef = useRef(null);
+    const newContentRef = useRef(null);
+    
 
     // Stores the list of general forum posts from the database
     useEffect(() => {
         const getGeneralForumPosts = async () => {
             try {
                 const data = await fetchAllGeneralForumPosts();
-                setGeneralforumlist(data);
+                setPosts(data);
             } catch (err) {
                 console.error("Error fetching general forum posts:", err);
             }
@@ -40,143 +43,215 @@ export default function UserGeneralForum() {
     }, []);
 
     
-    const createPost = async ({ message, reply }) => {
-        if (!message) {
+    const createPost = async ({ title, message, reply }) => {
+        if (!message?.trim()) {
             alert("Please input something into the reply field.");
             return;
         }
-
-        const { error } = await supabase
-            .from('general_forum')
-            .insert({
-                user_id: user.id,
-                content: message,
-                reply_to: reply
-            });
-
-        window.location.reload();
-    }
-
-    const deletePost = async (post_id) => {
-        // Deletes the messages replies
-        const post_replies = generalforumlist.filter(p => p.reply_to === post_id);
-        {
-            post_replies.map(reply => (
-                deletePost(reply.general_forum_id)
-            ))
+        // Top Post Must have title, Reply no-necessary
+        if (!reply && !title?.trim()) {
+            alert("Please enter a title.");
+            return;
         }
 
-        // Deletes primary message
-        const { error } = await supabase
-            .from('general_forum')
-            .delete()
-            .eq('general_forum_id', post_id);
+        const { data, error } = await supabase
+            .from("general_forum")
+            .insert({
+                user_id: user?.id,
+                title: reply ? null : title?.trim(),
+                content: message.trim(),
+                reply_to: reply ?? null,
+            })
+            .select(
+                "general_forum_id, content, title, reply_to, created_at, user_id, user_profiles(*)"
+            )
+            .single();
 
-        window.location.reload();
-    }
+        if (error) {
+            alert("Failed to post: " + error.message);
+            return;
+        }
+
+        setPosts((prev) => [data, ...prev]);
+        if (reply) setActivePostId(null);
+        if (!reply) {
+            if (newTitleRef.current) newTitleRef.current.value = "";
+            if (newContentRef.current) newContentRef.current.value = "";
+        } else {
+            if (replyRef.current) replyRef.current.value = "";
+        }
+
+
+    };
+    // Only Admin can delete the post 
+    const deletePost = async (post_id) => {
+        if (user?.role !== "admin") return;
+        // Deletes the messages replies
+        const collectIds = (id, all) => {
+            const children = all.filter((p) => p.reply_to === id).map((p) => p.general_forum_id);
+            return children.reduce((acc, cid) => acc.concat(collectIds(cid, all)), [id]);
+        };
+        const idsToRemove = collectIds(post_id, posts);
+        setPosts((prev) => prev.filter((p) => !idsToRemove.includes(p.general_forum_id)));
+
+        // Deletes primary message
+        try {
+            await supabase.from("general_forum").delete().eq("reply_to", post_id);
+            await supabase.from("general_forum").delete().eq("general_forum_id", post_id);
+        } catch (e) {
+            console.error(e);
+            
+           window.location.reload();
+        }
+    };
 
 
     // Links posts with their replies
     function Post({post, posts}) {
         // Find direct replies to this post
         const replies = posts.filter(p => p.reply_to === post.general_forum_id);
+        const role = post.user_profiles?.role || "user";
+        const isAdmin = role === "admin";
 
         return (
-            <div className="card post-card mb-2">
+            <div className="card post-card mb-3">
                 <div className="card-body py-2">
                     {/* Main content of a feedback post */}
-                    <div>
-                        <div className="d-flex align-items-center">
-                            <h6 className="card-title col">{post.user_profiles.first_name} {post.user_profiles.last_name}</h6>
-                            <small className="text-muted col text-end">Created: {
-                                // Logic to adjust displayed date to '27 Nov 2025' format
-                                new Date(post.created_at).toLocaleDateString("en-AU", {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                })}
-                            </small>
+                    <div className="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div className="d-flex align-items-center gap-2">
+                                <span
+                                    className={`badge ${isAdmin ? "bg-danger" : role === "coordinator" ? "bg-success" : "bg-info"
+                                        }`}
+                                >
+                                    {isAdmin ? "Admin" : role === "coordinator" ? "Coordinator" : "Listener"}
+                                </span>
+                                <h6 className="card-title mb-0">
+                                    {post.user_profiles?.first_name} {post.user_profiles?.last_name}
+                                </h6>
+               
+                            </div>
+                            <div className="card-subtitle">{post.user_profiles?.email}</div>
                         </div>
-                        <div className="d-flex align-items-center">
-                            <h6 className="card-subtitle mb-2 text-muted">{post.user_profiles.email}</h6>
-                            {post.user_profiles.profile_id !== "d7c48149-6553-4dd2-ae95-ad9b5274ade1"
-                                ? <div className="ms-auto">
-                                    {user.id === post.user_profiles.profile_id
-                                        ? <button type="button" className="btn btn-danger me-2" onClick={() => deletePost(post.general_forum_id)}>Delete</button> : null}
-                                    <button type="button" className="btn btn-secondary" onClick={() => {
-                                        setActivePostId(prevId => (prevId === post.general_forum_id ? null : post.general_forum_id));
-                                    }}>Reply</button>
-                                </div>                        
-                            : null}
-                        </div>
+                        <small className="text-muted">
+                            {new Date(post.created_at).toLocaleDateString("en-AU", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                            })}
+                        </small>
                     </div>
-                    <div className="card-text mt-2"> {post.content}</div>
 
+                    {/*title*/}
+                    {!post.reply_to && (
+                        <h5 className="mt-3 mb-2">{post.title || "- No title -"}</h5>
+                    )}
+                    {/*content*/}
+                    <div className="card-text">{post.content}</div>
+                    <div className="d-flex justify-content-end mt-3">
+
+                        <button
+                            type="button"
+                            className="pm-btn pm-btn-reply"
+                            onClick={() =>
+                                setActivePostId((prev) =>
+                                    prev === post.general_forum_id ? null : post.general_forum_id
+                                )
+                            }
+                        >
+                            Reply
+                        </button>
+
+                        {user?.role === "admin" && (
+                            <button
+                                type="button"
+                                className="pm-btn-delete me-2"
+                                onClick={() => deletePost(post.general_forum_id)}
+                            >
+                                Delete
+                            </button>
+                        )}
+                       
+                    </div>
+
+                    {/*Reply*/}
                     {activePostId === post.general_forum_id && (
-                        <form onSubmit={async (e) => {
+                        <form className="mt-3" onSubmit={async (e) => {
                             e.preventDefault();
 
                             const message = replyRef.current?.value;
                             const reply = post.general_forum_id;
-                            await createPost({ message, reply });
+                            await createPost({ title: null, message, reply: post.general_forum_id });
                         }}>
                             <textarea
                                 className="form-control border-2"
                                 placeholder="Write your reply..."
+                                name="replyDiscussion" 
                                 ref={replyRef}
                             />
-                            <button type="submit" className="btn btn-primary mt-2">
+                            <button type="submit" className="btn btn-outline-warning mt-2">
                                 Post Reply
                             </button>
                         </form>
                     )}
                 </div>
-                {replies.map(reply => (
-                    <Post key={reply.general_forum_id} post={reply} posts={posts} />
-                ))}
+                {/*All the reply*/}
+                {replies.length > 0 && (
+                    <div className="mt-2 ms-3">
+                        {replies.map((r) => (
+                            <Post key={r.general_forum_id} post={r} posts={posts} />
+                        ))}
+                    </div>
+                )}
+
             </div>
             
         );
     }
 
     return (
-       
-        <div className="flex-grow-1 p-4 forum forum-general">
-            <h2 className="fw-bold dashboard-title fs-3 mb-4">General Forum</h2>
-            <div className="forum-hero p-3 p-md-4 mb-3">
+        <div className="flex-grow-1 dashboard-page-content" >
+            <div className="flex-grow-1 px-3 px-md-4 py-4 forum forum-general">
+                <h2 className="fw-bold dashboard-title fs-3 mb-4">General Forum</h2>
+           
                     <form className="mb-2" onSubmit={async (e) => {
                         e.preventDefault();
-
-                        const message = postRef.current?.value;
+                        const title = newTitleRef.current?.value;
+                        const message = newContentRef.current?.value;
                         const reply = null;
-                        await createPost({ message, reply });
-                    }}>
-                    <textarea id="newDiscussion" className="form-control textarea-soft mb-2" rows="5" placeholder="Create new discussion..." ref={postRef}/>
-                    <button type="submit" className="btn btn-forum">Post New Discussion</button>
+                        await createPost({ title, message, reply: null });
+                }}>
+                    <input
+                        className="form-control textarea-soft mb-2"
+                        name="title"
+                        placeholder="Title (required)"
+                        ref={newTitleRef}
+                    />
+
+                    <textarea id="newDiscussion" className="form-control textarea-soft mb-2" rows="5" name="newDiscussion" placeholder="Create new discussion..." ref={newContentRef}/>
+                    <button type="submit" className="btn btn-warning">Post New Discussion</button>
                 </form>
-            </div>
 
-                    <hr/>
+                <hr className="mt-3 mb-4" />
 
-                    { // Forum display logic, if no forum posts display special message otherwise display all posts
-                        !generalforumlist.length > 0 ? (
+                  
+
+            {/*// Forum display logic, if no forum posts display special message otherwise display all posts*/}
+            {posts.filter((p) => p.reply_to === null).length === 0 ? (
                         // If no posts are found, show a message
-                        <h5 className="p-4 text-center">
-                            No posts found.
-                        </h5>
+                    <h5 className="p-4 text-center">No posts found.</h5>
                     ) : (
-                    generalforumlist
-                        .filter(post => post.reply_to === null) // Only top-level posts
+                    posts
+                        .filter(post => post.reply_to === null)
                             .map(post => (
                                 <div key={post.general_forum_id} className="thread-indent">
-                                    <Post post={post} posts={generalforumlist} />
+                                    <Post post={post} posts={posts} />
                                 </div>
                         ))
                     )}
                 </div>
-         
+        </div>
 
     );
 }
 
-//  .map(post => (<Post key={post.id} post={post} posts={generalforumlist} />)) orginal 
