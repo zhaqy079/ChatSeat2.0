@@ -43,6 +43,9 @@ export default function AdminSidebar() {
                 <NavLink to="/admineditresource" className={getActiveLink("/admineditresource")}>
                     Edit Resources
                 </NavLink>
+                <NavLink to="/admincoordinatorchatroom" className={getActiveLink("/admincoordinatorchatroom")}>
+                    Coordinator Chat Room
+                </NavLink>
                 <NavLink to="/adminlistenerchatroom" className={getActiveLink("/adminlistenerchatroom")}>
                     General Forum
                 </NavLink>

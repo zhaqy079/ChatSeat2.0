@@ -212,7 +212,7 @@ export default function UserGeneralForum() {
         <div className="flex-grow-1 dashboard-page-content" >
             <div className="flex-grow-1 px-3 px-md-4 py-4 forum forum-general">
                 <h2 className="fw-bold dashboard-title fs-3 mb-4">General Forum</h2>
-            <div className="forum-hero p-3 p-md-4 mb-3">
+           
                     <form className="mb-2" onSubmit={async (e) => {
                         e.preventDefault();
                         const title = newTitleRef.current?.value;
@@ -227,9 +227,10 @@ export default function UserGeneralForum() {
                     />
 
                     <textarea id="newDiscussion" className="form-control textarea-soft mb-2" rows="5" placeholder="Create new discussion..." ref={newContentRef}/>
-                    <button type="submit" className="btn btn-outline-warning">Post New Discussion</button>
+                    <button type="submit" className="btn btn-warning">Post New Discussion</button>
                 </form>
-            </div>
+
+                <hr className="mt-3 mb-4" />
 
                   
 
@@ -252,4 +253,3 @@ export default function UserGeneralForum() {
     );
 }
 
-//  .map(post => (<Post key={post.id} post={post} posts={generalforumlist} />)) orginal 

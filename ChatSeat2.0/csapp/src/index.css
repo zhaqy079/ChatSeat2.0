@@ -765,6 +765,10 @@ h3.intro-title, h4.intro-title, .intro-title {
         border-radius: 8px;
         border: 1px solid #e5e7eb;
         margin-top: 0.25rem;
+        white-space: pre-wrap;
+        max-height: 8rem;
+        word-break: break-word;
+        overflow: auto;
     }
 
     .forum .thread-indent {

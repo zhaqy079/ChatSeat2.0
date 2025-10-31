@@ -43,7 +43,7 @@ export default function CoordinatorSidebar() {
 
                     Availability
                 </NavLink>
-                <NavLink to="/coordinatorchatroom" className={getActiveLink("/coordinatorchatroom")}>
+                <NavLink to="/coordinatoradminforum" className={getActiveLink("/coordinatoradminforum")}>
                     Coordinator Chat Room
                 </NavLink>
                 <NavLink to="/coordinatorlistenerchatroom" className={getActiveLink("/coordinatorlistenerchatroom")}>
