@@ -44,6 +44,23 @@ async function unresolvePost(feedbackID) {
 
     window.location.reload();
 }
+// Admin able to delete the feedback
+async function deletePost(feedbackID) {
+    const ok = window.confirm("Are you sure want to delete this feedback? This cannot be undone.");
+    if (!ok) return;
+
+    const { error } = await supabase
+        .from("feedback_forum")
+        .delete()
+        .eq("feedback_forum_id", feedbackID);
+
+    if (error) {
+        console.error("Failed to delete post:", error.message);
+        alert("Delete failed. Please try again.");
+        return;
+    }
+    window.location.reload();
+}
 
 export default function AdminFeedback() {
     const [feedbacklist, setFeedbacklist] = useState([]);
@@ -109,21 +126,32 @@ export default function AdminFeedback() {
                             !filteredFeedbackposts.length > 0 ? (
                                 // If no posts are found, show a message
                             <h5 className="p-4 text-center">
-                                No posts found.
+                                No feedback found.
                             </h5>
                         ) : (
-                            <div className="card-group gap-4 overflow-auto">
+                                <div className="row row-cols-1 row-cols-md-3 g-4">
                                 {filteredFeedbackposts.map((post) => (
-                                    <div key={post.feedback_forum_id} className="col-md-2">
-                                        <div className="card">
+                                    <div key={post.feedback_forum_id} className="col">
+                                        <div className="card h-100 position-relative">
+                                            {post.resolved_at && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-sm btn-light position-absolute top-0 end-0 m-2"
+                                                    title="Delete this feedback"
+                                                    onClick={() => deletePost(post.feedback_forum_id)}
+                                                >
+                                                    &times;
+                                                </button>
+                                            )}
+
                                             <div className="card-body">
                                                 {/* Main content of a feedback post */}
                                                 <h5 className="card-title text-center">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
                                                 <h6 className="card-subtitle mb-2 text-muted text-center">{post.user_profiles.email}</h6>
                                                 <p className="card-text overflow-auto h-50">{post.content}</p>
                                             </div>
-                                            <div className="card-footer">
-                                                <div className="row">
+                                            <div className="card-footer text-center">
+                                               
                                                     <small className="text-muted text-center">Created: {
                                                     // Logic to adjust displayed date to '27 Nov 2025' format
                                                             new Date(post.created_at).toLocaleDateString("en-AU", {
@@ -131,14 +159,12 @@ export default function AdminFeedback() {
                                                                 month: "short",
                                                                 day: "numeric",
                                                             })} </small>
-                                                </div>
-
-                                                <div className="">
-                                                    { // Logic to check whether a post has been resolved, if it has display resolve time otherwise display resolve button
-                                                    post.resolved_at === null
+        
+                                                {/*// Logic to check whether a post has been resolved, if it has display resolve time otherwise display resolve button*/}
+                                                    {post.resolved_at === null
                                                             ? // Placeholder resolve button, back end logic still needs to be added 
-                                                            <div className="row">
-                                                                <button type="button" className="btn btn-secondary" onClick={() => resolvePost(post.feedback_forum_id)}>Resolve</button>
+                                                    <div className="row">
+                                                        <button type="button" className="btn btn-success btn-sm px-3 py-1" onClick={() => resolvePost(post.feedback_forum_id)}>Resolve</button>
                                                             </div>
                                                         : (
                                                         <div className="row">
@@ -150,13 +176,13 @@ export default function AdminFeedback() {
                                                                     day: "numeric",
                                                                     })}
                                                             </small>
-                                                            <button type="button" className="btn btn-dark" onClick={() => unresolvePost(post.feedback_forum_id)}>Unresolve</button>
+                                                            <button type="button" className="btn btn-outline-danger btn-sm px-3 py-1" onClick={() => unresolvePost(post.feedback_forum_id)}>Unresolve</button>
                                                         </div>
                                                         )}
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    
                                 ))}
                             </div>
                         )}

@@ -49,7 +49,7 @@ export default function ListenerSidebar() {
             </div>
             <div className="mt-3">
                 <NavLink to="/listenerFeedback" className={getActiveLink("/listenerFeedback")}>
-                    Submit Feedback
+                   Feedback
                 </NavLink>
                 <hr />
                 <button className="dashboard-sidebar__logout" onClick={handleLogout}>

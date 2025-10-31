@@ -28,18 +28,19 @@ export default function SubmitFeedback() {
             toast.error("Oops! Something went wrong. Please try again later.");
         } else {
             toast.success("Thank you for your feedback!");
+            setContent("");
         }
 
-    }
+    };
 
 
     return (
             <div className="d-flex flex-grow-1 dashboard-page-content">
                 <div className="flex-grow-1 px-3 px-md-4 py-4">
-                    <h4 className="fw-bold mb-4 text-primary">Post Feedback</h4>
-                    <form className="mb-2 flex-grow" onSubmit={createFeedback}>
-                        <textarea id="newDiscussion" name="newFeedback" className="form-control border-4 mb-2" rows="5" placeholder="Create new feedback..." onChange={(e) => setContent(e.target.value)} />
-                        <button type="submit" className="w-full btn btn-primary">Post New Feedback</button>
+                <h4 className="fw-bold mb-4 text-primary">Feedback & Ideas</h4>
+                    <form className="mb-4 flex-grow" onSubmit={createFeedback}>
+                    <textarea id="newDiscussion" name="newFeedback" className="form-control border-4 mb-2" rows="5" placeholder="Create new feedback..." value={content} onChange={(e) => setContent(e.target.value)} />
+                        <button type="submit" className="w-full btn btn-info">Post New Feedback</button>
                     </form>
                 </div>
             </div>

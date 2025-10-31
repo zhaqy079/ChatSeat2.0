@@ -52,7 +52,7 @@ export default function CoordinatorSidebar() {
             </div>
             <div className="mt-3">
                 <NavLink to="/coordFeedback" className={getActiveLink("/coordFeedback")}>
-                    Submit Feedback
+                    Feedback
                 </NavLink>
                 <hr />
                 <button className="dashboard-sidebar__logout" onClick={handleLogout}>
