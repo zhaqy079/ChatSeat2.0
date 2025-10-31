@@ -36,7 +36,7 @@ export default function ListenerScheduling() {
             } = await supabase.auth.getUser();
 
             if (user) {
-                console.log("Logged-in Supabase user:", user);
+                //console.log("Logged-in Supabase user:", user);
 
                 const { data: profile, error } = await supabase
                     .from("user_profiles")
@@ -47,7 +47,7 @@ export default function ListenerScheduling() {
                 if (error) {
                     console.error("Error fetching user profile:", error);
                 } else {
-                    console.log("User profile from Supabase table:", profile);
+                    // console.log("User profile from Supabase table:", profile);
                 }
             } else {
                 console.log("No user currently logged in.");

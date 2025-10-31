@@ -70,7 +70,9 @@ h3.intro-title, h4.intro-title, .intro-title {
 /*Login page */
 .login-page {
     background-color: #A8E4F2;
-    width: 100%;
+    /*    width: 100%;*/
+    padding-top: 80px;
+    padding-bottom: 80px
 }
 .btn.login-btn {
     background-color: #003366;

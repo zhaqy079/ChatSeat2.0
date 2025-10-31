@@ -112,6 +112,7 @@ export default function Signup() {
                             <input
                                 type="text"
                                 name="firstName"
+                                autoComplete="given-name"
                                 className="form-control"
                                 {...register("firstName")}
                             />
@@ -123,6 +124,7 @@ export default function Signup() {
                             <input
                                 type="text"
                                 name="lastName"
+                                autoComplete="family-name"
                                 className="form-control"
                                 {...register("lastName")}
                             />
@@ -134,6 +136,7 @@ export default function Signup() {
                             <input
                                 type="email"
                                 name="signupEmail"
+                                autoComplete="email"
                                 className="form-control"
                                 {...register("email")}
                             />
@@ -145,6 +148,7 @@ export default function Signup() {
                             <input
                                 type="tel"
                                 name="signupPhone"
+                                autoComplete="phone"
                                 className="form-control"
                                 {...register("phoneNumber")}
                             />
@@ -157,6 +161,7 @@ export default function Signup() {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     className="form-control pe-5"
+                                    autoComplete="new-password"
                                     name="signupPwd"
                                     {...register("password")}
                                 />

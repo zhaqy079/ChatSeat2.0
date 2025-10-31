@@ -170,13 +170,13 @@ export default function AdminSchedulingSetting() {
                 return;
             }
 
-            console.log("Inserted location data:", data); 
+            //console.log("Inserted location data:", data); 
 
             if (data && data.length > 0) {
                 const addedLocation = { id: data[0].location_id, name: data[0].location_name };
                 setLocations(prev => [...prev, addedLocation]); 
                 setNewLocation(""); 
-                console.log("Location added successfully!", addedLocation);
+               // console.log("Location added successfully!", addedLocation);
             }
         } catch (err) {
             console.error("Unexpected error adding location:", err);
@@ -237,7 +237,7 @@ export default function AdminSchedulingSetting() {
 
             setLocations(locations.filter((loc) => loc.id !== id));
 
-            console.log("Location and related events deleted successfully!");
+            //console.log("Location and related events deleted successfully!");
         } catch (err) {
             console.error("Error deleting location and events:", err.message);
         } finally {
@@ -489,7 +489,7 @@ export default function AdminSchedulingSetting() {
             setIsRecurring(false);
             setRecurringWeeks(1);
 
-            console.log("Saved to DB:", newEvents);
+            //console.log("Saved to DB:", newEvents);
         } catch (err) {
             console.error("Unexpected error saving event:", err);
         }

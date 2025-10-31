@@ -1,5 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { useEffect } from "react";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
@@ -47,6 +50,10 @@ import ListenerFeedback from "./components/Listener/ListenerFeedback";
 
 
 export default function App() {
+    useEffect(() => {
+        Aos.init({ duration: 800, once: true, mirror: false });
+    }, []);
+
     return (
         <Router>
             <ToastContainer position="top-center" autoClose={2000} />

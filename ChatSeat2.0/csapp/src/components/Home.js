@@ -30,9 +30,13 @@ export default function Home() {
                         Welcome to “Chat Seats”
                     </h2>
                     <p className="lead fs-6">
-                        The <strong>Chat Seats</strong> initiative provides a safe, inviting place
-                        for people to talk and <strong>connect through conversation</strong>. We’re
-                        looking for volunteers to be Listeners and/or Coordinators.
+                            In a bid to tackle social isolation, we would like to establish a series of 
+                            <strong> Chat Seats</strong> across Australia. The <strong>Chat Seats initiative </strong>
+                            aims to provide a safe and inviting place for people to talk. It will allow members
+                        of the community to <strong> "Connect through Conversation." </strong>
+                            For this initiative to be successful, we need people like yourselves to volunteer
+                            to be either <strong>Listeners</strong> and/or <strong>Coordinators</strong>.
+                            
                     </p>
                 </div>
 
@@ -40,31 +44,37 @@ export default function Home() {
                 <div className="row g-3 g-md-4 mb-4" data-aos="fade-up">
                     <div className="col-12 col-md-6">
                         <div className="bg-info-subtle p-4 rounded-3 shadow h-100">
-                            <h3 className="h5 fw-bold intro-title">Listeners</h3>
+                            <h3 className="h5 fw-bold">Listeners</h3>
                             <p className="mb-2">
-                                Listeners volunteer time to sit at a Chat Seat and listen to community
-                                members who join them—helping people reconnect through conversation.
+                                Listeners are individuals who volunteer their time to sit on a Chat Seat and listen to members of the community who may join them.
+                                Some of these members of the community may also be lonely and/or isolated.
+                                We are hoping to connect them back into their community through conversation.
                             </p>
                             <p className="mb-2">
-                                A great Listener enjoys listening and can spend a couple of hours
-                                each week at a Chat Seat.
+                                So, who would be a great volunteer?
+                                Someone who enjoys listening to other people and is interested in what is happening for them.
+                                Also, someone who has a couple of hours each week where they would like to sit at one of our Chat Seat locations.
+                                Does this sound like you?
                             </p>
                             <p className="mb-0">
-                                Sign in to access helpful information, a booking calendar, and a place
-                                to chat with other Listeners.
+                                If you would like to volunteer as a Listener, then you will need to sign in and proceed to the page for Listeners.
+                                On this page you will find some helpful information, a booking calendar and a place where you can chat with other Listeners.
+                            
                             </p>
                         </div>
                     </div>
 
                     <div className="col-12 col-md-6">
                         <div className="bg-success-subtle p-4 rounded-3 shadow h-100">
-                            <h3 className="h5 fw-bold intro-title">Coordinators</h3>
+                            <h3 className="h5 fw-bold">Coordinators</h3>
                             <p className="mb-2">
-                                Coordinators (often also Listeners) help establish sites and support
-                                volunteers. They liaise with venue managers and keep schedules organised.
+                                Coordinators are individuals who are also volunteers and may also choose to be Listeners.
+                                They will help to establish a site and support the Listeners.
+                                So, who would be a good Coordinator? Someone who enjoys negotiating with potential venue "managers" and has good organisational skills.
                             </p>
                             <p className="mb-0">
-                                Sign in to access coordinator resources and communication tools.
+                                If you would like to volunteer as a Coordinator, then you will need to sign in and proceed to the page for Coordinators.
+                                On this page you will find some helpful information, and a place where you can chat with other Coordinators.
                             </p>
                         </div>
                     </div>
@@ -76,8 +86,8 @@ export default function Home() {
                         <div className="bg-primary-subtle p-4 rounded-3 shadow-sm border-start border-4 border-primary h-100">
                             <h3 className="h5 fw-semibold text-primary mb-2">About the Chat Seat</h3>
                             <p className="mb-0">
-                                We’ll be setting up a Chat Seat in your venue. The goal is to help
-                                community members connect through conversation.
+                                We’ll be setting up a Chat Seat in “Name your Venue”.
+                                Its purpose is to help community members connect through conversation.
                             </p>
                         </div>
                     </div>
@@ -85,8 +95,8 @@ export default function Home() {
                         <div className="bg-warning-subtle p-4 rounded-3 shadow-sm border-start border-4 border-warning h-100">
                             <h3 className="h5 fw-semibold text-warning mb-2">Who We’re Looking For</h3>
                             <p className="mb-0">
-                                People who enjoy listening and can commit two hours a week. We’re
-                                currently looking for five volunteers.
+                                We need individuals who enjoy listening and can commit just two hours a week.
+                                Right now, we're looking for five volunteers.
                             </p>
                         </div>
                     </div>
@@ -95,9 +105,9 @@ export default function Home() {
                 {/* Banner image */}
                 <div className="text-center mb-4" data-aos="fade-up">
                     <br/>
-                    <h4 className="h6 h5-md mb-3 fw-semibold ">How do you identify a Chat Seat?</h4>
+                    <h2 className="h6 h5-md mb-3 fw-semibold ">How do you identify a Chat Seat?</h2>
                     <p className="mb-3">
-                        Look for a banner like the one below at one of our Chat Seat locations.
+                        It will have a banner like the one below, at one of our Chat Seats locations.
                     </p>
                     <img
                         src={Seat}
@@ -139,11 +149,12 @@ export default function Home() {
                         We hope you have the passion and time to be part of this initiative.
                     </p>
                     <p className="fs-6 mb-3">
-                        Thank you for visiting. We welcome your suggestions.
+                        Thank you for taking the time to visit our website. We welcome any suggestions.
                     </p>
                     <div className="text-primary">
-                        <p className="mb-0 intro-title">Warm regards,</p>
-                        <p className="mb-0 intro-title">Tricia and Noel</p>
+                        <h6 className="mb-0 intro-title">
+                            Warm regards,<br /> <br />Tricia and Noel
+                        </h6>
                     </div>
                 </div>
             </div>

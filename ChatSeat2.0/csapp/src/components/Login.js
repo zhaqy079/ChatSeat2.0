@@ -30,7 +30,7 @@ export default function Login() {
                     email: user.email,
                     password: user.password
                 });
-            console.log("authData: ", authData);
+            //console.log("authData: ", authData);
 
             if (authError) throw authError;
 
