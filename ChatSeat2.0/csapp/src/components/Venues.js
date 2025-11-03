@@ -203,7 +203,7 @@ export default function Venues() {
                                                                 <strong> <img src={listenerIcon} alt="" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
                                                                     Listeners: </strong>
                                                             </div>
-                                                            {/*{(appointment.bookedUsers || ["Unassigned"]).join(", ")}*/}
+                                                         $
                                                             <ul className="list-unstyled ms-3 mt-1 mb-0">
                                                                 {(appointment.bookedUsers && appointment.bookedUsers.length > 0
                                                                     ? appointment.bookedUsers
