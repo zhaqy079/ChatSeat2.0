@@ -9,7 +9,7 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ResetRequest from "./components/ResetRequest"
-import Resetpassword from "./components/Resetpassword"
+import ResetPassword from "./components/ResetPassword"
 import Venues from "./components/Venues";
 import AboutUs from "./components/AboutUs";
 
@@ -63,7 +63,7 @@ export default function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/resetrequest" element={<ResetRequest />} />
-                <Route path="/reset-password" element={<Resetpassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/venues" element={<Venues />} />
                 <Route path="/about" element={<AboutUs />} />
 

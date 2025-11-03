@@ -34,7 +34,7 @@ export default function Login() {
 
             if (authError) throw authError;
 
-            navigate("/admindashboard");
+            
 
 
 
