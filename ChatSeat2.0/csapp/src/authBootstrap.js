@@ -2,16 +2,21 @@
 import { setloggedInUserSuccess } from "./state/loggedInUser"; 
 
 
-export async function restoreSessionAndHydrateRedux(dispatch) {
+export async function restoreSessionAndHydrateRedux(dispatch) { 
+    // Skip restoring if user is on the reset password page
+    const path = window.location.pathname;
+    if (path === "/reset-password") {
+       
+        return;
+    }
     // Get the current user/session
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error) {
-        // test info
-        //console.warn("auth.getUser error:", error.message);
+       
         return;
     }
     if (!user) {
-        // not logged in; leave Redux 
+        
         return;
     }
 

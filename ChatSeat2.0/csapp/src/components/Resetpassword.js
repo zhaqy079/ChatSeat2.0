@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { supabase } from "../supabaseClient";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -12,44 +13,56 @@ const schema = Yup.object().shape({
             "Password must:\n- Be 8+ characters\n- Include uppercase & lowercase\n- Include number & special char (e.g. * & @ ?)"
         )
         .required("Password is required"),
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref("password")], "Passwords do not match")
+        .required("Please confirm your password"),
 });
 
 export default function ResetPassword() {
-    const [newPassword, setNewPassword] = useState("");
-    const [message, setMessage] = useState("");
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+    const [successmessage, setsuccessMessage] = useState("");
 
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors, isSubmitting, isValid },
+    } = useForm({
+        mode: "onChange",
+        resolver: yupResolver(schema),
+    });
+
+   
+    
     // Effect to handle password reset link from URL hash
     useEffect(() => {
-        const hash = window.location.hash.substring(1);
+        const hash = window.location.hash.slice(1);
         const params = new URLSearchParams(hash);
         const accessToken = params.get("access_token");
         const refreshToken = params.get("refresh_token");
 
-        if (accessToken && refreshToken) {
-            supabase.auth
-                .setSession({
-                    access_token: accessToken,
-                    refresh_token: refreshToken,
-                })
-                .then(({ error }) => {
-                    if (error) {
-                        setMessage("Session error: " + error.message);
-                    }
-                });
-        } else {
-            setMessage("Invalid or expired password reset link.");
+        if (!accessToken || !refreshToken) {
+            setError("root", { message: "Invalid or expired password reset link." });
+            return;
         }
-    }, []);
+
+        supabase.auth
+            .setSession({ access_token: accessToken, refresh_token: refreshToken })
+            .then(({ error }) => {
+                if (error) setError("root", { message: `Session error: ${error.message}` });
+            });
+    }, [setError]);
 
     // Function to handle password reset
-    const handleReset = async (e) => {
-        e.preventDefault();
-        const { error } = await supabase.auth.updateUser({ password: newPassword });
-        if (error) return setMessage("Reset failed: " + error.message);
-
-        setMessage("Password updated successfully!");
-        setTimeout(() => navigate("/Login"), 2000);
+    const onSubmit = async ({ password }) => {
+        const { error } = await supabase.auth.updateUser({ password });
+        if (error) {
+            setError("root", { message: `Reset failed: ${error.message}` });
+            return;
+        }
+        setsuccessMessage("Password updated successfully!");
+        setTimeout(() => navigate("/login"), 2000);
     };
 
     return (
@@ -59,29 +72,59 @@ export default function ResetPassword() {
                     <h2 className="fw-bold text-center mb-4 intro-title">
                         Reset Password
                     </h2>
-                    {message && <p className="mb-4 text-danger">{message}</p>}
+                    {errors.root?.message && (
+                        <div className="alert alert-danger mb-3">{errors.root.message}</div>
+                    )}
                     <form
-                        onSubmit={handleReset}>
-                        <div className="row">
+                        onSubmit={handleSubmit(onSubmit)} noValidate>
+                        <div className="mb-3">
+                            <label className="form-label">New password</label>
+                            <div className="position-relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                                autoComplete="new-password"
+                                {...register("password")}
+                                placeholder="Enter new password"
+                            />
+                                 <button
+                                type="button"
+                                className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0"
+                                style={{ textDecoration: "none" }}
+                                onClick={() => setShowPassword((v) => !v)}
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                {showPassword ? "Hide" : "Show"}
+                                 </button>
+                            </div>
+                            {errors.password && (
+                                <div className="invalid-feedback" style={{ whiteSpace: "pre-line" }}>
+                                    {errors.password.message}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="form-label">Confirm new password</label>
                             <input
                                 type="password"
-                                name="resetpwd"
-                                placeholder="Enter new password"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                                className=" p-3 border border-gray-300 rounded mb-4"
-                                required
+                                className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
+                                autoComplete="new-password"
+                                {...register("confirmPassword")}
+                                placeholder="Re-enter new password"
                             />
+                            {errors.confirmPassword && (
+                                <div className="invalid-feedback">{errors.confirmPassword.message}</div>
+                            )}
                         </div>
-                        <div className="row">
-                            <button
-                                type="submit"
-                                className="btn btn-primary"
-                            >
-                                Reset Password
-                            </button>
-                        </div>
-                        
+
+                        <button
+                            type="submit"
+                            className="btn btn-primary w-100"
+                            disabled={isSubmitting || !isValid}
+                        >
+                            {isSubmitting ? "Updating…" : "Reset Password"}
+                        </button>
                     </form>
                 </div>
             </div>
