@@ -34,8 +34,6 @@ export default function Login() {
 
             if (authError) throw authError;
 
-            navigate("/admindashboard");
-
 
 
             //// Store user session info for protected routes
@@ -68,6 +66,10 @@ export default function Login() {
             const role =
                 (profile?.role || authedUser?.user_metadata?.role || "listener").toLowerCase();
 
+            if (role === "pending") {
+                toast("Thank you for signing up! Your account is currently under review by an admin. Once approved, you will be redirected to your dashboard automatically.")
+                return
+            } 
             // Dispatch to Redux in the shape your app expects
             dispatch(
                 setloggedInUserSuccess({

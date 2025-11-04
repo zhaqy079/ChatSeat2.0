@@ -20,7 +20,8 @@ export const fetchAllUsers = async () => {
 // Function call to approve a user
 async function approveUser(newuserID, approverID) {
     const { error: profileError } = await supabase.from("user_profiles").update({
-        approved_by: approverID
+        approved_by: approverID,
+        role: "listener"
          }).eq('profile_id', newuserID);
 
         if (profileError) {
