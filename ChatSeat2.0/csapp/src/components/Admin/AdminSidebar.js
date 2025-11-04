@@ -27,7 +27,7 @@ export default function AdminSidebar() {
     return (
         <div className="dashboard-sidebar">
             <div className="dashboard-sidebar__greeting">
-                Hello, {user?.firstName ? `${user.firstName}` : ""}!
+                Hello, {user?.firstName ? `${user.firstName}` : "Admin"}!
             </div>
 
             <div className="dashboard-sidebar__nav">

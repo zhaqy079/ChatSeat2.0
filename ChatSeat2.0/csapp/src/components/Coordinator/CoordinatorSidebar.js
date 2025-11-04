@@ -28,7 +28,7 @@ export default function CoordinatorSidebar() {
     return (
         <div className="dashboard-sidebar">
             <div className="dashboard-sidebar__greeting">
-                Hello, {user?.firstName ? `${user.firstName}` : ""}!
+                Hello, {user?.firstName ? `${user.firstName}` : "Coordinator"}!
             </div>
 
             <div className="dashboard-sidebar__nav">
