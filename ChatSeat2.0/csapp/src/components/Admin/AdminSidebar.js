@@ -35,19 +35,19 @@ export default function AdminSidebar() {
                     Dashboard
                 </NavLink>
                 <NavLink to="/adminSchedulingSetting" className={getActiveLink("/adminSchedulingSetting")}>
-                    Scheduling Setting
+                    Location Scheduling
                 </NavLink>
                 <NavLink to="/adminViewUsers" className={getActiveLink("/adminViewUsers")}>
-                    View All Users
+                    Manage Users
                 </NavLink>
                 <NavLink to="/admineditresource" className={getActiveLink("/admineditresource")}>
                     Edit Resources
                 </NavLink>
-                <NavLink to="/admincoordinatorchatroom" className={getActiveLink("/admincoordinatorchatroom")}>
-                    Coordinator Chat Room
-                </NavLink>
                 <NavLink to="/adminlistenerchatroom" className={getActiveLink("/adminlistenerchatroom")}>
-                    General Forum
+                    Listener Chatroom
+                </NavLink>
+                <NavLink to="/admincoordinatorchatroom" className={getActiveLink("/admincoordinatorchatroom")}>
+                    Coordinator Chatroom
                 </NavLink>
                 <NavLink to="/adminFeedback" className={getActiveLink("/adminFeedback")}>
                     Manage Feedback

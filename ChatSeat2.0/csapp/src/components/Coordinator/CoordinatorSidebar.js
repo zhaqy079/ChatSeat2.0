@@ -38,16 +38,14 @@ export default function CoordinatorSidebar() {
                 <NavLink to="/coordinatorappointments" className={getActiveLink("/coordinatorappointments")}>
                     Appointments
                 </NavLink>
-
                 <NavLink to="/coordinatoravailability" className={getActiveLink("/coordinatoravailability")}>
-
                     Availability
                 </NavLink>
-                <NavLink to="/coordinatoradminforum" className={getActiveLink("/coordinatoradminforum")}>
-                    Coordinator Chat Room
-                </NavLink>
                 <NavLink to="/coordinatorlistenerchatroom" className={getActiveLink("/coordinatorlistenerchatroom")}>
-                    Listener Chat Room
+                    Listener Chatroom
+                </NavLink>
+                <NavLink to="/coordinatoradminforum" className={getActiveLink("/coordinatoradminforum")}>
+                    Coordinator Chatroom
                 </NavLink>
             </div>
             <div className="mt-3">
