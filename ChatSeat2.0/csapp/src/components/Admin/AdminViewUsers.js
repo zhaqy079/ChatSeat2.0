@@ -61,7 +61,7 @@ async function reactivateUser(userID) {
 }
 
 
-function UserTable({ userlist, currentuser }) {
+function UserTable({ userlist, currentuser, searchrole }) {
     return (
         <table className="table">
             <thead className="text-left">
@@ -79,7 +79,7 @@ function UserTable({ userlist, currentuser }) {
                     // Finds the approved user from their id
                     const user_approver = user.approved_by ? userlist.find(u => u.profile_id === user.approved_by) : null;
 
-                    return (
+                    return (searchrole === "all" ? true : (user.role === searchrole)) ? (
                         <tr key={user.profile_id} className="border-t">
                             <td className="p-3">{user.first_name} {user.last_name}</td>
                             <td className="p-3">{user.email}</td>
@@ -110,7 +110,7 @@ function UserTable({ userlist, currentuser }) {
                                 }
                             </td>
                         </tr>
-                )})}
+                ) : null})}
             </tbody>
         </table>
     )
@@ -131,7 +131,7 @@ function coordinatorTable(userlist) {
             </thead>
             <tbody>
                 {userlist.map((user) => {
-                    return (
+                    return user.role === "coordinator" ? (
                         <tr key={user.profile_id} className="border-t">
                             <td className="p-3">{user.first_name} {user.last_name}</td>
                             <td className="p-3">{user.email}</td>
@@ -168,7 +168,7 @@ function coordinatorTable(userlist) {
                                 </>
                             </td>
                         </tr>
-                )})}
+                ) : null })}
             </tbody>
         </table>
     )
@@ -190,9 +190,10 @@ function adminTable(userlist) {
             <tbody>
                 {userlist.map((user) => {
                     // Finds the approved user from their id
-                    const admin_approver = user.admin_profiles.approved_by ? userlist.find(u => u.profile_id === user.admin_profiles.approved_by) : null;
+                    const admin_approver = (user.admin_profiles !== null ? userlist.find(u => u.profile_id === user.admin_profiles.approved_by) : null)
+                    
 
-                    return (
+                    return user.role === "admin" ? (
                         <tr key={user.profile_id} className="border-t">
                             <td className="p-3">{user.first_name} {user.last_name}</td>
                             <td className="p-3">{user.email}</td>
@@ -220,8 +221,8 @@ function adminTable(userlist) {
                                     )}
                                 </>
                             </td>
-                        </tr>
-                )})}
+                        </tr>) : null; 
+                })}
             </tbody>
         </table>
     )
@@ -253,14 +254,15 @@ export default function AdminViewUsers() {
     }, []);
 
     // Filters users according to their role
-    const filtereduserList = userlist
+    const filtereduserListLength = (userlist
         .filter((user) => (
             searchrole === "all" || searchrole === ""
-                ? true
-                : (searchrole === "pending" ? user.approved_by === null 
-                : (searchrole === "admin" ? !(user.admin_profiles === null)
-                : user.coordinator_profiles.length > 0))
-        ));
+                ? true : user.role === searchrole
+                //: (searchrole === "listener" ? user.role === "listener"
+                //: (searchrole === "pending" ? user.approved_by === null 
+                //: (searchrole === "admin" ? !(user.admin_profiles === null)
+                //: user.coordinator_profiles.length > 0)))
+        ))).length;
 
     
 
@@ -283,23 +285,24 @@ export default function AdminViewUsers() {
                                 name="roles"
                                 onChange={(e) => setSearchrole(e.target.value)}>
                                 <option value="pending">Pending Users</option>
-                                <option value="all">All Users</option>
+                                <option value="listener">Listener</option>
                                 <option value="coordinator">Coordinators</option>
                                 <option value="admin">Admins</option>
+                                <option value="all">All Users</option>
                             </select>
                         </div>
                     
                         { // User display logic, if no users display message otherwise display users and their details 
-                            !filtereduserList.length > 0 ? (
+                            !filtereduserListLength > 0 ? (
                             // If no users are found for the selected role, show a message
                             <h5 className="text-center">
                                 No {searchrole} users found.
                             </h5>
                             ) : ((
                                 searchrole === "admin"
-                                    ? adminTable(filtereduserList)
-                                    : (searchrole === "coordinator" ? coordinatorTable(filtereduserList)
-                                        : <UserTable userlist={filtereduserList} currentuser = {user} />
+                                    ? adminTable(userlist)
+                                    : (searchrole === "coordinator" ? coordinatorTable(userlist)
+                                        : <UserTable userlist={ userlist } currentuser={ user } searchrole={ searchrole } />
                                 )))}
                     </div>
                 </div>
