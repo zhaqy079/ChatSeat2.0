@@ -580,13 +580,21 @@ export default function AdminSchedulingSetting() {
     // retrieving the opening hours for the selected location and day
     const getSelectedLocationHours = () => {
         if (!selectedLocation || !selectedDayName) return null;
+
         const loc = locations.find((l) => l.id === selectedLocation);
         if (!loc || !loc.availability) return null;
         if (loc.name === "FULL DAY UNAVAILABLE") return "";
 
-        const dayKey = selectedDayName.toLowerCase();
+        // Match day case-insensitively
+        const dayKey = Object.keys(loc.availability).find(
+            d => d.toLowerCase() === selectedDayName.toLowerCase()
+        );
+
+        if (!dayKey) return "Closed";
+
         const hours = loc.availability[dayKey];
-        if (!hours || (!hours.open && !hours.close)) return "Closed";
+
+        if (!hours.open && !hours.close) return "Closed";
 
         const openTime = formatToAmPm(hours.open);
         const closeTime = formatToAmPm(hours.close);
