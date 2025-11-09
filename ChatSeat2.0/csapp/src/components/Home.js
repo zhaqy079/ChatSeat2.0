@@ -59,7 +59,7 @@ export default function Home() {
                                 Does this sound like you?
                             </p>
                             <p className="mb-0">
-                                If you would like to volunteer as a Listener, then you will need to sign in and proceed to the page for Listeners.
+                                If you would like to volunteer as a Listener, then you will need to <a href="login">sign in</a> and proceed to the page for Listeners.
                                 On this page you will find some helpful information, a booking calendar and a place where you can chat with other Listeners.
                             
                             </p>
@@ -75,7 +75,7 @@ export default function Home() {
                                 So, who would be a good Coordinator? Someone who enjoys negotiating with potential venue "managers" and has good organisational skills.
                             </p>
                             <p className="mb-0">
-                                If you would like to volunteer as a Coordinator, then you will need to sign in and proceed to the page for Coordinators.
+                                If you would like to volunteer as a Coordinator, then you will need to <a href="login">sign in</a> and proceed to the page for Coordinators.
                                 On this page you will find some helpful information, and a place where you can chat with other Coordinators.
                             </p>
                         </div>

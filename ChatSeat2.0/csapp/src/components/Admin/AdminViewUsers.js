@@ -259,10 +259,6 @@ export default function AdminViewUsers() {
         .filter((user) => (
             searchrole === "all" || searchrole === ""
                 ? true : user.role === searchrole
-                //: (searchrole === "listener" ? user.role === "listener"
-                //: (searchrole === "pending" ? user.approved_by === null 
-                //: (searchrole === "admin" ? !(user.admin_profiles === null)
-                //: user.coordinator_profiles.length > 0)))
         ))).length;
 
     
