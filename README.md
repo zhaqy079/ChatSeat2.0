@@ -1,101 +1,97 @@
-# Features (Sprint 1)
-## Venue Display
-1. Shows available slots for Campbelltown Library.
-2. Expandable slot list inside card.
-3. Clickable 📍 address toggles an inline Google Map.
+# ChatSeats 2.0 
 
-## Authentication (Supabase)
-1. Users can log in with email + password.
-2. Roles: admin, coordinator, listener, pending.
-3. Mock Admin account is pre-seeded.
+Community connection platform powered by React, Supabase, and Hostinger.
 
-## Admin Dashboard
-1. Layout ready (Navbar + Sidebar).
-2. Weekly calendar scheduler (FullCalendar).
+<p align="center">
+  <img src="ChatSeat2.0/csapp/public/chatseatLogo.png" width="300" alt="ChatSeats Logo">
+</p>
 
-# Dev
+**Authors & Contact:**  
+- Qianting Zhang · [qiantingzhang978@gmail.com](mailto:qiantingzhang978@gmail.com)  
+- Jordon Cursaro · [jorcursa@gmail.com](mailto:jorcursa@gmail.com)  
+- Callum Malycha · [callummalycha@gmail.com](mailto:callummalycha@gmail.com)
+
+## 1. Summary of Key Updates 
+**ChatSeat 2.0** is the upgraded version of the original [ChatSeat 1.0](https://github.com/GABDY005/ChatSeat), built to enhance platform stability, authentication, and overall user experience.  
+
+
+### Key improvements include:
+	- Full Supabase database table sort &  authentication integration (Sign up, Login, Forgot/Reset Password)
+	- User Friendly Role-based dashboards for Admin, Coordinator, and Listener Update
+	- Secure environment configuration & Protected routes
+	- Resend integration with Hostinger domain email (no-reply@chatseats.com.au)
+	- Updated .htaccess configuration for SPA routing on Hostinger
+	- Password policy enforcement + Yup validation alignment with Supabase rules
+	- Refined production deployment under /public_html
+	
+## 2. Tech Stack
+| Category | Technology |
+|-----------|-------------|
+| **Frontend** | React (React Router v6, JavaScript, Redux, Bootstrap 5) |
+| **Backend** | Supabase (Auth + Postgres Database) |
+| **Email** | Resend API + Hostinger SMTP domain |
+| **Hosting** | Hostinger (Apache server, SPA rewrite) |
+| **Validation** | Yup & React Hook Form |
+| **State Management** | Redux Toolkit |
+| **Deployment** | npm build → upload /build to /public_html |
+
+## 3. Development Setup 
+### 3.1 Clone the Repository  
+
+**Method 1: Using Git command**
+
+```bash
+ git clone https://github.com/zhaqy079/ChatSeat2.0 
 ```
+**Method 2: Manual download**
+You can also download the .zip file from GitHub and extract it locally.
+Then initialize a Git repository if needed:
+
+```bash
+git init
+```
+### 3.2 Supabase & Environment Configuration (.env)
+ChatSeat 2.0 continues using the original ChatSeats Supabase project, with a new instance configured for version 2.0.
+Inside the /csapp directory (same level as /src/), create a new file named .env and add:
+
+```bash
+REACT_APP_SUPABASE_URL=https://chatseat2.0theproject.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=chatseat2.0_anon_key
+```
+
+#### Notes:
+- You can find your URL and Anon Key inside your Supabase dashboard under
+Project Settings → API → Project URL / anon key.
+- Never commit .env files to GitHub — they contain sensitive credentials.
+- React only loads environment variables starting with REACT_APP_.
+- Create a .gitignore file and include .env to prevent accidental uploads.
+
+### 3.3 Install Dependencies & Run Locally
+At your ChatSeat 2.0 project folder, open your terminal or command prompt and run:
+
+```bash
 cd csapp
+npm install
 npm start
-
-```
-# Set up
-### .env file 
-
-```
-# Backend API
-REACT_APP_API_URL=https://localhost:<your_mvc_port>
-
-# Supabase
-REACT_APP_SUPABASE_URL=https://<yourproject>.supabase.co
-REACT_APP_SUPABASE_ANON_KEY=your_anon_key_here
 ```
 
-# Mock Accounts (create user at supabase)
-	•	Admin
-	•	Email: admin@chatseat.com
-	•	Password: Admin123
+## 4. Key Routes
 
- # Supabase SQL Table
- ``` create table if not exists profiles (
-  id uuid primary key references auth.users(id) on delete cascade,
-  email text not null,
-  role text check (role in ('admin','coordinator','listener','pending')) not null default 'pending',
-  created_at timestamptz not null default now()
-);
+| Route | Description |
+|--------|-------------|
+| `/` | Home page |
+| `/login` | User login |
+| `/signup` | User signup |
+| `/resetrequest` | Request password reset email |
+| `/reset-password` | Password reset form (redirect target in Supabase email) |
+| `/admindashboard` | Admin main dashboard |
+| `/adminSchedulingSetting` | Admin key feature ⭐⭐⭐ |
+| `/admineditresource` | Admin key feature ⭐⭐ |
+| `/coordinatordashboard` | Coordinator main dashboard |
+| `/coordinatorappointments` | Coordinator key feature ⭐⭐⭐ |
+| `/coordinatoravailability` | Coordinator key feature ⭐⭐ |
+| `/listenerdashboard` | Listener main dashboard |
+| `/privatemessage` | Listener key feature ⭐⭐⭐ |
+| `/venues` | Venue search & display |
+| `/about` | About the project page |
 
-alter table profiles enable row level security;
-
-create policy if not exists "read public profiles"
-  on profiles for select using (true);
-
-create policy if not exists "user can update own profile"
-  on profiles for update using (auth.uid() = id);
-
-
-
-# then delete the current sql, rerun: 
-insert into profiles (id, email, role)
-values ('<uuid from auth.users>', 'admin@chatseat.com', 'admin');
-```
-
-# Sprint 2
-# Dev
-```
-cd csapp
-npm install react-redux @reduxjs/toolkit
-npm start
-
-```
-## Database Merge
-New connection, use the new keys. Is different database so we're not affecting live database and to test new database structure.
-
-### Main Admin Login 
-<br/>
-|| Email: admin@email.com 
-<br/>
-|| Password: admin123
-<br/> <br/>
-Feel free to add your own profiles/info in the Supabase, find login info in `Project/Previous Version/Credential Document` of the Onedrive
-<br/> <br/> <br/>
-
-### Keys
-```
-NEXT_PUBLIC_SUPABASE_URL=https://nuarimunhutwzmcknhwj.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51YXJpbXVuaHV0d3ptY2tuaHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTk2MjIsImV4cCI6MjA3MTIzNTYyMn0.fwdTA0n_vSrT_kUqlExIPdDpPrHo_fRIkOUcd5aHi0c
-```
-
-### Troubleshooting
-- Check ``` console.log(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_ANON_KEY) ``` matches new database. 
-- If not, check your local .env file (should be contained within the app section) to make sure it has updated to the new values. 
-- Restart your current instance (redo ```npm start```) 
-- If all else fails, manually assign ```process.env.REACT_APP_SUPABASE_URL``` and ```process.env.REACT_APP_SUPABASE_ANON_KEY``` to the new keys. (This will probably crash the instance but after deleting and reloading, everything should work)
-
-## Admin Scheduling System
-1. Converted the scheduling system to look like a calendar.
-2. Selecting a day will add events to the calendar.
-3. Each day will have options to block a full day, set weekly recurring, and allocate a start and end time.
-4. Days can be edited to be changed or deleted.
-
-## Coordinated Dashboard
-1. Layout set (Sidebar + Dashboard)
