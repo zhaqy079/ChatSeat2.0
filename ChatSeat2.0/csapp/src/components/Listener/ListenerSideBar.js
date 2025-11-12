@@ -27,7 +27,7 @@ export default function ListenerSidebar() {
     return (
         <div className="dashboard-sidebar d-none d-lg-block">
             <div className="dashboard-sidebar__greeting">
-                Hello, {user?.firstName ? `${user.firstName}` : ""}!
+                Hello, {user?.firstName ? `${user.firstName}` : "Listener"}!
             </div>
             <ListenerLinks
                 getActiveLink={getActiveLink}

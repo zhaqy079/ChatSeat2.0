@@ -43,7 +43,7 @@ const deleteUser = async (userID, navigate) => {
             .eq('profile_id', userID)
 
         if (profError.error) {
-            console.log(profError);
+            console.log("Profile Error: ", profError);
             alert("Failed to completely delete user.");
             return;
         }

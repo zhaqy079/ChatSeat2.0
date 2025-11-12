@@ -1,4 +1,5 @@
 ﻿import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import Seat from "../assets/Seat.JPG";
@@ -6,6 +7,7 @@ import HomePMBtn from "../components/HomePMBtn";
 import HomePMForm from "../components/HomePMForm";
 
 export default function Home() {
+    const navigate = useNavigate();
     const [showForm, setShowForm] = useState(false);
     const [messageSent, setMessageSent] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -57,7 +59,7 @@ export default function Home() {
                                 Does this sound like you?
                             </p>
                             <p className="mb-0">
-                                If you would like to volunteer as a Listener, then you will need to sign in and proceed to the page for Listeners.
+                                If you would like to volunteer as a Listener, then you will need to <a href="login">sign in</a> and proceed to the page for Listeners.
                                 On this page you will find some helpful information, a booking calendar and a place where you can chat with other Listeners.
 
                             </p>
@@ -73,7 +75,7 @@ export default function Home() {
                                 So, who would be a good Coordinator? Someone who enjoys negotiating with potential venue "managers" and has good organisational skills.
                             </p>
                             <p className="mb-0">
-                                If you would like to volunteer as a Coordinator, then you will need to sign in and proceed to the page for Coordinators.
+                                If you would like to volunteer as a Coordinator, then you will need to <a href="login">sign in</a> and proceed to the page for Coordinators.
                                 On this page you will find some helpful information, and a place where you can chat with other Coordinators.
                             </p>
                         </div>
@@ -84,10 +86,13 @@ export default function Home() {
                 <div className="row g-3 g-md-4 mb-4" data-aos="fade-up">
                     <div className="col-12 col-md-6">
                         <div className="bg-primary-subtle p-4 rounded-3 shadow-sm border-start border-4 border-primary h-100">
-                            <h3 className="h5 fw-semibold text-primary mb-2">About the Chat Seat</h3>
+                            <h3 className="h5 fw-semibold text-primary mb-2">About the Chat Seats</h3>
+                            <p className="mb-2">
+                                We’ll be setting up Chat seats in various venues. 
+                                You can go to the venues options to see where Chat seats currently operate.
+                            </p>
                             <p className="mb-0">
-                                We’ll be setting up a Chat Seat in “Name your Venue”.
-                                Its purpose is to help community members connect through conversation.
+                                If you would like a Chat Seat to open in a different location then please email us via the “Have a Chat” tab.
                             </p>
                         </div>
                     </div>
@@ -95,9 +100,10 @@ export default function Home() {
                         <div className="bg-warning-subtle p-4 rounded-3 shadow-sm border-start border-4 border-warning h-100">
                             <h3 className="h5 fw-semibold text-warning mb-2">Who We’re Looking For</h3>
                             <p className="mb-0">
-                                We need individuals who enjoy listening and can commit just two hours a week.
-                                Right now, we're looking for five volunteers.
+                                We are looking for Volunteers who might like to be Listeners and/or Coordinators. 
                             </p>
+                            <br/>
+                            <button type="button" className="btn btn-primary" onClick={() => navigate("/signup")}>Interested? Sign up!</button>
                         </div>
                     </div>
                 </div>
