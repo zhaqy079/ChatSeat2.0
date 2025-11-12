@@ -4,10 +4,13 @@ import { supabase } from "../supabaseClient";
 export default function ResetRequest() {
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
+    const [cooldown, setCooldown] = useState(0);
+
 
     // Function to handle password reset request
     const handleResetRequest = async (e) => {
         e.preventDefault();
+        if (cooldown > 0) return;
 
         document.getElementById("resetSubmit").disabled = true;
 
@@ -24,6 +27,13 @@ export default function ResetRequest() {
         document.getElementById("resetSubmit").disabled = false;
     };
 
+    useState(() => {
+        if (!cooldown) return;
+        const t = setInterval(() => setCooldown((c) => (c > 0 ? c - 1 : 0)), 1000);
+        return () => clearInterval(t);
+    }, [cooldown]);
+
+
     return (
         <div className="min-vh-100 d-flex flex-column">
             <div className="flex-grow-1 d-flex align-items-center justify-content-center login-page">
@@ -39,6 +49,7 @@ export default function ResetRequest() {
                             <input
                                 type="email"
                                 name="enterEmail"
+                                autoComplete="email"
                                 className="form-control p-3 rounded"
                                 placeholder="Enter your email"
                                 value={email}
@@ -52,8 +63,9 @@ export default function ResetRequest() {
                                 type="submit"
                                 className="btn w-100 fw-bold text-white login-btn"
                                 id="resetSubmit"
+                                disabled={cooldown > 0}
                             >
-                                Send Reset Link
+                                {cooldown > 0 ? `Resend in ${cooldown}s` : "Send Reset Link"}
                             </button>
                         </div>
 

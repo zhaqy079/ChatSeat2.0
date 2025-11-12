@@ -34,6 +34,8 @@ export default function Login() {
 
             if (authError) throw authError;
 
+            
+
 
 
             //// Store user session info for protected routes
