@@ -36,7 +36,6 @@ import MakePeopleComfortable from "./components/Listener/MakePeopleComfortable";
 
 import CoordinatorAdminForum from "./components/Coordinator/CoordinatorAdminForum";
 import AdminFeedback from "./components/Admin/AdminFeedback";
-import SubmitFeedback from "./components/Shared/SubmitFeedback";
 
 import CoordinatorAppointments from "./components/Coordinator/CoordinatorAppointments";
 import CoordinatorAvailability from "./components/Coordinator/CoordinatorAvailability";

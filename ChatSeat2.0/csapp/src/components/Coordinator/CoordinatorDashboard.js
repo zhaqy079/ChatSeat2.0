@@ -34,19 +34,23 @@ export default function CoordinatorDashboard() {
                         <div className="section-soft bg-primary-subtle border-primary mb-4" >
                         <h5 className="intro-title mb-3">Your Role</h5>
                             <ul className="list-clean mt-2 mb-0">
-                            <li>Identify venues where Chat Seats can be placed</li>
-                            <li>Obtain permission from the venue manager or owner</li>
-                            <li>Recruit Listeners and assess their suitability</li>
-                            <li>
-                                Advise Listeners on necessary clearances (e.g., Working with
-                                Children Certificate)
-                            </li>
-                            <li>Introduce Listeners to available resources and tools</li>
-                            <li>Guide them to nominate volunteering times on the calendar</li>
-                            <li>
-                                Encourage use of the Chat Room to connect with fellow volunteers
-                            </li>
-                        </ul>
+                                <li>Identify venues where Chat Seats can be placed. </li>
+                                <li>Obtain permission from the venue manager or owner. </li>
+                                <li>Recruit Listeners and assess their suitability. </li>
+                                <li>
+                                    Advise Listeners on necessary clearances (e.g., Working with
+                                    Children Certificate)
+                                </li>
+                                <li>Introduce Listeners to available resources and tools. </li>
+                                <li>Guide them to nominate volunteering times on the calendar. </li>
+                                <li>
+                                    Encourage use of the Chat Room to connect with fellow volunteers. 
+                                </li>
+                                <li>
+                                    It is important that volunteers are covered by insurance. 
+                                    We have found that working with the local council can help here.
+                                </li>
+                            </ul>
                         </div>
 
                     {/* Coordinator Resources Section */}

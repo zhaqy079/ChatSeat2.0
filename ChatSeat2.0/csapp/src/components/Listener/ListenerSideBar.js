@@ -27,7 +27,7 @@ export default function ListenerSidebar() {
     return (
         <div className="dashboard-sidebar">
             <div className="dashboard-sidebar__greeting">
-                Hello, {user?.firstName ? `${user.firstName}` : ""}!
+                Hello, {user?.firstName ? `${user.firstName}` : "Listener"}!
             </div>
 
             <div className="dashboard-sidebar__nav">
@@ -38,10 +38,10 @@ export default function ListenerSidebar() {
                     List of Coordinators
                 </NavLink>
                 <NavLink to="/listenerscheduling" className={getActiveLink("/listenerscheduling")}>
-                    Scheduling
+                    Booking
                 </NavLink>
                 <NavLink to="/listenerchatroom" className={getActiveLink("/listenerchatroom")}>
-                    Let’s Talk
+                    Listener Chatroom
                 </NavLink>
                 <NavLink to="/privatemessage" className={getActiveLink("/privatemessage")}>
                     Inbox

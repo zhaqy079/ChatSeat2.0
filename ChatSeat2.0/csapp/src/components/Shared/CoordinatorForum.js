@@ -110,13 +110,13 @@ export default function CoordinatorForum() {
                             >
                                 Reply
                             </button>
-                            {user.id === post.user_profiles.profile_id && (
+                            {user?.role === "admin" || user.id === post.user_profiles.profile_id ? (
                                 <button type="button" className="pm-btn-delete me-2"
                                     onClick={() => deletePost(post.coord_forum_id)}
                                 >
                                     Delete
                                 </button>
-                            )}
+                            ): null}
                     </div>
                   
                     {/*Reply*/}
@@ -152,7 +152,7 @@ export default function CoordinatorForum() {
         <div className="flex-grow-1 dashboard-page-content">
             <div className="flex-grow-1 px-3 px-md-4 py-4 forum forum-coord">
                
-                    <h2 className="fw-bold dashboard-title fs-3 mb-4">Coordinator Hub</h2>
+                    <h2 className="fw-bold dashboard-title fs-3 mb-4">Coordinator Chatroom</h2>
                
                     <form className="mb-2" onSubmit={async (e) => {
                         e.preventDefault();
