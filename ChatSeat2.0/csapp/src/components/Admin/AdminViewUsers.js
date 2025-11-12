@@ -132,7 +132,7 @@ function coordinatorTable(userlist) {
             </thead>
             <tbody>
                 {userlist.map((user) => {
-                    return user.role === "coordinator" ? (
+                    return user.coordinator_profiles.length > 0 ? (
                         <tr key={user.profile_id} className="border-t">
                             <td className="p-3">{user.first_name} {user.last_name}</td>
                             <td className="p-3">{user.email}</td>
@@ -258,7 +258,7 @@ export default function AdminViewUsers() {
     const filtereduserListLength = (userlist
         .filter((user) => (
             searchrole === "all" || searchrole === ""
-                ? true : user.role === searchrole
+                ? true : (searchrole === "coordinator" ? user.coordinator_profiles.length > 0 : user.role === searchrole)
         ))).length;
 
     
