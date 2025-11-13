@@ -1,28 +1,9 @@
-﻿import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { logoutUser } from "../../state/loggedInUser";
-import { supabase } from "../../supabaseClient";
-import ListenerLinks from "./ListenerLinks";
+﻿import ListenerLinks from "./ListenerLinks";
+import { useListenerNav } from "./useListenerNav";
 
 export default function ListenerSidebar() {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const user = useSelector((s) => s.loggedInUser?.success);
-
-
-    const getActiveLink = (url) =>
-        location.pathname === url
-            ? "dashboard-sidebar__link active"
-            : "dashboard-sidebar__link";
-
-    const handleLogout = async () => {
-        // Supabase logout
-        await supabase.auth.signOut();
-        // Clear Redux state
-        dispatch(logoutUser());
-        navigate("/");
-    };
+    const { user, getActiveLink, handleLogout
+    } = useListenerNav();
 
     return (
         <div className="dashboard-sidebar d-none d-lg-block">

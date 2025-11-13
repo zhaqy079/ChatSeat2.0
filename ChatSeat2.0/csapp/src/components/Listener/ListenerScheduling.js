@@ -1,5 +1,4 @@
 ﻿import React, { useState, useEffect } from "react";
-//import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import ListenerSideBar from "./ListenerSideBar";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -7,6 +6,8 @@ import '../../index.css';
 import { supabase } from "../../supabaseClient";
 import userIcon from "../../assets/icons/icons8-user-48.png";
 
+import ListenerLinks from "./ListenerLinks";
+import { useListenerNav } from "./useListenerNav";
 
 
 export default function ListenerScheduling() {
@@ -16,15 +17,9 @@ export default function ListenerScheduling() {
     const [selectedLocation, setSelectedLocation] = useState("");
     const [showEventPopup, setShowEventPopup] = useState(false);
     const [clickedEvent, setClickedEvent] = useState(null);
-    const [user, setUser] = useState(null);
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useListenerNav();
 
     useEffect(() => {
-        const getUser = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-
-            setUser(user);
-        };
-        getUser();
         fetchBookings();
     }, []);
 
@@ -189,7 +184,7 @@ export default function ListenerScheduling() {
             console.error(error);
         } else {
             alert("Slot booked successfully!");
-            fetchBookings(); 
+            fetchBookings();
         }
     };
 
@@ -216,204 +211,239 @@ export default function ListenerScheduling() {
             console.error(error);
         } else {
             alert("You have successfully unbooked this slot.");
-            fetchBookings(); 
+            fetchBookings();
         }
     };
 
     return (
         <div className="d-flex dashboard-page-scheduling">
-                  {/* Sidebar*/}
-                  <aside>
-                        <ListenerSideBar />
-                  </aside>
-                   {/* Right content area */}
-                     <div className="flex-grow-1 px-3 px-md-4 py-4">
-                          {/* Tabs row */}
-                         <div className="flex flex-wrap gap-4 mb-6">
-                                {["Upcoming", "Book"].map((tab) => (
-                                    <button
-                                        key={tab}
-                                        type="button"
-                                        onClick={() => setActiveTab(tab)}
-                                        className={`tab-button ${activeTab === tab ? "tab-active" : "tab-inactive"
-                                            }`}
-                                    >
-                                        {tab === "Book" ? "Book a Slot" : "Upcoming Bookings"}
-                                    </button>
-                                ))}
-                         </div>
+            <div className="d-lg-none p-2">
+                <button
+                    className="btn btn-outline-primary btn-lg"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#listenerMobileMenu"
+                    aria-controls="listenerMobileMenu"
+                >
+                    Menu
+                </button>
+            </div>
 
-                        {/* Booking event details */}
-                        {showEventPopup && clickedEvent && (
-                            <div className="modal show d-block" tabIndex="-1">
-                                <div className="modal-dialog">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title">Event Details</h5>
-                                            <button
-                                                type="button"
-                                                className="btn-close"
-                                                onClick={() => setShowEventPopup(false)}
-                                            ></button>
-                                        </div>
-                                        <div className="modal-body">
-                                            {/* Location */}
-                                            <p>
-                                                <strong>Location:</strong>{" "}
-                                                {locations.find(l => l.location_id === clickedEvent.location_id)?.location_name || "Unknown"}
-                                            </p>
+            <div className="d-flex">
+                {/* Sidebar */}
+                <aside className="px-0 flex-shrink-0">
+                    <ListenerSideBar />
+                </aside>
+                {/* Right content area */}
+                <div className="flex-grow-1 px-3 px-md-4 py-4">
+                    {/* Tabs row */}
+                    <div className="flex flex-wrap gap-4 mb-6">
+                        {["Upcoming", "Book"].map((tab) => (
+                            <button
+                                key={tab}
+                                type="button"
+                                onClick={() => setActiveTab(tab)}
+                                className={`tab-button ${activeTab === tab ? "tab-active" : "tab-inactive"
+                                    }`}
+                            >
+                                {tab === "Book" ? "Book a Slot" : "Upcoming Bookings"}
+                            </button>
+                        ))}
+                    </div>
 
-                                            {/* Booked Users */}
-                                            <p>
-                                               <strong>Booked Users:</strong>{" "}
-                                                {clickedEvent.bookedUsers?.length > 0
-                                                    ? clickedEvent.bookedUsers.map(u => u.name).join(", ")
-                                            : "None"}
-                               
-                                            </p>
-
-                                            {/* Date */}
-                                            <p>
-                                                <strong>Date:</strong>{" "}
-                                                {new Date(clickedEvent.start).toLocaleDateString("en-AU")}
-                                            </p>
-
-                                            {/* Time */}
-                                            <p>
-                                                <strong>Time:</strong>{" "}
-                                                {new Date(clickedEvent.start).toLocaleTimeString([], {
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                })}{" "}
-                                                -{" "}
-                                                {new Date(clickedEvent.end).toLocaleTimeString([], {
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                })}
-                                            </p>
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button
-                                                className="btn btn-secondary"
-                                                onClick={() => setShowEventPopup(false)}
-                                            >
-                                                Close
-                                            </button>
-                                            <button
-                                                className="btn btn-danger"
-                                                onClick={() => handleUnbook(clickedEvent.id)}
-                                            >
-                                                Unbook
-                                            </button>
-                                            <button
-                                                className="btn btn-primary"
-                                                onClick={() => handleBook(clickedEvent.id)}
-                                            >
-                                                Book
-                                            </button>
-                                        </div>
+                    {/* Booking event details */}
+                    {showEventPopup && clickedEvent && (
+                        <div className="modal show d-block" tabIndex="-1">
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title">Event Details</h5>
+                                        <button
+                                            type="button"
+                                            className="btn-close"
+                                            onClick={() => setShowEventPopup(false)}
+                                        ></button>
                                     </div>
-                                </div>
-                            </div>
-                        )}
-            
-                        {/* Display Upcoming content*/}
-                        {activeTab === "Upcoming" && (
-                            <div className="min-h-screen">
-                                <h3 className="text-xl font-bold mb-6 intro-title">Upcoming Bookings</h3>
+                                    <div className="modal-body">
+                                        {/* Location */}
+                                        <p>
+                                            <strong>Location:</strong>{" "}
+                                            {locations.find(l => l.location_id === clickedEvent.location_id)?.location_name || "Unknown"}
+                                        </p>
 
-                                {events.filter(e => new Date(e.start) > new Date()).length === 0 ? (
-                                    <p>No upcoming bookings.</p>
-                        ) : (
+                                        {/* Booked Users */}
+                                        <p>
+                                            <strong>Booked Users:</strong>{" "}
+                                            {clickedEvent.bookedUsers?.length > 0
+                                                ? clickedEvent.bookedUsers.map(u => u.name).join(", ")
+                                                : "None"}
 
-                                    //<div className="row upcoming-scroll-container">
-                                <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 upcoming-scroll-container">
-                                        {events
-                                            .filter(e => new Date(e.start) > new Date())
-                                            .sort((a, b) => new Date(a.start) - new Date(b.start))
-                                            .map(e => {
-                                                const isBooked = e.listener_ids.includes(user?.id);
-                                                return (
-                                                    <div key={e.id} className="border p-4 rounded shadow-sm card-panel w-25">
-                                                        <p className="mb-1"><strong>Date:</strong> {new Date(e.start).toLocaleDateString("en-AU")}</p>
-                                                        <p className="mb-1"><strong>Time:</strong> {new Date(e.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} - {new Date(e.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
-                                                        <p className="mb-1"><strong>Location:</strong> {locations.find(l => l.location_id === e.location_id)?.location_name || "Unknown"}</p>
+                                        </p>
 
-                                                      
-                                                        <p className="mb-1"><strong>Booked Users:</strong></p>
-                                                        <div className="ms-2">
-                                                            {(e.bookedUsers?.length ? e.bookedUsers : [{ name: "Unassigned" }]).map((u, i) => (
-                                                                <div key={i} className="d-flex align-items-center text-dark mb-1">
-                                                                    <img src={userIcon} alt="" className="icon me-2" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                                                    <span>{u.name}</span>
-                                                                </div>
-                                                            ))}
-                                                            </div>
-                                                        
+                                        {/* Date */}
+                                        <p>
+                                            <strong>Date:</strong>{" "}
+                                            {new Date(clickedEvent.start).toLocaleDateString("en-AU")}
+                                        </p>
 
-                                                        <div className="mt-1 flex space-x-2">
-                                                            {isBooked ? (
-                                                                <button
-                                                                    type="button"
-                                                                    className="btn btn-danger"
-                                                                    onClick={() => handleUnbook(e.id)}
-                                                                >
-                                                                    Unbook
-                                                                </button>
-                                                            ) : (
-                                                                <button
-                                                                    type="button"
-                                                                    className="btn btn-primary"
-                                                                    onClick={() => handleBook(e.id)}
-                                                                >
-                                                                    Book
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                )
+                                        {/* Time */}
+                                        <p>
+                                            <strong>Time:</strong>{" "}
+                                            {new Date(clickedEvent.start).toLocaleTimeString([], {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            })}{" "}
+                                            -{" "}
+                                            {new Date(clickedEvent.end).toLocaleTimeString([], {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
                                             })}
+                                        </p>
                                     </div>
-                                )}
-                            </div>
-                        )}
-
-                        {activeTab === "Book" && (
-                            <div className="card-panel p-4 sm:p-6 rounded shadow w-full">
-                                <h3 className="text-xl font-bold mb-3">Book a Slot</h3>
-
-                                {/*location dropdown */}
-                                <select
-                                    className="location-dropdown"
-                                    name="locationDropdown"
-                                    value={selectedLocation}
-                                    onChange={(e) => setSelectedLocation(e.target.value)}
-                                >
-                                    <option value="">Select Location</option>
-                                    {locations.filter(loc => loc.location_name !== "FULL DAY UNAVAILABLE").map((loc) => (
-                                        <option key={loc.location_id} value={loc.location_id}>
-                                            {loc.location_name}
-                                        </option>
-                                    ))}
-                                </select>
-
-                                <div className="bg-white p-2 rounded shadow">
-                                    <FullCalendar
-                                        plugins={[timeGridPlugin]}
-                                        initialView="timeGridWeek"
-                                        height={550}
-                                        locale="en-AU"
-                                        events={filteredEvents}
-                                        editable={false}
-                                        selectable={false}
-                                        allDaySlot={false}
-                                        eventTimeFormat={{ hour: 'numeric', minute: '2-digit', meridiem: 'short' }}
-                                        eventClick={handleEventClick}
-                                    />
+                                    <div className="modal-footer">
+                                        <button
+                                            className="btn btn-secondary"
+                                            onClick={() => setShowEventPopup(false)}
+                                        >
+                                            Close
+                                        </button>
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() => handleUnbook(clickedEvent.id)}
+                                        >
+                                            Unbook
+                                        </button>
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={() => handleBook(clickedEvent.id)}
+                                        >
+                                            Book
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        )}
+                        </div>
+                    )}
+
+                    {/* Display Upcoming content*/}
+                    {activeTab === "Upcoming" && (
+                        <div className="min-h-screen">
+                            <h3 className="text-xl font-bold mb-6 intro-title">Upcoming Bookings</h3>
+
+                            {events.filter(e => new Date(e.start) > new Date()).length === 0 ? (
+                                <p>No upcoming bookings.</p>
+                            ) : (
+
+                                //<div className="row upcoming-scroll-container">
+                                <div className="d-flex flex-wrap gap-3 upcoming-scroll-container justify-content-center">
+                                    {events
+                                        .filter(e => new Date(e.start) > new Date())
+                                        .sort((a, b) => new Date(a.start) - new Date(b.start))
+                                        .map(e => {
+                                            const isBooked = e.listener_ids.includes(user?.id);
+                                            return (
+                                                <div key={e.id} className="border p-4 rounded shadow-sm card-panel">
+
+                                                    <p className="mb-1"><strong>Date:</strong> {new Date(e.start).toLocaleDateString("en-AU")}</p>
+                                                    <p className="mb-1"><strong>Time:</strong> {new Date(e.start).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} - {new Date(e.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                                                    <p className="mb-1"><strong>Location:</strong> {locations.find(l => l.location_id === e.location_id)?.location_name || "Unknown"}</p>
+
+
+                                                    <p className="mb-1"><strong>Booked Users:</strong></p>
+                                                    <div className="ms-2">
+                                                        {(e.bookedUsers?.length ? e.bookedUsers : [{ name: "Unassigned" }]).map((u, i) => (
+                                                            <div key={i} className="d-flex align-items-center text-dark mb-1">
+                                                                <img src={userIcon} alt="" className="icon me-2" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                                <span>{u.name}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+
+                                                    <div className="mt-1 flex space-x-2">
+                                                        {isBooked ? (
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-danger"
+                                                                onClick={() => handleUnbook(e.id)}
+                                                            >
+                                                                Unbook
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-primary"
+                                                                onClick={() => handleBook(e.id)}
+                                                            >
+                                                                Book
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {activeTab === "Book" && (
+                        <div className="card-panel p-4 sm:p-6 rounded shadow w-full">
+                            <h3 className="text-xl font-bold mb-3">Book a Slot</h3>
+
+                            {/*location dropdown */}
+                            <select
+                                className="location-dropdown"
+                                name="locationDropdown"
+                                value={selectedLocation}
+                                onChange={(e) => setSelectedLocation(e.target.value)}
+                            >
+                                <option value="">Select Location</option>
+                                {locations.filter(loc => loc.location_name !== "FULL DAY UNAVAILABLE").map((loc) => (
+                                    <option key={loc.location_id} value={loc.location_id}>
+                                        {loc.location_name}
+                                    </option>
+                                ))}
+                            </select>
+
+                            <div className="bg-white p-2 rounded shadow">
+                                <FullCalendar
+                                    plugins={[timeGridPlugin]}
+                                    initialView="timeGridWeek"
+                                    height={550}
+                                    locale="en-AU"
+                                    events={filteredEvents}
+                                    editable={false}
+                                    selectable={false}
+                                    allDaySlot={false}
+                                    eventTimeFormat={{ hour: 'numeric', minute: '2-digit', meridiem: 'short' }}
+                                    eventClick={handleEventClick}
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
+            </div>
+            <div
+                className="offcanvas offcanvas-start"
+                tabIndex="-1"
+                id="listenerMobileMenu"
+                aria-labelledby="listenerMobileMenuLabel"
+            >
+                <div className="offcanvas-header">
+                    <h5 id="listenerMobileMenuLabel" className="mb-0">
+                        Hello, {user?.firstName ?? ""}!
+                    </h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div className="offcanvas-body">
+
+                    <ListenerLinks
+                        getActiveLink={getActiveLink}
+                        handleLogout={handleLogout}
+                        onItemClick={closeOffcanvas}
+                    />
+                </div>
+            </div>
         </div>
     );
 }

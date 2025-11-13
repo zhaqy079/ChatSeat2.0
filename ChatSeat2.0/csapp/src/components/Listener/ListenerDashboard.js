@@ -1,37 +1,16 @@
-﻿import { useSelector, useDispatch } from "react-redux";
+﻿import { useSelector } from "react-redux";
 import ListenerSideBar from "./ListenerSideBar";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { useEffect, useState } from "react";
 import ListenerLinks from "./ListenerLinks";
-import { logoutUser } from "../../state/loggedInUser";
+import { useListenerNav } from "./useListenerNav";
 
 
 export default function ListenerDashboard() {
-    const user = useSelector((s) => s.loggedInUser?.success);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const location = useLocation();
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useListenerNav();
     const [resources, setResources] = useState([]);
 
-    // For offcanvas 
-    const getActiveLink = (url) =>
-        location.pathname === url
-            ? "dashboard-sidebar__link active"
-            : "dashboard-sidebar__link";
-
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        dispatch(logoutUser());
-        navigate("/");
-    };
-
-    const closeOffcanvas = () => {
-        const el = document.getElementById("listenerMobileMenu");
-        if (!el) return;
-        const inst = window.bootstrap?.Offcanvas.getInstance(el);
-        if (inst) inst.hide();
-    };
 
     // Fetch resources from Supabase
     useEffect(() => {
@@ -50,7 +29,7 @@ export default function ListenerDashboard() {
     return (
 
         <div className="container-fluid px-0">
-            <div className="d-md-none p-2">
+            <div className="d-lg-none p-2">
                 <button
                     className="btn btn-outline-primary btn-lg"
                     data-bs-toggle="offcanvas"
@@ -76,7 +55,7 @@ export default function ListenerDashboard() {
 
                                 <h2 className="fw-bold intro-title mb-4 text-center">
                                     {/*Update conditional statement, */}
-                                    Welcome Listener, {user?.firstName ? user.firstName : ""}!
+                                    Welcome, Listeners!
                                 </h2>
                                 <p className="text-secondary mb-4 text-center">
                                     Thank you for agreeing to volunteer some of your time as a Listener on our Chat Seats.
@@ -149,7 +128,9 @@ export default function ListenerDashboard() {
                 aria-labelledby="listenerMobileMenuLabel"
             >
                 <div className="offcanvas-header">
-                    <h5 id="listenerMobileMenuLabel" className="mb-0">Menu</h5>
+                    <h5 id="listenerMobileMenuLabel" className="mb-0">
+                        Hello, {user?.firstName ?? ""}!
+                    </h5>
                     <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div className="offcanvas-body">

@@ -1,22 +1,25 @@
 ﻿import { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
 import ListenerSideBar from "./ListenerSideBar";
+import ListenerLinks from "./ListenerLinks";
+import { useListenerNav } from "./useListenerNav";
 
+// Refenrence: https://www.youtube.com/watch?v=btZII7TXlhk
 
 export default function PrivateMessage() {
     const [messages, setMessages] = useState([]);
-    const [replyFor, setReplyFor] = useState(null); 
+    const [replyFor, setReplyFor] = useState(null);
     const [loading, setLoading] = useState(false);
     const [loadingInbox, setLoadingInbox] = useState(false);
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useListenerNav();
 
-    // Refenrence: https://www.youtube.com/watch?v=btZII7TXlhk
 
     async function load() {
         setLoadingInbox(true);
         const { data, error } = await supabase
             .from("inbox_messages")
             .select("*")
-            .eq("marked", false)   
+            .eq("marked", false)
             .order("created_at", { ascending: false });
 
         if (error) {
@@ -36,7 +39,7 @@ export default function PrivateMessage() {
             .from("inbox_messages")
             .update({ marked: true })
             .eq("message_id", id);
-        if (error) load(); 
+        if (error) load();
     }
 
     async function sendReply({ to, subject, text, id }) {
@@ -78,62 +81,103 @@ export default function PrivateMessage() {
 
     return (
         <div className="d-flex flex-row dashboard-page-content">
-            <ListenerSideBar />
-            <main className="flex-grow-1 p-4 container-fluid">
-                <h2 className="fw-bold mb-3 intro-title">
-                    Unread Messages
-                </h2>
-                {messages.length === 0 && (
-                    <div className="alert alert-info">No new messages</div>
-                )}
-                <div className="row justify-content-center">
-                    <div className="col-12 col-md-10 col-lg-8">
-                    {messages.map((m) => (
-                        <div key={m.message_id} className="pm-card">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between">
-                                    <h6 className="mb-2">{m.name}</h6>
-                                    <small className="text-muted">
-                                        {new Date(m.created_at).toLocaleString()}
-                                    </small>
-                                </div>
-                                <div className="text-muted small mb-2">{m.email || "No email provided"}</div>
-                                <p className="mb-3">{m.content}</p>
+            <div className="d-lg-none p-2">
+                <button
+                    className="btn btn-outline-primary btn-lg"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#listenerMobileMenu"
+                    aria-controls="listenerMobileMenu"
+                >
+                    Menu
+                </button>
+            </div>
 
-                                {replyFor?.message_id === m.message_id ? (
-                                    <ReplyForm
-                                        to={m.email}
-                                        onCancel={() => setReplyFor(null)}
-                                        onSend={(payload) =>
-                                            sendReply({ ...payload, id: m.message_id })
-                                        }
-                                        sending={loading}
-                                    />
-                                ) : (
-                                        <div className="d-flex justify-content-end gap-2 mt-3">
-                                        <button
-                                            className="pm-btn pm-btn-reply"
-                                            disabled={!m.email}
-                                            onClick={() => setReplyFor(m)}
-                                            title={m.email ? "Reply by email" : "No email to reply"}
-                                        >
-                                            Reply
-                                        </button>
-                                        <button
-                                            className="pm-btn pm-btn-mark"
-                                            onClick={() => markAsRead(m.message_id)}
-                                        >
-                                            Mark as Read
-                                        </button>
+            {/* Sidebar */}
+            <div className="d-flex dashboard-page-content">
+                {/* Sidebar */}
+                <aside className="px-0 flex-shrink-0">
+                    <ListenerSideBar />
+                </aside>
+
+                <main className="flex-grow-1 p-4 container-fluid">
+                    <h2 className="fw-bold mb-3 intro-title">
+                        Unread Messages
+                    </h2>
+                    {messages.length === 0 && (
+                        <div className="alert alert-info">No new messages</div>
+                    )}
+                    <div className="row justify-content-center">
+                        <div className="col-12 col-md-10 col-lg-8">
+                            {messages.map((m) => (
+                                <div key={m.message_id} className="pm-card">
+                                    <div className="card-body">
+                                        <div className="d-flex justify-content-between">
+                                            <h6 className="mb-2">{m.name}</h6>
+                                            <small className="text-muted">
+                                                {new Date(m.created_at).toLocaleString()}
+                                            </small>
+                                        </div>
+                                        <div className="text-muted small mb-2">{m.email || "No email provided"}</div>
+                                        <p className="mb-3">{m.content}</p>
+
+                                        {replyFor?.message_id === m.message_id ? (
+                                            <ReplyForm
+                                                to={m.email}
+                                                onCancel={() => setReplyFor(null)}
+                                                onSend={(payload) =>
+                                                    sendReply({ ...payload, id: m.message_id })
+                                                }
+                                                sending={loading}
+                                            />
+                                        ) : (
+                                            <div className="d-flex justify-content-end gap-2 mt-3">
+                                                <button
+                                                    className="pm-btn pm-btn-reply"
+                                                    disabled={!m.email}
+                                                    onClick={() => setReplyFor(m)}
+                                                    title={m.email ? "Reply by email" : "No email to reply"}
+                                                >
+                                                    Reply
+                                                </button>
+                                                <button
+                                                    className="pm-btn pm-btn-mark"
+                                                    onClick={() => markAsRead(m.message_id)}
+                                                >
+                                                    Mark as Read
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                            </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
+                </main>
+            </div>
+            <div
+                className="offcanvas offcanvas-start"
+                tabIndex="-1"
+                id="listenerMobileMenu"
+                aria-labelledby="listenerMobileMenuLabel"
+            >
+                <div className="offcanvas-header">
+                    <h5 id="listenerMobileMenuLabel" className="mb-0">
+                        Hello, {user?.firstName ?? ""}!
+                    </h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
+                <div className="offcanvas-body">
+
+                    <ListenerLinks
+                        getActiveLink={getActiveLink}
+                        handleLogout={handleLogout}
+                        onItemClick={closeOffcanvas}
+                    />
+                </div>
+            </div>
         </div>
-            </main>
-        </div>
+
+
     );
 }
 
@@ -163,7 +207,7 @@ function ReplyForm({ to, onCancel, onSend, sending }) {
                 >
                     {sending ? "Sending…" : "Send"}
                 </button>
-                <button className="form-cancel-btn" onClick={onCancel}>Cancel</button>             
+                <button className="form-cancel-btn" onClick={onCancel}>Cancel</button>
             </div>
         </div>
     );
