@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import Seat from "../assets/Seat.JPG";
@@ -59,7 +59,7 @@ export default function Home() {
                                 Does this sound like you?
                             </p>
                             <p className="mb-0">
-                                If you would like to volunteer as a Listener, then you will need to <a href="login">sign in</a> and proceed to the page for Listeners.
+                                If you would like to volunteer as a Listener, then you will need to <Link to="login">sign in</Link> and proceed to the page for Listeners.
                                 On this page you will find some helpful information, a booking calendar and a place where you can chat with other Listeners.
                             
                             </p>

@@ -1,5 +1,6 @@
 import AdminSidebar from "./AdminSidebar";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { supabase } from "../../supabaseClient";
 
@@ -159,7 +160,7 @@ function coordinatorTable(userlist) {
                                 <>
                                     {/* Displays a variety of different buttons depending on whether the user is an admin or currently active/inactive */}
                                     <>
-                                        <a href={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</a>
+                                        <Link href={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</Link>
                                         {user.inactive_at === null ? (
                                             <button type="button" className="btn btn-warning me-2" onClick={() => deactivateUser(user.profile_id)}>Deactivate</button>
                                         ) : (
