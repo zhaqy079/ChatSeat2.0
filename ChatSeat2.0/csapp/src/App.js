@@ -9,7 +9,7 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ResetRequest from "./components/ResetRequest"
-import ResetPassword from "./components/ResetPassword"
+import ResetPassword from "./components/Resetpassword"
 import Venues from "./components/Venues";
 import AboutUs from "./components/AboutUs";
 
