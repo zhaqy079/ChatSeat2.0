@@ -846,3 +846,19 @@ h4.intro-title,
     --forum-accent-50: #f5f3ff;
     --forum-accent-200: #ddd6fe;
 }
+
+.password-input,
+.password-confirm-input {
+    padding-right: 3.5rem;
+}
+
+
+.password-input.is-invalid,
+.password-confirm-input.is-invalid {
+    background-image: none !important;
+}
+
+
+.small-toggle-btn {
+    font-size: 0.875rem;
+}

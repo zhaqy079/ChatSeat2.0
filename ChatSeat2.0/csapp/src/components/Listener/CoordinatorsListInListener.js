@@ -1,41 +1,19 @@
 ﻿import React, { useEffect, useState } from "react";
 import ListenerSideBar from "./ListenerSideBar";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { supabase } from "../../supabaseClient";
 import mapIcon from "../../assets/icons/icons8-map-48.png";
 import phoneIcon from "../../assets/icons/icons8-phone-48.png";
 import messageIcon from "../../assets/icons/icons8-email-48.png";
 
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ListenerLinks from "./ListenerLinks";
-import { logoutUser } from "../../state/loggedInUser";
+import { useDashboardNav } from "../Shared/useDashboardNav";
 
 
 export default function CoordinatorsListInListener() {
     const [coordinators, setCoordinators] = useState([]);
-    const user = useSelector((state) => state.loggedInUser.success);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    // For offcanvas 
-    const getActiveLink = (url) =>
-        location.pathname === url
-            ? "dashboard-sidebar__link active"
-            : "dashboard-sidebar__link";
-
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        dispatch(logoutUser());
-        navigate("/");
-    };
-
-    const closeOffcanvas = () => {
-        const el = document.getElementById("listenerMobileMenu");
-        if (!el) return;
-        const inst = window.bootstrap?.Offcanvas.getInstance(el);
-        if (inst) inst.hide();
-    };
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
 
     // Fetch coordinators from Supabase
     useEffect(() => {
@@ -49,12 +27,12 @@ export default function CoordinatorsListInListener() {
     }, []);
     return (
         <div className="container-fluid px-0">
-            <div className="d-md-none p-2">
+            <div className="d-lg-none p-2">
                 <button
                     className="btn btn-outline-primary btn-lg"
                     data-bs-toggle="offcanvas"
-                    data-bs-target="#listenerMobileMenu"
-                    aria-controls="listenerMobileMenu"
+                    data-bs-target="#mobileMenu"
+                    aria-controls="mobileMenu"
                 >
                     Menu
                 </button>
@@ -95,12 +73,12 @@ export default function CoordinatorsListInListener() {
             </div>
             <div
                 className="offcanvas offcanvas-start"
+                id="mobileMenu"
                 tabIndex="-1"
-                id="listenerMobileMenu"
-                aria-labelledby="listenerMobileMenuLabel"
+                aria-labelledby="mobileMenuLabel"
             >
                 <div className="offcanvas-header">
-                    <h5 id="listenerMobileMenuLabel" className="mb-0">
+                    <h5 id="mobileMenuLabel" className="mb-0">
                         Hello, {user?.firstName ?? ""}!
                     </h5>
                     <button

@@ -1,9 +1,10 @@
-﻿import { useSelector } from "react-redux";
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import CoordinatorSidebar from "./CoordinatorSidebar";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { supabase } from "../../supabaseClient";
+import CoordinatorrLinks from "./CoordinatorLinks";
+import { useDashboardNav } from "../Shared/useDashboardNav";
 
 
 
@@ -11,6 +12,7 @@ export default function CoordinatorAvailability() {
     const [locations, setLocations] = useState([]);
     const [events, setEvents] = useState([]);
     const [selectedLocation, setSelectedLocation] = useState("");
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -103,37 +105,72 @@ export default function CoordinatorAvailability() {
         : [];
 
     return (
-        <div className="d-flex dashboard-page-content">
-            <aside>
-                <CoordinatorSidebar />
-            </aside>
-            <div className="flex-grow-1 px-3 px-md-4 py-4">
-                <h2 className="fw-bold dashboard-title fs-3 mb-4">Calendar View</h2>
-                <div className="card-panel p-4 sm:p-6 rounded shadow w-full">
-                    <select
-                        className="location-dropdown mb-3"
-                        name="selectedlocation"
-                        value={selectedLocation}
-                        onChange={(e) => setSelectedLocation(e.target.value)}
-                    >
-                        <option value="">Select Location</option>
-                        {locations.filter(loc => loc.location_name !== "FULL DAY UNAVAILABLE").map((loc) => (
-                            <option key={loc.location_id} value={loc.location_id}>
-                                {loc.location_name}
-                            </option>
-                        ))}
-                    </select>
+        <div className="container-fluid px-0">
+            <div className="d-lg-none p-2">
+                <button
+                    className="btn btn-outline-primary btn-lg"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#mobileMenu"
+                    aria-controls="mobileMenu"
+                >
+                    Menu
+                </button>
+            </div>
 
-                    <div className="bg-white p-2 rounded shadow">
-                        <FullCalendar
-                            plugins={[timeGridPlugin]}
-                            initialView="timeGridWeek"
-                            height={550}
-                            events={filteredEvents}
-                            locale="en-AU"
-                            allDaySlot={false}
-                        />
+            <div className="d-flex">
+                {/* Sidebar */}
+                <aside className="px-0 flex-shrink-0">
+                    <CoordinatorSidebar />
+                </aside>
+                <div className="flex-grow-1 px-3 px-md-4 py-4">
+                    <h2 className="fw-bold dashboard-title fs-3 mb-4">Calendar View</h2>
+                    <div className="card-panel p-4 sm:p-6 rounded shadow w-full">
+                        <select
+                            className="location-dropdown mb-3"
+                            name="selectedlocation"
+                            value={selectedLocation}
+                            onChange={(e) => setSelectedLocation(e.target.value)}
+                        >
+                            <option value="">Select Location</option>
+                            {locations.filter(loc => loc.location_name !== "FULL DAY UNAVAILABLE").map((loc) => (
+                                <option key={loc.location_id} value={loc.location_id}>
+                                    {loc.location_name}
+                                </option>
+                            ))}
+                        </select>
+
+                        <div className="bg-white p-2 rounded shadow">
+                            <FullCalendar
+                                plugins={[timeGridPlugin]}
+                                initialView="timeGridWeek"
+                                height={550}
+                                events={filteredEvents}
+                                locale="en-AU"
+                                allDaySlot={false}
+                            />
+                        </div>
                     </div>
+                </div>
+            </div>
+            <div
+                className="offcanvas offcanvas-start"
+                id="mobileMenu"
+                tabIndex="-1"
+                aria-labelledby="mobileMenuLabel"
+            >
+                <div className="offcanvas-header">
+                    <h5 id="mobileMenuLabel" className="mb-0">
+                        Hello, {user?.firstName ?? ""}!
+                    </h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div className="offcanvas-body">
+
+                    <CoordinatorrLinks
+                        getActiveLink={getActiveLink}
+                        handleLogout={handleLogout}
+                        onItemClick={closeOffcanvas}
+                    />
                 </div>
             </div>
         </div>
