@@ -11,19 +11,10 @@ import listenerIntroIcon from "../assets/icons/icons8-dash-48.png";
 
 
 export default function Venues() {
-    const [venue, setVenue] = useState(null);
-    const [showMap, setShowMap] = useState(false);
     const [appointments, setAppointments] = useState([]);
     const [locations, setLocations] = useState([]);
     const [selectedLocation, setSelectedLocation] = useState("all");
     const [expandedMaps, setExpandedMaps] = useState({});
-
-    useEffect(() => {
-        fetch("/api/venues")
-            .then((res) => res.json())
-            .then((data) => setVenue(data))
-            .catch((err) => console.error("Error fetching venue:", err));
-    }, []);
 
     const toggleMap = (id) => {
         setExpandedMaps((prev) => ({

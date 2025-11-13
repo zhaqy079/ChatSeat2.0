@@ -43,7 +43,9 @@ export default function CoordinatorLinks({ getActiveLink, onItemClick, handleLog
           Feedback
         </NavLink>
 
-        <hr />
+      </div>
+      <hr />
+      <div className="mt-3">
         <button className="dashboard-sidebar__logout"
           onClick={() => { handleLogout(); onItemClick && onItemClick(); }}>
           Logout

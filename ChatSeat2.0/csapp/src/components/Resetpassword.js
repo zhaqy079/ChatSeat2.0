@@ -21,6 +21,7 @@ const schema = Yup.object().shape({
 export default function ResetPassword() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [successmessage, setsuccessMessage] = useState("");
 
     const {
@@ -33,8 +34,8 @@ export default function ResetPassword() {
         resolver: yupResolver(schema),
     });
 
-   
-    
+
+
     // Effect to handle password reset link from URL hash
     useEffect(() => {
         const hash = window.location.hash.slice(1);
@@ -80,22 +81,22 @@ export default function ResetPassword() {
                         <div className="mb-3">
                             <label className="form-label">New password</label>
                             <div className="position-relative">
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                className={`form-control ${errors.password ? "is-invalid" : ""}`}
-                                autoComplete="new-password"
-                                {...register("password")}
-                                placeholder="Enter new password"
-                            />
-                                 <button
-                                type="button"
-                                className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0"
-                                style={{ textDecoration: "none" }}
-                                onClick={() => setShowPassword((v) => !v)}
-                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    className={`form-control password-input ${errors.password ? "is-invalid" : ""}`}
+                                    autoComplete="new-password"
+                                    {...register("password")}
+                                    placeholder="Enter new password"
+                                />
+                                <button
+                                    type="button"
+                                    className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0"
+                                    style={{ textDecoration: "none" }}
+                                    onClick={() => setShowPassword((v) => !v)}
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
                                 >
-                                {showPassword ? "Hide" : "Show"}
-                                 </button>
+                                    {showPassword ? "Hide" : "Show"}
+                                </button>
                             </div>
                             {errors.password && (
                                 <div className="invalid-feedback" style={{ whiteSpace: "pre-line" }}>
@@ -106,15 +107,29 @@ export default function ResetPassword() {
 
                         <div className="mb-4">
                             <label className="form-label">Confirm new password</label>
-                            <input
-                                type="password"
-                                className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
-                                autoComplete="new-password"
-                                {...register("confirmPassword")}
-                                placeholder="Re-enter new password"
-                            />
+                            <div className="position-relative">
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    className={`form-control password-confirm-input ${errors.confirmPassword ? "is-invalid" : ""
+                                        }`}
+                                    autoComplete="new-password"
+                                    {...register("confirmPassword")}
+                                    placeholder="Re-enter new password"
+                                />
+                                <button
+                                    type="button"
+                                    className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0 small-toggle-btn"
+                                    style={{ textDecoration: "none" }}
+                                    onClick={() => setShowConfirmPassword((v) => !v)}
+                                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showConfirmPassword ? "Hide" : "Show"}
+                                </button>
+                            </div>
                             {errors.confirmPassword && (
-                                <div className="invalid-feedback">{errors.confirmPassword.message}</div>
+                                <div className="invalid-feedback">
+                                    {errors.confirmPassword.message}
+                                </div>
                             )}
                         </div>
 
@@ -128,6 +143,6 @@ export default function ResetPassword() {
                     </form>
                 </div>
             </div>
-      </div>
+        </div>
     );
 }
