@@ -32,13 +32,13 @@ export default function Home() {
                         Welcome to “Chat Seats”
                     </h2>
                     <p className="lead fs-6">
-                            In a bid to tackle social isolation, we would like to establish a series of 
-                            <strong> Chat Seats</strong> across Australia. The <strong>Chat Seats initiative </strong>
-                            aims to provide a safe and inviting place for people to talk. It will allow members
+                        In a bid to tackle social isolation, we would like to establish a series of
+                        <strong> Chat Seats</strong> across Australia. The <strong>Chat Seats initiative </strong>
+                        aims to provide a safe and inviting place for people to talk. It will allow members
                         of the community to <strong> "Connect through Conversation." </strong>
-                            For this initiative to be successful, we need people like yourselves to volunteer
-                            to be either <strong>Listeners</strong> and/or <strong>Coordinators</strong>.
-                            
+                        For this initiative to be successful, we need people like yourselves to volunteer
+                        to be either <strong>Listeners</strong> and/or <strong>Coordinators</strong>.
+
                     </p>
                 </div>
 
@@ -61,7 +61,7 @@ export default function Home() {
                             <p className="mb-0">
                                 If you would like to volunteer as a Listener, then you will need to <a href="login">sign in</a> and proceed to the page for Listeners.
                                 On this page you will find some helpful information, a booking calendar and a place where you can chat with other Listeners.
-                            
+
                             </p>
                         </div>
                     </div>
@@ -110,7 +110,7 @@ export default function Home() {
 
                 {/* Banner image */}
                 <div className="text-center mb-4" data-aos="fade-up">
-                    <br/>
+                    <br />
                     <h2 className="h6 h5-md mb-3 fw-semibold ">How do you identify a Chat Seat?</h2>
                     <p className="mb-3">
                         It will have a banner like the one below, at one of our Chat Seats locations.
@@ -118,7 +118,7 @@ export default function Home() {
                     <img
                         src={Seat}
                         alt="Chat Seat Banner"
-                        className="d-block mx-auto img-fluid rounded-3 shadow"
+                        className="d-block mx-auto img-fluid rounded-3 shadow w-100 w-md-auto"
                         style={{ maxWidth: 420 }}
                     />
                 </div>
@@ -135,11 +135,11 @@ export default function Home() {
                             onError={(msg) => setErrorMessage(msg)}
                         />
                     </div>
-                   
+
                 )}
                 {messageSent && (
                     <div className="pm-alert" role="alert">
-                         Message sent! We’ll be in touch soon.
+                        Message sent! We’ll be in touch soon.
                     </div>
                 )}
 

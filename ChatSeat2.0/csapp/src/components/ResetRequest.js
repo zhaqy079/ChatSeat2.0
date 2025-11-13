@@ -56,7 +56,7 @@ export default function ResetRequest() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                             />
-                        </div>  
+                        </div>
 
                         <div className="text-center mt-4">
                             <button
@@ -74,10 +74,14 @@ export default function ResetRequest() {
                                 Back to Login
                             </a>
                         </div>
-                        {message && <p className="mt-4 text-center">{message}</p>}
+                        {message && (
+                            <div className={`alert ${message.startsWith("Error") ? "alert-danger" : "alert-success"} mt-4 text-center`} role="alert">
+                                {message}
+                            </div>
+                        )}
                     </form>
                 </div>
             </div>
-      </div>
+        </div>
     );
 }

@@ -1,6 +1,8 @@
 import AdminSidebar from "../Admin/AdminSidebar";
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "../../supabaseClient";
+import AdminLinks from "./AdminLinks";
+import { useDashboardNav } from "../Shared/useDashboardNav";
 
 // Requests a list of all feedback posts from the database
 export const fetchAllFeedbackPosts = async () => {
@@ -63,6 +65,7 @@ async function deletePost(feedbackID) {
 }
 
 export default function AdminFeedback() {
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
     const [feedbacklist, setFeedbacklist] = useState([]);
     const [searchdata, setSearchdata] = useState(() => {
         return sessionStorage.getItem('feedback') || 'unresolved';
@@ -83,7 +86,7 @@ export default function AdminFeedback() {
             }
         };
 
-        getFeedbackPosts(); 
+        getFeedbackPosts();
     }, []);
 
 
@@ -98,97 +101,130 @@ export default function AdminFeedback() {
 
     return (
 
-        <div className="d-flex  dashboard-page-content" key = "1">
-            {/* Sidebar on the left */}
-            <aside>
-                <AdminSidebar />
-            </aside>
-            {/* Right content area */}
-            <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
-                <div className="flex-grow-1 px-3 px-md-4 py-4" key = "2">
+        <div className="container-fluid px-0">
+            <div className="d-lg-none p-2">
+                <button
+                    className="btn btn-outline-primary btn-lg"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#mobileMenu"
+                    aria-controls="mobileMenu"
+                >
+                    Menu
+                </button>
+            </div>
 
-                    <h2 className="fw-bold dashboard-title fs-3 mb-4">Feedback</h2>
+            <div className="d-flex">
+                {/* Sidebar */}
+                <aside className="px-0 flex-shrink-0">
+                    <AdminSidebar />
+                </aside>
+                {/* Right content area */}
+                <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
+                    <div className="flex-grow-1 px-3 px-md-4 py-4" key="2">
+
+                        <h2 className="fw-bold dashboard-title fs-3 mb-4">Feedback</h2>
 
                         {/* Dropdown menu to refine posts displayed */}
                         <div className="mb-3">
-                        <select
-                            className="form-select fw-semibold mb-2 w-auto "
-                            value={searchdata}
-                            name="feedbackResolved"
-                            onChange={(e) => setSearchdata(e.target.value)}>
-                              <option value="unresolved" >Unresolved</option>
-                              <option value="resolved">Resolved</option>
-                              <option value="all">All Posts</option>
+                            <select
+                                className="form-select fw-semibold mb-2 w-auto "
+                                value={searchdata}
+                                name="feedbackResolved"
+                                onChange={(e) => setSearchdata(e.target.value)}>
+                                <option value="unresolved" >Unresolved</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="all">All Posts</option>
                             </select>
                         </div>
 
                         { // Post display logic, if no posts display special message otherwise display all posts
                             !filteredFeedbackposts.length > 0 ? (
                                 // If no posts are found, show a message
-                            <h5 className="p-4 text-center">
-                                No feedback found.
-                            </h5>
-                        ) : (
+                                <h5 className="p-4 text-center">
+                                    No feedback found.
+                                </h5>
+                            ) : (
                                 <div className="row row-cols-1 row-cols-md-3 g-4">
-                                {filteredFeedbackposts.map((post) => (
-                                    <div key={post.feedback_forum_id} className="col">
-                                        <div className="card h-100 position-relative">
-                                            {post.resolved_at && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-light position-absolute top-0 end-0 m-2"
-                                                    title="Delete this feedback"
-                                                    onClick={() => deletePost(post.feedback_forum_id)}
-                                                >
-                                                    &times;
-                                                </button>
-                                            )}
+                                    {filteredFeedbackposts.map((post) => (
+                                        <div key={post.feedback_forum_id} className="col">
+                                            <div className="card h-100 position-relative">
+                                                {post.resolved_at && (
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-light position-absolute top-0 end-0 m-2"
+                                                        title="Delete this feedback"
+                                                        onClick={() => deletePost(post.feedback_forum_id)}
+                                                    >
+                                                        &times;
+                                                    </button>
+                                                )}
 
-                                            <div className="card-body">
-                                                {/* Main content of a feedback post */}
-                                                <h5 className="card-title text-center">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
-                                                <h6 className="card-subtitle mb-2 text-muted text-center">{post.user_profiles.email}</h6>
-                                                <p className="card-text overflow-auto h-50">{post.content}</p>
-                                            </div>
-                                            <div className="card-footer text-center">
-                                               
+                                                <div className="card-body">
+                                                    {/* Main content of a feedback post */}
+                                                    <h5 className="card-title text-center">{post.user_profiles.first_name} {post.user_profiles.last_name}</h5>
+                                                    <h6 className="card-subtitle mb-2 text-muted text-center">{post.user_profiles.email}</h6>
+                                                    <p className="card-text overflow-auto h-50">{post.content}</p>
+                                                </div>
+                                                <div className="card-footer text-center">
+
                                                     <small className="text-muted text-center">Created: {
-                                                    // Logic to adjust displayed date to '27 Nov 2025' format
-                                                            new Date(post.created_at).toLocaleDateString("en-AU", {
-                                                                year: "numeric",
-                                                                month: "short",
-                                                                day: "numeric",
-                                                            })} </small>
-        
-                                                {/*// Logic to check whether a post has been resolved, if it has display resolve time otherwise display resolve button*/}
+                                                        // Logic to adjust displayed date to '27 Nov 2025' format
+                                                        new Date(post.created_at).toLocaleDateString("en-AU", {
+                                                            year: "numeric",
+                                                            month: "short",
+                                                            day: "numeric",
+                                                        })} </small>
+
+                                                    {/*// Logic to check whether a post has been resolved, if it has display resolve time otherwise display resolve button*/}
                                                     {post.resolved_at === null
-                                                            ? // Placeholder resolve button, back end logic still needs to be added 
-                                                    <div className="row">
-                                                        <button type="button" className="btn btn-success btn-sm px-3 py-1" onClick={() => resolvePost(post.feedback_forum_id)}>Resolve</button>
-                                                            </div>
-                                                        : (
+                                                        ? // Placeholder resolve button, back end logic still needs to be added 
                                                         <div className="row">
-                                                            <small className="text-muted text-center">Resolved: { 
-                                                                // Logic to adjust displayed date to '27 Nov 2025' format
-                                                                    new Date(post.resolved_at).toLocaleDateString("en-AU", {
-                                                                    year: "numeric",
-                                                                    month: "short",
-                                                                    day: "numeric",
-                                                                    })}
-                                                            </small>
-                                                            <button type="button" className="btn btn-outline-danger btn-sm px-3 py-1" onClick={() => unresolvePost(post.feedback_forum_id)}>Unresolve</button>
+                                                            <button type="button" className="btn btn-success btn-sm px-3 py-1" onClick={() => resolvePost(post.feedback_forum_id)}>Resolve</button>
                                                         </div>
+                                                        : (
+                                                            <div className="row">
+                                                                <small className="text-muted text-center">Resolved: {
+                                                                    // Logic to adjust displayed date to '27 Nov 2025' format
+                                                                    new Date(post.resolved_at).toLocaleDateString("en-AU", {
+                                                                        year: "numeric",
+                                                                        month: "short",
+                                                                        day: "numeric",
+                                                                    })}
+                                                                </small>
+                                                                <button type="button" className="btn btn-outline-danger btn-sm px-3 py-1" onClick={() => unresolvePost(post.feedback_forum_id)}>Unresolve</button>
+                                                            </div>
                                                         )}
                                                 </div>
                                             </div>
                                         </div>
-                                    
-                                ))}
-                            </div>
-                        )}
+
+                                    ))}
+                                </div>
+                            )}
                     </div>
                 </div>
             </div>
-       
+            <div
+                className="offcanvas offcanvas-start"
+                id="mobileMenu"
+                tabIndex="-1"
+                aria-labelledby="mobileMenuLabel"
+            >
+                <div className="offcanvas-header">
+                    <h5 id="mobileMenuLabel" className="mb-0">
+                        Hello, {user?.firstName ?? ""}!
+                    </h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div className="offcanvas-body">
+
+                    <AdminLinks
+                        getActiveLink={getActiveLink}
+                        handleLogout={handleLogout}
+                        onItemClick={closeOffcanvas}
+                    />
+                </div>
+            </div>
+        </div>
     );
 }

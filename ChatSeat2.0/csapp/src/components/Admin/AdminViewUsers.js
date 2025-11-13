@@ -1,7 +1,9 @@
 import AdminSidebar from "./AdminSidebar";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { supabase } from "../../supabaseClient";
+import AdminLinks from "./AdminLinks";
+import { useDashboardNav } from "../Shared/useDashboardNav";
 
 // Requests a list of all users from the database
 export const fetchAllUsers = async () => {
@@ -22,11 +24,11 @@ async function approveUser(newuserID, approverID) {
     const { error: profileError } = await supabase.from("user_profiles").update({
         approved_by: approverID,
         role: "listener"
-         }).eq('profile_id', newuserID);
+    }).eq('profile_id', newuserID);
 
-        if (profileError) {
-            throw new Error("Failed to approve user: " + profileError.message);
-        }
+    if (profileError) {
+        throw new Error("Failed to approve user: " + profileError.message);
+    }
 
     window.location.reload();
 }
@@ -100,18 +102,19 @@ function UserTable({ userlist, currentuser, searchrole }) {
                             <td>
                                 {/* Displays a variety of different buttons depending on whether the user is an admin or currently active/inactive */}
                                 {user_approver === null ? <button type="button" className="btn btn-success" onClick={() => approveUser(user.profile_id, currentuser.id)}>Approve</button>
-                                : <>
-                                    <a href={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</a>
-                                    {user.inactive_at === null ? (
-                                        <button type="button" className="btn btn-warning me-2" onClick={() => deactivateUser(user.profile_id) }>Deactivate</button>
-                                    ) : (
-                                        <button type="button" className="btn btn-info me-2" onClick={() => reactivateUser(user.profile_id) }>Reactivate</button>
-                                    )}
-                                </>
+                                    : <>
+                                        <a href={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</a>
+                                        {user.inactive_at === null ? (
+                                            <button type="button" className="btn btn-warning me-2" onClick={() => deactivateUser(user.profile_id)}>Deactivate</button>
+                                        ) : (
+                                            <button type="button" className="btn btn-info me-2" onClick={() => reactivateUser(user.profile_id)}>Reactivate</button>
+                                        )}
+                                    </>
                                 }
                             </td>
                         </tr>
-                ) : null})}
+                    ) : null
+                })}
             </tbody>
         </table>
     )
@@ -138,12 +141,13 @@ function coordinatorTable(userlist) {
                             <td className="p-3">{user.email}</td>
                             <td className="p-3">{user.phone}</td>
                             <td className="p-3">
-                                {user.coordinator_profiles.map((coord_profile) => { 
+                                {user.coordinator_profiles.map((coord_profile) => {
                                     return (
                                         <div key={coord_profile.location_id} className="row">{coord_profile.venue_locations.location_name}</div>
-                                )})}
+                                    )
+                                })}
                             </td>
-                            
+
 
                             <td className="p-3">
                                 { // Changes incoming date format to '27 Nov 2025' format
@@ -169,7 +173,8 @@ function coordinatorTable(userlist) {
                                 </>
                             </td>
                         </tr>
-                ) : null })}
+                    ) : null
+                })}
             </tbody>
         </table>
     )
@@ -192,7 +197,7 @@ function adminTable(userlist) {
                 {userlist.map((user) => {
                     // Finds the approved user from their id
                     const admin_approver = (user.admin_profiles !== null ? userlist.find(u => u.profile_id === user.admin_profiles.approved_by) : null)
-                    
+
 
                     return user.role === "admin" ? (
                         <tr key={user.profile_id} className="border-t">
@@ -222,7 +227,7 @@ function adminTable(userlist) {
                                     )}
                                 </>
                             </td>
-                        </tr>) : null; 
+                        </tr>) : null;
                 })}
             </tbody>
         </table>
@@ -230,7 +235,7 @@ function adminTable(userlist) {
 }
 
 export default function AdminViewUsers() {
-    const user = useSelector((state) => state.loggedInUser?.success);
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
     const [userlist, setUserlist] = useState([]);
     const [searchrole, setSearchrole] = useState(() => {
         return sessionStorage.getItem('role') || 'pending';
@@ -251,7 +256,7 @@ export default function AdminViewUsers() {
             }
         };
 
-        getUsers(); 
+        getUsers();
     }, []);
 
     // Filters users according to their role
@@ -261,24 +266,37 @@ export default function AdminViewUsers() {
                 ? true : (searchrole === "coordinator" ? user.coordinator_profiles.length > 0 : user.role === searchrole)
         ))).length;
 
-    
+
 
     return (
-        <div className="d-flex dashboard-page-content ">
-            {/* Sidebar on the left */}
-            <aside>
-                <AdminSidebar />
-            </aside>
-            {/* Right content area */}
-            <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
-                <div className="flex-grow-1 px-3 px-md-4 py-4">
+        <div className="container-fluid px-0">
+            <div className="d-lg-none p-2">
+                <button
+                    className="btn btn-outline-primary btn-lg"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#mobileMenu"
+                    aria-controls="mobileMenu"
+                >
+                    Menu
+                </button>
+            </div>
 
-                    <h2 className="fw-bold dashboard-title fs-3 mb-4">View All Users</h2>
+            <div className="d-flex">
+                {/* Sidebar */}
+                <aside className="px-0 flex-shrink-0">
+                    <AdminSidebar />
+                </aside>
+
+                {/* Right content area */}
+                <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
+                    <div className="flex-grow-1 px-3 px-md-4 py-4">
+
+                        <h2 className="fw-bold dashboard-title fs-3 mb-4">View All Users</h2>
 
                         {/* Dropdown menu to refine the displayed users */}
                         <div className="mb-3">
-                        <select className="form-select fw-semibold mb-2 w-auto"
-                            value={searchrole}
+                            <select className="form-select fw-semibold mb-2 w-auto"
+                                value={searchrole}
                                 name="roles"
                                 onChange={(e) => setSearchrole(e.target.value)}>
                                 <option value="pending">Pending Users</option>
@@ -288,22 +306,43 @@ export default function AdminViewUsers() {
                                 <option value="all">All Users</option>
                             </select>
                         </div>
-                    
+
                         { // User display logic, if no users display message otherwise display users and their details 
                             !filtereduserListLength > 0 ? (
-                            // If no users are found for the selected role, show a message
-                            <h5 className="text-center">
-                                No {searchrole} users found.
-                            </h5>
+                                // If no users are found for the selected role, show a message
+                                <h5 className="text-center">
+                                    No {searchrole} users found.
+                                </h5>
                             ) : ((
                                 searchrole === "admin"
                                     ? adminTable(userlist)
                                     : (searchrole === "coordinator" ? coordinatorTable(userlist)
-                                        : <UserTable userlist={ userlist } currentuser={ user } searchrole={ searchrole } />
-                                )))}
+                                        : <UserTable userlist={userlist} currentuser={user} searchrole={searchrole} />
+                                    )))}
                     </div>
                 </div>
             </div>
-        
+            <div
+                className="offcanvas offcanvas-start"
+                id="mobileMenu"
+                tabIndex="-1"
+                aria-labelledby="mobileMenuLabel"
+            >
+                <div className="offcanvas-header">
+                    <h5 id="mobileMenuLabel" className="mb-0">
+                        Hello, {user?.firstName ?? ""}!
+                    </h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div className="offcanvas-body">
+
+                    <AdminLinks
+                        getActiveLink={getActiveLink}
+                        handleLogout={handleLogout}
+                        onItemClick={closeOffcanvas}
+                    />
+                </div>
+            </div>
+        </div>
     );
 }
