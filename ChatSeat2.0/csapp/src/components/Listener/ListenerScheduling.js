@@ -7,7 +7,7 @@ import { supabase } from "../../supabaseClient";
 import userIcon from "../../assets/icons/icons8-user-48.png";
 
 import ListenerLinks from "./ListenerLinks";
-import { useListenerNav } from "./useListenerNav";
+import { useDashboardNav } from "../Shared/useDashboardNav";
 
 
 export default function ListenerScheduling() {
@@ -17,7 +17,7 @@ export default function ListenerScheduling() {
     const [selectedLocation, setSelectedLocation] = useState("");
     const [showEventPopup, setShowEventPopup] = useState(false);
     const [clickedEvent, setClickedEvent] = useState(null);
-    const { user, getActiveLink, handleLogout, closeOffcanvas } = useListenerNav();
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
 
     useEffect(() => {
         fetchBookings();
@@ -216,19 +216,19 @@ export default function ListenerScheduling() {
     };
 
     return (
-        <div className="d-flex dashboard-page-scheduling">
+        <div className="container-fluid px-0">
             <div className="d-lg-none p-2">
                 <button
                     className="btn btn-outline-primary btn-lg"
                     data-bs-toggle="offcanvas"
-                    data-bs-target="#listenerMobileMenu"
-                    aria-controls="listenerMobileMenu"
+                    data-bs-target="#mobileMenu"
+                    aria-controls="mobileMenu"
                 >
                     Menu
                 </button>
             </div>
 
-            <div className="d-flex">
+            <div className="d-flex dashboard-page-scheduling">
                 {/* Sidebar */}
                 <aside className="px-0 flex-shrink-0">
                     <ListenerSideBar />
@@ -425,9 +425,9 @@ export default function ListenerScheduling() {
             </div>
             <div
                 className="offcanvas offcanvas-start"
+                id="mobileMenu"
                 tabIndex="-1"
-                id="listenerMobileMenu"
-                aria-labelledby="listenerMobileMenuLabel"
+                aria-labelledby="mobileMenuLabel"
             >
                 <div className="offcanvas-header">
                     <h5 id="listenerMobileMenuLabel" className="mb-0">

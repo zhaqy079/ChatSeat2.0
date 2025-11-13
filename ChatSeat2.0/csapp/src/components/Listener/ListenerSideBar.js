@@ -1,9 +1,9 @@
 ﻿import ListenerLinks from "./ListenerLinks";
-import { useListenerNav } from "./useListenerNav";
+import { useDashboardNav } from "../Shared/useDashboardNav";
 
 export default function ListenerSidebar() {
     const { user, getActiveLink, handleLogout
-    } = useListenerNav();
+    } = useDashboardNav();
 
     return (
         <div className="dashboard-sidebar d-none d-lg-block">

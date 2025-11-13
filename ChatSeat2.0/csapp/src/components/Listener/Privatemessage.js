@@ -2,7 +2,7 @@
 import { supabase } from "../../supabaseClient";
 import ListenerSideBar from "./ListenerSideBar";
 import ListenerLinks from "./ListenerLinks";
-import { useListenerNav } from "./useListenerNav";
+import { useDashboardNav } from "../Shared/useDashboardNav";
 
 // Refenrence: https://www.youtube.com/watch?v=btZII7TXlhk
 
@@ -11,7 +11,7 @@ export default function PrivateMessage() {
     const [replyFor, setReplyFor] = useState(null);
     const [loading, setLoading] = useState(false);
     const [loadingInbox, setLoadingInbox] = useState(false);
-    const { user, getActiveLink, handleLogout, closeOffcanvas } = useListenerNav();
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
 
 
     async function load() {
@@ -80,13 +80,13 @@ export default function PrivateMessage() {
     }
 
     return (
-        <div className="d-flex flex-row dashboard-page-content">
+        <div className="container-fluid px-0">
             <div className="d-lg-none p-2">
                 <button
                     className="btn btn-outline-primary btn-lg"
                     data-bs-toggle="offcanvas"
-                    data-bs-target="#listenerMobileMenu"
-                    aria-controls="listenerMobileMenu"
+                    data-bs-target="#mobileMenu"
+                    aria-controls="mobileMenu"
                 >
                     Menu
                 </button>
@@ -156,9 +156,9 @@ export default function PrivateMessage() {
             </div>
             <div
                 className="offcanvas offcanvas-start"
+                id="mobileMenu"
                 tabIndex="-1"
-                id="listenerMobileMenu"
-                aria-labelledby="listenerMobileMenuLabel"
+                aria-labelledby="mobileMenuLabel"
             >
                 <div className="offcanvas-header">
                     <h5 id="listenerMobileMenuLabel" className="mb-0">

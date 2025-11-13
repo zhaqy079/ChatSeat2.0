@@ -2,10 +2,10 @@
 import ListenerSideBar from "./ListenerSideBar";
 import SubmitFeedback from "../Shared/SubmitFeedback";
 import ListenerLinks from "./ListenerLinks";
-import { useListenerNav } from "./useListenerNav";
+import { useDashboardNav } from "../Shared/useDashboardNav";
 
 export default function ListenerFeedback() {
-    const { user, getActiveLink, handleLogout, closeOffcanvas } = useListenerNav();
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
 
     return (
         <div className="container-fluid px-0">
@@ -13,8 +13,8 @@ export default function ListenerFeedback() {
                 <button
                     className="btn btn-outline-primary btn-lg"
                     data-bs-toggle="offcanvas"
-                    data-bs-target="#listenerMobileMenu"
-                    aria-controls="listenerMobileMenu"
+                    data-bs-target="#mobileMenu"
+                    aria-controls="mobileMenu"
                 >
                     Menu
                 </button>
@@ -32,9 +32,9 @@ export default function ListenerFeedback() {
             </div>
             <div
                 className="offcanvas offcanvas-start"
+                id="mobileMenu"
                 tabIndex="-1"
-                id="listenerMobileMenu"
-                aria-labelledby="listenerMobileMenuLabel"
+                aria-labelledby="mobileMenuLabel"
             >
                 <div className="offcanvas-header">
                     <h5 id="listenerMobileMenuLabel" className="mb-0">

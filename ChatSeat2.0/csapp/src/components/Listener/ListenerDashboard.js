@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { useEffect, useState } from "react";
 import ListenerLinks from "./ListenerLinks";
-import { useListenerNav } from "./useListenerNav";
+import { useDashboardNav } from "../Shared/useDashboardNav";
 
 
 export default function ListenerDashboard() {
-    const { user, getActiveLink, handleLogout, closeOffcanvas } = useListenerNav();
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
     const [resources, setResources] = useState([]);
 
 
@@ -33,8 +33,8 @@ export default function ListenerDashboard() {
                 <button
                     className="btn btn-outline-primary btn-lg"
                     data-bs-toggle="offcanvas"
-                    data-bs-target="#listenerMobileMenu"
-                    aria-controls="listenerMobileMenu"
+                    data-bs-target="#mobileMenu"
+                    aria-controls="mobileMenu"
                 >
                     Menu
                 </button>
@@ -123,9 +123,9 @@ export default function ListenerDashboard() {
             </div>
             <div
                 className="offcanvas offcanvas-start"
+                id="mobileMenu"
                 tabIndex="-1"
-                id="listenerMobileMenu"
-                aria-labelledby="listenerMobileMenuLabel"
+                aria-labelledby="mobileMenuLabel"
             >
                 <div className="offcanvas-header">
                     <h5 id="listenerMobileMenuLabel" className="mb-0">
