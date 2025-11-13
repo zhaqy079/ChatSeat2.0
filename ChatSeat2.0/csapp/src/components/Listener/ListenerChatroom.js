@@ -1,5 +1,4 @@
-﻿import { useSelector } from "react-redux";
-import UserGeneralForum from "../Shared/UserGeneralForum";
+﻿import UserGeneralForum from "../Shared/UserGeneralForum";
 import ListenerSideBar from "./ListenerSideBar";
 import ListenerLinks from "./ListenerLinks";
 import { useDashboardNav } from "../Shared/useDashboardNav";
@@ -37,7 +36,7 @@ export default function ListenerChatroom() {
                 aria-labelledby="mobileMenuLabel"
             >
                 <div className="offcanvas-header">
-                    <h5 id="listenerMobileMenuLabel" className="mb-0">
+                    <h5 id="mobileMenuLabel" className="mb-0">
                         Hello, {user?.firstName ?? ""}!
                     </h5>
                     <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>

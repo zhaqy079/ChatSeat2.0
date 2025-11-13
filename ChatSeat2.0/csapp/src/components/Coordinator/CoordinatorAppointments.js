@@ -1,9 +1,11 @@
 ﻿import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import CoordinatorSidebar from "./CoordinatorSidebar";
 import { supabase } from "../../supabaseClient";
 import editIcon from "../../assets/icons/icons8-edit-48.png";
 import userIcon from "../../assets/icons/icons8-user-48.png";
+import CoordinatorLinks from "./CoordinatorLinks";
+import { useDashboardNav } from "../Shared/useDashboardNav";
+
 
 
 
@@ -13,6 +15,7 @@ export default function CoordinatorAppointments() {
     const [editModal, setEditModal] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [locations, setLocations] = useState([]);
+    const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -178,124 +181,159 @@ export default function CoordinatorAppointments() {
     };
 
     return (
-        <div className="d-flex dashboard-page-scheduling">
-            <aside>
-                <CoordinatorSidebar />
-            </aside>
-            <main className="flex-grow-1 p-4">
-                <h2 className="fw-bold dashboard-title fs-3 mb-4">Manage Upcoming Bookings</h2>
-                <div className="row g-3">
-                    {appointments.length === 0 ? (
-                        <p>No upcoming bookings found.</p>
-                    ) : (
-                        appointments.map((appointment) => (
-                            <div key={appointment.id} className="col-sm-6 col-md-4 col-lg-3">
-                                <div className="card shadow-sm border-0 h-100">
-                                    <div className="card-body position-relative">
-                                        {/*className="btn btn-sm position-absolute top-0 end-0 text-secondary"*/}
-                                        <button
-                                            onClick={() => toggleDropdown(appointment.id)}
-                                            className="btn btn-sm position-absolute top-0 end-0 text-secondary d-flex flex-column align-items-center"
-                                            style={{ lineHeight: "1", gap: "2px" }}
-                                        >
-                                            <img src={editIcon} alt="Edit at here" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
-                                            <small className="text-muted" style={{ fontSize: "0.75rem" }}>
-                                                Edit
-                                            </small>
-                                        </button>
+        <div className="container-fluid px-0">
+            <div className="d-lg-none p-2">
+                <button
+                    className="btn btn-outline-primary btn-lg"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#mobileMenu"
+                    aria-controls="mobileMenu"
+                >
+                    Menu
+                </button>
+            </div>
 
-                                        {openDropdown === appointment.id && (
-                                            <div className="dropdown-menu show end-0 mt-3 shadow-sm">
-                                                <button className="dropdown-item text-primary" onClick={() => handleEdit(appointment)}>Edit</button>
-                                                <button className="dropdown-item text-danger" onClick={() => handleDelete(appointment.id)}>Delete</button>
-                                            </div>
-                                        )}
+            <div className="d-flex dashboard-page-scheduling">
+                {/* Sidebar */}
+                <aside className="px-0 flex-shrink-0">
+                    <CoordinatorSidebar />
+                </aside>
+                <main className="flex-grow-1 p-4">
+                    <h2 className="fw-bold dashboard-title fs-3 mb-4">Manage Upcoming Bookings</h2>
+                    <div className="row g-3">
+                        {appointments.length === 0 ? (
+                            <p>No upcoming bookings found.</p>
+                        ) : (
+                            appointments.map((appointment) => (
+                                <div key={appointment.id} className="col-sm-6 col-md-4 col-lg-3">
+                                    <div className="card shadow-sm border-0 h-100">
+                                        <div className="card-body position-relative">
+                                            {/*className="btn btn-sm position-absolute top-0 end-0 text-secondary"*/}
+                                            <button
+                                                onClick={() => toggleDropdown(appointment.id)}
+                                                className="btn btn-sm position-absolute top-0 end-0 text-secondary d-flex flex-column align-items-center"
+                                                style={{ lineHeight: "1", gap: "2px" }}
+                                            >
+                                                <img src={editIcon} alt="Edit at here" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />
+                                                <small className="text-muted" style={{ fontSize: "0.75rem" }}>
+                                                    Edit
+                                                </small>
+                                            </button>
 
-                                        <h5 className="card-title fw-bold text-dark">{appointment.location}</h5>
-
-                                        {/*<p className="mb-1">*/}
-                                        {/*    <strong>Booked Users:</strong>{" "}*/}
-                                        {/*    {(appointment.bookedUsers || ["Unassigned"]).join(", ")}*/}
-                                        {/*</p>*/}
-
-
-                                        <p className="mb-1"><strong>Time:</strong> {appointment.time} am</p>
-                                        <p className="mb-1"><strong>Date:</strong> {new Date(appointment.date).toLocaleDateString()}</p>
-                                        <p className="mb-1"><strong>Booked Users:</strong></p>
-                                        <div className="ms-2">
-                                            {(appointment.bookedUsers && appointment.bookedUsers.length > 0
-                                                ? appointment.bookedUsers
-                                                : ["Unassigned"]
-                                            ).map((user, index) => (
-                                                <div key={index} className="text-dark">
-                                                    <img src={userIcon} alt="Edit at here" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />   {user}
+                                            {openDropdown === appointment.id && (
+                                                <div className="dropdown-menu show end-0 mt-3 shadow-sm">
+                                                    <button className="dropdown-item text-primary" onClick={() => handleEdit(appointment)}>Edit</button>
+                                                    <button className="dropdown-item text-danger" onClick={() => handleDelete(appointment.id)}>Delete</button>
                                                 </div>
-                                            ))}
+                                            )}
+
+                                            <h5 className="card-title fw-bold text-dark">{appointment.location}</h5>
+
+                                            {/*<p className="mb-1">*/}
+                                            {/*    <strong>Booked Users:</strong>{" "}*/}
+                                            {/*    {(appointment.bookedUsers || ["Unassigned"]).join(", ")}*/}
+                                            {/*</p>*/}
+
+
+                                            <p className="mb-1"><strong>Time:</strong> {appointment.time} am</p>
+                                            <p className="mb-1"><strong>Date:</strong> {new Date(appointment.date).toLocaleDateString()}</p>
+                                            <p className="mb-1"><strong>Booked Users:</strong></p>
+                                            <div className="ms-2">
+                                                {(appointment.bookedUsers && appointment.bookedUsers.length > 0
+                                                    ? appointment.bookedUsers
+                                                    : ["Unassigned"]
+                                                ).map((user, index) => (
+                                                    <div key={index} className="text-dark">
+                                                        <img src={userIcon} alt="Edit at here" className="icon" style={{ width: 24, height: 24 }} aria-hidden="true" />   {user}
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))
-                    )}
-                </div>
+                            ))
+                        )}
+                    </div>
 
-                {/* Edit Modal */}
-                {editModal && selectedBooking && (
-                    <div className="modal d-block">
-                        <div className="modal-dialog">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title">Edit Booking</h5>
-                                    <button type="button" className="btn-close" onClick={() => setEditModal(false)}></button>
-                                </div>
-                                <div className="modal-body">
-                                    <div className="mb-3">
-                                        <label className="form-label">Start Time</label>
-                                        <input type="time" className="form-control"
-                                            name="setStartTime"
-                                            value={selectedBooking.startTime || ""}
-                                            onChange={e => setSelectedBooking({ ...selectedBooking, startTime: e.target.value })} />
+                    {/* Edit Modal */}
+                    {editModal && selectedBooking && (
+                        <div className="modal d-block">
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title">Edit Booking</h5>
+                                        <button type="button" className="btn-close" onClick={() => setEditModal(false)}></button>
                                     </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">End Time</label>
-                                        <input type="time" className="form-control"
-                                            name="setEndTime"
-                                            value={selectedBooking.endTime || ""}
-                                            onChange={e => setSelectedBooking({ ...selectedBooking, endTime: e.target.value })} />
+                                    <div className="modal-body">
+                                        <div className="mb-3">
+                                            <label className="form-label">Start Time</label>
+                                            <input type="time" className="form-control"
+                                                name="setStartTime"
+                                                value={selectedBooking.startTime || ""}
+                                                onChange={e => setSelectedBooking({ ...selectedBooking, startTime: e.target.value })} />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label">End Time</label>
+                                            <input type="time" className="form-control"
+                                                name="setEndTime"
+                                                value={selectedBooking.endTime || ""}
+                                                onChange={e => setSelectedBooking({ ...selectedBooking, endTime: e.target.value })} />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label">Date</label>
+                                            <input type="date" className="form-control"
+                                                name="setDate"
+                                                value={selectedBooking.date || ""}
+                                                onChange={e => setSelectedBooking({ ...selectedBooking, date: e.target.value })} />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label className="form-label">Location</label>
+                                            <select className="form-control"
+                                                name="locationInfo"
+                                                value={selectedBooking.location_id || ""}
+                                                onChange={e => setSelectedBooking({
+                                                    ...selectedBooking,
+                                                    location_id: e.target.value,
+                                                    location: locations.find(l => l.location_id === e.target.value)?.location_name || ''
+                                                })}>
+                                                <option value="">Select Location</option>
+                                                {locations.map(loc => (
+                                                    <option key={loc.location_id} value={loc.location_id}>{loc.location_name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Date</label>
-                                        <input type="date" className="form-control"
-                                            name="setDate"
-                                            value={selectedBooking.date || ""}
-                                            onChange={e => setSelectedBooking({ ...selectedBooking, date: e.target.value })} />
+                                    <div className="modal-footer">
+                                        <button className="btn btn-secondary" onClick={() => setEditModal(false)}>Cancel</button>
+                                        <button className="btn btn-primary" onClick={handleSave}>Save</button>
                                     </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Location</label>
-                                        <select className="form-control"
-                                            name="locationInfo"
-                                            value={selectedBooking.location_id || ""}
-                                            onChange={e => setSelectedBooking({
-                                                ...selectedBooking,
-                                                location_id: e.target.value,
-                                                location: locations.find(l => l.location_id === e.target.value)?.location_name || ''
-                                            })}>
-                                            <option value="">Select Location</option>
-                                            {locations.map(loc => (
-                                                <option key={loc.location_id} value={loc.location_id}>{loc.location_name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="modal-footer">
-                                    <button className="btn btn-secondary" onClick={() => setEditModal(false)}>Cancel</button>
-                                    <button className="btn btn-primary" onClick={handleSave}>Save</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
-            </main>
+                    )}
+                </main>
+            </div>
+            <div
+                className="offcanvas offcanvas-start"
+                id="mobileMenu"
+                tabIndex="-1"
+                aria-labelledby="mobileMenuLabel"
+            >
+                <div className="offcanvas-header">
+                    <h5 id="mobileMenuLabel" className="mb-0">
+                        Hello, {user?.firstName ?? ""}!
+                    </h5>
+                    <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div className="offcanvas-body">
+
+                    <CoordinatorLinks
+                        getActiveLink={getActiveLink}
+                        handleLogout={handleLogout}
+                        onItemClick={closeOffcanvas}
+                    />
+                </div>
+            </div>
         </div>
     );
 }

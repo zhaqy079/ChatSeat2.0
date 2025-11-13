@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../../supabaseClient";
 import { logoutUser } from "../../state/loggedInUser";
+import { useEffect } from "react";
 
 export function useDashboardNav() {
   const location = useLocation();
@@ -22,10 +23,24 @@ export function useDashboardNav() {
 
   const closeOffcanvas = () => {
     const el = document.getElementById("mobileMenu");
-    if (!el) return;
-    const inst = window.bootstrap?.Offcanvas.getInstance(el);
-    if (inst) inst.hide();
+    if (el) {
+      const inst = window.bootstrap?.Offcanvas.getInstance(el);
+      if (inst) inst.hide();
+    }
+    document.body.style.overflow = "";
+    document.body.classList.remove("offcanvas-backdrop", "offcanvas-open");
   };
+
+  useEffect(() => {
+    const el = document.getElementById("mobileMenu");
+    if (el) {
+      const inst = window.bootstrap?.Offcanvas.getInstance(el);
+      if (inst) inst.hide();
+    }
+    document.body.style.overflow = "";
+    document.body.classList.remove("offcanvas-backdrop", "offcanvas-open");
+  }, [location.pathname]);
+
 
   return {
     user,

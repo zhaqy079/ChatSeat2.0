@@ -78,7 +78,7 @@ export default function CoordinatorsListInListener() {
                 aria-labelledby="mobileMenuLabel"
             >
                 <div className="offcanvas-header">
-                    <h5 id="listenerMobileMenuLabel" className="mb-0">
+                    <h5 id="mobileMenuLabel" className="mb-0">
                         Hello, {user?.firstName ?? ""}!
                     </h5>
                     <button

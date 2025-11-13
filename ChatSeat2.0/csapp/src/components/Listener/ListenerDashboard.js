@@ -1,5 +1,4 @@
-﻿import { useSelector } from "react-redux";
-import ListenerSideBar from "./ListenerSideBar";
+﻿import ListenerSideBar from "./ListenerSideBar";
 import { Link } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { useEffect, useState } from "react";
@@ -128,7 +127,7 @@ export default function ListenerDashboard() {
                 aria-labelledby="mobileMenuLabel"
             >
                 <div className="offcanvas-header">
-                    <h5 id="listenerMobileMenuLabel" className="mb-0">
+                    <h5 id="mobileMenuLabel" className="mb-0">
                         Hello, {user?.firstName ?? ""}!
                     </h5>
                     <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
