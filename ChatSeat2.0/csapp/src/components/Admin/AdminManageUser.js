@@ -23,6 +23,7 @@ export const fetchUser = async (userID) => {
 export const fetchLocations = async () => {
     const { data, error } = await supabase.from("venue_locations")
         .select("*")
+        .neq("location_id", "9d33163b-a3b0-4cd0-809f-e5c487936cde")
         .order('location_name', { ascending: true });
 
     if (error) {

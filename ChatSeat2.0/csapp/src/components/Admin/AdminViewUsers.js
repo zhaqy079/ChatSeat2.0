@@ -1,6 +1,6 @@
 import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import AdminLinks from "./AdminLinks";
 import { useDashboardNav } from "../Shared/useDashboardNav";
@@ -103,7 +103,7 @@ function UserTable({ userlist, currentuser, searchrole }) {
                                 {/* Displays a variety of different buttons depending on whether the user is an admin or currently active/inactive */}
                                 {user_approver === null ? <button type="button" className="btn btn-success" onClick={() => approveUser(user.profile_id, currentuser.id)}>Approve</button>
                                     : <>
-                                        <a href={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</a>
+                                        <Link to={"/manageUser/" + user.profile_id} className="btn btn-secondary me-2">Manage</Link>
                                         {user.inactive_at === null ? (
                                             <button type="button" className="btn btn-warning me-2" onClick={() => deactivateUser(user.profile_id)}>Deactivate</button>
                                         ) : (
