@@ -1,33 +1,36 @@
-﻿import { useState } from "react";
+﻿import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
 export default function ResetRequest() {
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
     const [cooldown, setCooldown] = useState(0);
-
+    const [isSending, setIsSending] = useState(false);
 
     // Function to handle password reset request
     const handleResetRequest = async (e) => {
         e.preventDefault();
-        if (cooldown > 0) return;
+        if (cooldown > 0 || isSending) return;
 
-        document.getElementById("resetSubmit").disabled = true;
+        setIsSending(true);
+        setMessage("");
 
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: "https://chatseats.com.au/reset-password",
         });
 
-        setMessage(
-            error
-                ? "Error: " + error.message
-                : "Password reset link sent to your email."
-        );
+        if (error) {
+            setMessage("Error: " + error.message);
+        } else {
+            setMessage("Password reset link sent to your email.");
+            
+            setCooldown(120);
+        }
 
-        document.getElementById("resetSubmit").disabled = false;
+        setIsSending(false);
     };
 
-    useState(() => {
+    useEffect(() => {
         if (!cooldown) return;
         const t = setInterval(() => setCooldown((c) => (c > 0 ? c - 1 : 0)), 1000);
         return () => clearInterval(t);
@@ -63,9 +66,13 @@ export default function ResetRequest() {
                                 type="submit"
                                 className="btn w-100 fw-bold text-white login-btn"
                                 id="resetSubmit"
-                                disabled={cooldown > 0}
+                                disabled={cooldown > 0 || isSending}
                             >
-                                {cooldown > 0 ? `Resend in ${cooldown}s` : "Send Reset Link"}
+                                {isSending
+                                    ? "Sending..."
+                                    : cooldown > 0
+                                        ? `Resend in ${cooldown}s`
+                                        : "Send Reset Link"}
                             </button>
                         </div>
 
