@@ -92,16 +92,25 @@ export default function UserGeneralForum() {
             return children.reduce((acc, cid) => acc.concat(collectIds(cid, all)), [id]);
         };
         const idsToRemove = collectIds(post_id, posts);
-        setPosts((prev) => prev.filter((p) => !idsToRemove.includes(p.general_forum_id)));
 
-        // Deletes primary message
         try {
-            await supabase.from("general_forum").delete().eq("reply_to", post_id);
-            await supabase.from("general_forum").delete().eq("general_forum_id", post_id);
+            const { error } = await supabase
+                .from("general_forum")
+                .delete()
+                .in("general_forum_id", idsToRemove);
+
+            if (error) {
+                console.error("Failed to delete posts: ", error);
+                alert("Failed to delete post. Please try again.");
+                return;
+            }
+
+            setPosts((prev) =>
+                prev.filter((p) => !idsToRemove.includes(p.general_forum_id))
+            );
         } catch (e) {
             console.error(e);
-            
-           window.location.reload();
+            alert("Failed to delete post. Please try again.");
         }
     };
 
@@ -162,7 +171,7 @@ export default function UserGeneralForum() {
                             Reply
                         </button>
 
-                        {user?.role === "admin" || user.id === post.user_profiles.profile_id ? (
+                        {user?.role === "admin" ? (
                             <button
                                 type="button"
                                 className="pm-btn-delete me-2"
@@ -180,7 +189,6 @@ export default function UserGeneralForum() {
                             e.preventDefault();
 
                             const message = replyRef.current?.value;
-                            const reply = post.general_forum_id;
                             await createPost({ title: null, message, reply: post.general_forum_id });
                         }}>
                             <textarea

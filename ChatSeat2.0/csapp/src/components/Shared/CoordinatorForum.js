@@ -27,17 +27,17 @@ export default function CoordinatorForum() {
     const postRef = useRef(null);
 
     // Stores the list of coord forum posts from the database
-    useEffect(() => {
-        const getCoordForumPosts = async () => {
-            try {
-                const data = await fetchAllCoordForumPosts();
-                setCoordforumlist(data);
-            } catch (err) {
-                console.error("Error fetching coordinator forum posts:", err);
-            }
-        };
+    const refreshCoordForum = async () => {
+        try {
+            const data = await fetchAllCoordForumPosts();
+            setCoordforumlist(data || []);
+        } catch (err) {
+            console.error("Error fetching coordinator forum posts:", err);
+        }
+    };
 
-        getCoordForumPosts();
+    useEffect(() => {
+        refreshCoordForum();
     }, []);
 
 
@@ -47,34 +47,67 @@ export default function CoordinatorForum() {
             return;
         }
 
-        const { error } = await supabase
-            .from('coordinator_forum')
-            .insert({
-                coordinator_id: user.id,
-                content: message,
-                reply_to: reply
-            });
-        
-        window.location.reload();
-    }
+        try {
+            const { error } = await supabase
+                .from("coordinator_forum")
+                .insert({
+                    coordinator_id: user.id,
+                    content: message,
+                    reply_to: reply
+                })
+                .select(); 
+
+            if (error) throw error;
+            await refreshCoordForum();
+
+            if (reply) {
+                setActivePostId(null);
+                if (replyRef.current) replyRef.current.value = "";
+            } else {
+                if (postRef.current) postRef.current.value = "";
+            }
+
+        } catch (err) {
+            console.error("Failed to create post:", err.message);
+            alert("Post failed. Please try again.");
+        }
+    };
+
 
     const deletePost = async (post_id) => {
-        // Deletes the messages replies
-        const post_replies = coordforumlist.filter(p => p.reply_to === post_id);
-        {
-            post_replies.map(reply => (
-                deletePost(reply.coord_forum_id)
-            ))
+        const ok = window.confirm("Are you sure want to delete this message?");
+        if (!ok) return;
+
+        const findAllChildren = (id, posts) => {
+            const directReplies = posts.filter(p => p.reply_to === id);
+            const all = [...directReplies];
+            directReplies.forEach(r => {
+                all.push(...findAllChildren(r.coord_forum_id, posts));
+            });
+            return all;
+        };
+
+        const allToDelete = findAllChildren(post_id, coordforumlist);
+        const allIds = [post_id, ...allToDelete.map(p => p.coord_forum_id)];
+
+        try {
+            const { error } = await supabase
+                .from("coordinator_forum")
+                .delete()
+                .in("coord_forum_id", allIds);
+
+            if (error) throw error;
+
+            
+            setCoordforumlist(prev =>
+                prev.filter(p => !allIds.includes(p.coord_forum_id))
+            );
+
+        } catch (err) {
+            console.error("Failed to delete message:", err.message);
+            alert("Delete failed. Please try again.");
         }
-
-        // Deletes primary message
-        const { error } = await supabase
-            .from('coordinator_forum')
-            .delete()
-            .eq('coord_forum_id', post_id);
-
-        window.location.reload();
-    }
+    };
 
 
     // Links posts with their replies

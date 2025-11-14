@@ -1,5 +1,5 @@
 import AdminSidebar from "../Admin/AdminSidebar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect} from "react";
 import { supabase } from "../../supabaseClient";
 import AdminLinks from "./AdminLinks";
 import { useDashboardNav } from "../Shared/useDashboardNav";
@@ -17,78 +17,104 @@ export const fetchAllFeedbackPosts = async () => {
     return data;
 };
 
-// Function call to resolve a post
-async function resolvePost(feedbackID) {
-    const { error: profileError } = await supabase.from("feedback_forum").update(
-        {
-            resolved_at: new Date()
-        }
-    ).eq('feedback_forum_id', feedbackID);
-
-    if (profileError) {
-        throw new Error("Failed to resolve post: " + profileError.message);
-    }
-
-    window.location.reload();
-}
-
-// Function call to unresolve a post
-async function unresolvePost(feedbackID) {
-    const { error: profileError } = await supabase.from("feedback_forum").update(
-        {
-            resolved_at: null
-        }
-    ).eq('feedback_forum_id', feedbackID);
-
-    if (profileError) {
-        throw new Error("Failed to unresolve post: " + profileError.message);
-    }
-
-    window.location.reload();
-}
-// Admin able to delete the feedback
-async function deletePost(feedbackID) {
-    const ok = window.confirm("Are you sure want to delete this feedback? This cannot be undone.");
-    if (!ok) return;
-
-    const { error } = await supabase
-        .from("feedback_forum")
-        .delete()
-        .eq("feedback_forum_id", feedbackID);
-
-    if (error) {
-        console.error("Failed to delete post:", error.message);
-        alert("Delete failed. Please try again.");
-        return;
-    }
-    window.location.reload();
-}
-
 export default function AdminFeedback() {
     const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
     const [feedbacklist, setFeedbacklist] = useState([]);
     const [searchdata, setSearchdata] = useState(() => {
         return sessionStorage.getItem('feedback') || 'unresolved';
     });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         sessionStorage.setItem('feedback', searchdata);
     }, [searchdata]);
 
     // Stores the list of feedback posts from the database
-    useEffect(() => {
-        const getFeedbackPosts = async () => {
-            try {
-                const data = await fetchAllFeedbackPosts();
-                setFeedbacklist(data);
-            } catch (err) {
-                console.error("Error fetching feedback posts:", err);
-            }
-        };
+    const refreshFeedback = async () => {
+        try {
+            setLoading(true);
+            const data = await fetchAllFeedbackPosts();
+            setFeedbacklist(data || []);
+        } catch (err) {
+            console.error("Error fetching feedback posts:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        getFeedbackPosts();
+    useEffect(() => {
+        refreshFeedback();
     }, []);
 
+
+
+// Function call to a post
+const handleResolve = async (feedbackID) => {
+    try {
+        const { error } = await supabase
+            .from("feedback_forum")
+            .update({ resolved_at: new Date().toISOString() })
+            .eq("feedback_forum_id", feedbackID);
+
+        if (error) throw error;
+
+        setFeedbacklist((prev) =>
+            prev.map((post) =>
+                post.feedback_forum_id === feedbackID
+                    ? { ...post, resolved_at: new Date().toISOString() }
+                    : post
+            )
+        );
+    } catch (err) {
+        console.error("Failed to resolve post:", err.message);
+        alert("Failed to mark as resolved. Please try again.");
+    }
+};
+
+const handleUnresolve = async (feedbackID) => {
+    try {
+        const { error } = await supabase
+            .from("feedback_forum")
+            .update({ resolved_at: null })
+            .eq("feedback_forum_id", feedbackID);
+
+        if (error) throw error;
+
+        setFeedbacklist((prev) =>
+            prev.map((post) =>
+                post.feedback_forum_id === feedbackID
+                    ? { ...post, resolved_at: null }
+                    : post
+            )
+        );
+    } catch (err) {
+        console.error("Failed to unresolve post:", err.message);
+        alert("Failed to unresolve. Please try again.");
+    }
+};
+
+// Admin able to delete the feedback
+const handleDelete = async (feedbackID) => {
+    const ok = window.confirm(
+        "Are you sure want to delete this feedback? This cannot be undone."
+    );
+    if (!ok) return;
+
+    try {
+        const { error } = await supabase
+            .from("feedback_forum")
+            .delete()
+            .eq("feedback_forum_id", feedbackID);
+
+        if (error) throw error;
+        setFeedbacklist((prev) =>
+            prev.filter((p) => p.feedback_forum_id !== feedbackID)
+        );
+    } catch (err) {
+        console.error("Failed to delete post:", err.message);
+        alert("Delete failed. Please try again.");
+    }
+};
 
     // Filters posts according to inputted criteria
     const filteredFeedbackposts = feedbacklist
@@ -119,7 +145,7 @@ export default function AdminFeedback() {
                     <AdminSidebar />
                 </aside>
                 {/* Right content area */}
-                <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto" style={{ height: 200 + "px" }} >
+                <div className="d-flex flex-grow-1 dashboard-page-content overflow-auto">
                     <div className="flex-grow-1 px-3 px-md-4 py-4" key="2">
 
                         <h2 className="fw-bold dashboard-title fs-3 mb-4">Feedback</h2>
@@ -137,27 +163,25 @@ export default function AdminFeedback() {
                             </select>
                         </div>
 
-                        { // Post display logic, if no posts display special message otherwise display all posts
-                            !filteredFeedbackposts.length > 0 ? (
-                                // If no posts are found, show a message
-                                <h5 className="p-4 text-center">
-                                    No feedback found.
-                                </h5>
-                            ) : (
-                                <div className="row row-cols-1 row-cols-md-3 g-4">
-                                    {filteredFeedbackposts.map((post) => (
-                                        <div key={post.feedback_forum_id} className="col">
-                                            <div className="card h-100 position-relative">
-                                                {post.resolved_at && (
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm btn-light position-absolute top-0 end-0 m-2"
-                                                        title="Delete this feedback"
-                                                        onClick={() => deletePost(post.feedback_forum_id)}
-                                                    >
-                                                        &times;
-                                                    </button>
-                                                )}
+                        {loading ? (
+                            <p className="p-4 text-center text-muted">Loading feedback…</p>
+                        ) : !filteredFeedbackposts.length ? (
+                            <h5 className="p-4 text-center">No feedback found.</h5>
+                        ) : (
+                            <div className="row row-cols-1 row-cols-md-3 g-4">
+                                {filteredFeedbackposts.map((post) => (
+                                    <div key={post.feedback_forum_id} className="col">
+                                        <div className="card h-100 position-relative">
+                                            {post.resolved_at && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-sm btn-light position-absolute top-0 end-0 m-2"
+                                                    title="Delete this feedback"
+                                                    onClick={() => handleDelete(post.feedback_forum_id)}
+                                                >
+                                                    &times;
+                                                </button>
+                                            )}
 
                                                 <div className="card-body">
                                                     {/* Main content of a feedback post */}
@@ -179,7 +203,7 @@ export default function AdminFeedback() {
                                                     {post.resolved_at === null
                                                         ? // Placeholder resolve button, back end logic still needs to be added 
                                                         <div className="row">
-                                                            <button type="button" className="btn btn-success btn-sm px-3 py-1" onClick={() => resolvePost(post.feedback_forum_id)}>Resolve</button>
+                                                        <button type="button" className="btn btn-success btn-sm px-3 py-1" onClick={() => handleResolve(post.feedback_forum_id)}>Resolve</button>
                                                         </div>
                                                         : (
                                                             <div className="row">
@@ -191,7 +215,7 @@ export default function AdminFeedback() {
                                                                         day: "numeric",
                                                                     })}
                                                                 </small>
-                                                                <button type="button" className="btn btn-outline-danger btn-sm px-3 py-1" onClick={() => unresolvePost(post.feedback_forum_id)}>Unresolve</button>
+                                                            <button type="button" className="btn btn-outline-danger btn-sm px-3 py-1" onClick={() => handleUnresolve(post.feedback_forum_id)}>Unresolve</button>
                                                             </div>
                                                         )}
                                                 </div>
