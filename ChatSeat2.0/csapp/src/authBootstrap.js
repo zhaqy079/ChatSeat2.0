@@ -25,7 +25,7 @@ export async function restoreSessionAndHydrateRedux(dispatch) {
         .from("user_profiles")
         .select("first_name,last_name,email,role")
         .eq("email", user.email)
-        .single();
+        .maybeSingle(); 
 
     if (profErr) {
         console.warn("profile load warn:", profErr.message);

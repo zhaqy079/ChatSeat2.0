@@ -18,6 +18,7 @@ const schema = Yup.object().shape({
         .required("Please confirm your password"),
 });
 
+
 export default function ResetPassword() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
@@ -28,12 +29,22 @@ export default function ResetPassword() {
         register,
         handleSubmit,
         setError,
+        watch,
         formState: { errors, isSubmitting, isValid },
     } = useForm({
         mode: "onChange",
         resolver: yupResolver(schema),
     });
 
+    const passwordValue = watch("password") || "";
+
+    const rules = {
+        length: passwordValue.length >= 8,
+        lowercase: /[a-z]/.test(passwordValue),
+        uppercase: /[A-Z]/.test(passwordValue),
+        number: /\d/.test(passwordValue),
+        special: /[\W_]/.test(passwordValue),
+    };
 
 
     // Effect to handle password reset link from URL hash
@@ -91,13 +102,31 @@ export default function ResetPassword() {
                                 <button
                                     type="button"
                                     className="btn btn-link position-absolute top-50 end-0 translate-middle-y me-2 p-0"
-                                    style={{ textDecoration: "none" }}
                                     onClick={() => setShowPassword((v) => !v)}
-                                    aria-label={showPassword ? "Hide password" : "Show password"}
                                 >
                                     {showPassword ? "Hide" : "Show"}
                                 </button>
                             </div>
+
+                            {/* Password rules UI */}
+                            <div className="mt-2 small">
+                                <div className={rules.length ? "text-success" : "text-muted"}>
+                                    {rules.length ? "✔" : "✖"} At least 8 characters
+                                </div>
+                                <div className={rules.lowercase ? "text-success" : "text-muted"}>
+                                    {rules.lowercase ? "✔" : "✖"} Lowercase letter (a-z)
+                                </div>
+                                <div className={rules.uppercase ? "text-success" : "text-muted"}>
+                                    {rules.uppercase ? "✔" : "✖"} Uppercase letter (A-Z)
+                                </div>
+                                <div className={rules.number ? "text-success" : "text-muted"}>
+                                    {rules.number ? "✔" : "✖"} At least 1 number (0–9)
+                                </div>
+                                <div className={rules.special ? "text-success" : "text-muted"}>
+                                    {rules.special ? "✔" : "✖"} 1 special character (!@#$%^&*)
+                                </div>
+                            </div>
+
                             {errors.password && (
                                 <div className="invalid-feedback" style={{ whiteSpace: "pre-line" }}>
                                     {errors.password.message}

@@ -61,35 +61,122 @@ const deleteUser = async (userID, navigate) => {
 export default function AdminManageUser() {
     const currentuser = useSelector((state) => state.loggedInUser?.success);
     const navigate = useNavigate();
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState(null); 
     const [locationlist, setLocationlist] = useState([]);
+    const [isSaving, setIsSaving] = useState(false);
     const { id } = useParams();
 
+    const getUser = async () => {
+        if (!id) return;
+        try {
+            const data = await fetchUser(id);
+
+            let adminProfiles = [];
+            if (data.admin_profiles) {
+                adminProfiles = Array.isArray(data.admin_profiles)
+                    ? data.admin_profiles
+                    : [data.admin_profiles];
+            }
+
+            
+            let coordProfiles = [];
+            if (data.coordinator_profiles) {
+                coordProfiles = Array.isArray(data.coordinator_profiles)
+                    ? data.coordinator_profiles
+                    : [data.coordinator_profiles];
+            }
+
+            setUser({
+                ...data,
+                coordinator_profiles: coordProfiles,
+                admin_profiles: adminProfiles,
+            });
+        } catch (err) {
+            console.error("Error fetching user:", err);
+        }
+    };
+
     // Logic to make/remove coordinator and admin privileges
+    const updateAdmin = async (makeAdmin) => {
+        let adminResult = null;
+
+        if (makeAdmin) {
+            adminResult = await supabase.from("admin_profiles").insert({
+                admin_id: user.profile_id,
+                approved_by: currentuser.id,
+            });
+        } else {
+            adminResult = await supabase
+                .from("admin_profiles")
+                .delete()
+                .eq("admin_id", user.profile_id);
+        }
+
+        if (adminResult.error) {
+            console.log("User admin response: ", adminResult.error);
+        }
+    };
+
+    const updateCoord = async (state, locationID) => {
+        let coordResult = null;
+
+        if (state === true) {
+            coordResult = await supabase.from("coordinator_profiles").insert({
+                coordinator_id: user.profile_id,
+                location_id: locationID,
+                approved_by: currentuser.id,
+            });
+        } else {
+            coordResult = await supabase
+                .from("coordinator_profiles")
+                .delete()
+                .eq("location_id", locationID)
+                .eq("coordinator_id", user.profile_id);
+        }
+
+        if (coordResult.error) {
+            console.log(
+                "User coord response: ",
+                coordResult.error,
+                ", for location: ",
+                locationID
+            );
+        }
+    };
+
     const updatePrivileges = async (event) => {
+
         event.preventDefault();
-        document.getElementById("updateSubmit").disabled = true;
+        if (isSaving) return;
+        setIsSaving(true);
+
+        try {
         // protect
         if (!currentuser || !currentuser.id) {
             alert("Current user not loaded yet. Please refresh or re-login.");
-            document.getElementById("updateSubmit").disabled = false;
             return;
         }
+        if (!user) {
+            alert("User data not loaded yet.");
+            return;
+        }
+
         const formData = new FormData(event.target);
         const isAdmin = formData.get('admin') === 'on';
         const updateLocationIds = locationlist
             .filter(location => formData.get(location.location_id.toString()) === 'on')
             .map(location => location.location_id);
 
+        const currentlyAdmin = user.admin_profiles.length > 0;
 
-        if (isAdmin === (user.admin_profiles === null)) {
-            await updateAdmin(isAdmin)
+        if (isAdmin !== currentlyAdmin) {
+            await updateAdmin(isAdmin);
         }
 
         // Loops through locations for promotions/demotions
         for (const location of locationlist) {
-            const currentCoordinator = user.coordinator_profiles.some(
-                coord => coord.location_id === location.location_id
+            const currentCoordinator = (user.coordinator_profiles || []).some(
+                (coord) => coord.location_id === location.location_id
             );
             const coordinatorState = updateLocationIds.includes(location.location_id);
             // User privileges setting
@@ -101,81 +188,42 @@ export default function AdminManageUser() {
         }
 
         // User role update
-        var roleError = '';
+        let roleResult = null;
+
         if (isAdmin === true) {
             if (user.role !== 'admin') {
-                roleError = await supabase
+                roleResult = await supabase
                     .from('user_profiles')
                     .update({ role: 'admin' })
-                    .eq('profile_id', user.profile_id)
+                    .eq('profile_id', user.profile_id);
             }
         } else if (updateLocationIds.length > 0) {
             if (user.role !== 'coordinator') {
-                roleError = await supabase
+                roleResult = await supabase
                     .from('user_profiles')
                     .update({ role: 'coordinator' })
-                    .eq('profile_id', user.profile_id)
+                    .eq('profile_id', user.profile_id);
             }
         } else if (user.role !== 'listener') {
-            roleError = await supabase
+            roleResult = await supabase
                 .from('user_profiles')
                 .update({ role: 'listener' })
-                .eq('profile_id', user.profile_id)
+                .eq('profile_id', user.profile_id);
         }
 
-
-        if (roleError.error) {
-            console.log("User role update response: " + roleError);
+        if (roleResult && roleResult.error) {
+            console.log("User role update response: ", roleResult.error);
         }
 
-        window.location.reload();
+            await getUser();
+            alert("Updated successfully!");
+        } catch (err) {
+            console.error("Failed to update privileges:", err);
+            alert("Update failed. Please try again.");
+        } finally {
+            setIsSaving(false);
+        }
     };
-
-    // Updates admin to correct state
-    const updateAdmin = async (state) => {
-        var adminError = '';
-        if (state === true) {
-            adminError = await supabase
-                .from('admin_profiles')
-                .insert({
-                    admin_id: user.profile_id,
-                    approved_by: currentuser.id
-                })
-        } else {
-            adminError = await supabase
-                .from('admin_profiles')
-                .delete()
-                .eq('admin_id', user.profile_id)
-        }
-
-        if (adminError.error) {
-            console.log("User admin response: " + adminError);
-        }
-    }
-
-    // Updates coord to correct state
-    const updateCoord = async (state, locationID) => {
-        var coordError = '';
-        if (state === true) {
-            coordError = await supabase
-                .from('coordinator_profiles')
-                .insert({
-                    coordinator_id: user.profile_id,
-                    location_id: locationID,
-                    approved_by: currentuser.id
-                });
-        } else {
-            coordError = await supabase
-                .from('coordinator_profiles')
-                .delete()
-                .eq('location_id', locationID)
-                .eq('coordinator_id', user.profile_id);
-        }
-
-        if (coordError.error) {
-            console.log("User coord response: " + coordError + ", for location: " + locationID);
-        }
-    }
 
 
     // Stores the list of locations from the database
@@ -183,7 +231,7 @@ export default function AdminManageUser() {
         const getLocations = async () => {
             try {
                 const data = await fetchLocations();
-                setLocationlist(data);
+                setLocationlist(data || []);
             } catch (err) {
                 console.error("Error fetching locations:", err);
             }
@@ -194,17 +242,11 @@ export default function AdminManageUser() {
 
     // Stores the list of users from the database
     useEffect(() => {
-        const getUser = async () => {
-            try {
-                const data = await fetchUser(id);
-                setUser(data);
-            } catch (err) {
-                console.error("Error fetching user:", err);
-            }
-        };
+        getUser();
+    }, [id]);
 
-        getUser(); 
-    }, );
+
+    const isCurrentlyAdmin = user && user.admin_profiles.length > 0;
 
     return (
         <div>
@@ -212,8 +254,10 @@ export default function AdminManageUser() {
                 <AdminSidebar userName="userName" />
                 <div className="p-4 flex-grow-1">
                     <h4 className="intro-title">Manage User</h4>
-                    {!user.profile_id ? <h3 className="text-center">Loading User Data.....</h3>
-                        : <form onSubmit={updatePrivileges}>
+                    {!user ? (
+                        <h3 className="text-center">Loading User Data.....</h3>
+                    ) : (
+                        <form onSubmit={updatePrivileges}>
 
                             <hr className="mt-3 mb-4" />
 
@@ -264,7 +308,8 @@ export default function AdminManageUser() {
                                                         type="checkbox"
                                                         name={location.location_id}
                                                         defaultChecked={user.coordinator_profiles.some(
-                                                            coord => coord.location_id === location.location_id
+                                                            (coord) =>
+                                                                coord.location_id === location.location_id
                                                         )}
                                                         className="form-check-input"
                                                     />
@@ -281,19 +326,34 @@ export default function AdminManageUser() {
                             <h5 className="intro-title mb-3 mt-4"> Admin Privileges</h5>
                             <div className="ms-3 mb-4">
                             <label>
-                                <strong>Admin: <input type="checkbox" name="admin" defaultChecked={!(user.admin_profiles === null)} /></strong>
+                                        <strong>{" "}Admin:{" "}
+                                            <input type="checkbox" name="admin" defaultChecked={isCurrentlyAdmin}
+                                                className="form-check-input"/></strong>
                                 </label>
                             </div>
                             <hr className="mt-3 mb-4" />
 
                             <div className="d-flex align-items-center">
                                 <div className="ms-auto">
-                                    <button type="submit" className="btn btn-info me-2 col" id="updateSubmit">Update Privileges</button>
-                                    <button type="button" className="btn btn-danger fw-bold col" onClick={ () => deleteUser(user.profile_id, navigate) }>DELETE USER</button>
+                                        <button
+                                            type="submit"
+                                            className="btn btn-info me-2 col"
+                                            id="updateSubmit"
+                                            disabled={isSaving}
+                                        >
+                                            {isSaving ? "Updating..." : "Update Privileges"}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-danger fw-bold col"
+                                            onClick={() => deleteUser(user.profile_id, navigate)}
+                                        >
+                                            DELETE USER
+                                        </button>
                                 </div>
                             </div>
                         </form>
-                    }                    
+                    )}                    
                 </div>
             </div>
         </div>
