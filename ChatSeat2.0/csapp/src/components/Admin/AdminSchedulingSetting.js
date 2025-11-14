@@ -1001,12 +1001,10 @@ export default function AdminSchedulingSetting() {
                                     <div className="modal-body">
                                         {Object.keys(tempAvailability).map((day) => (
                                             <div key={day} className="d-flex align-items-center mb-2">
-                                                <label className="me-2">
-                                                    {day}
-                                                </label>
+                                                <label className="me-2">{day}</label>
+
                                                 <input
                                                     type="time"
-                                                    name="availability"
                                                     className="form-control me-2"
                                                     value={tempAvailability[day].open || ""}
                                                     onChange={(e) =>
@@ -1015,11 +1013,11 @@ export default function AdminSchedulingSetting() {
                                                             [day]: { ...prev[day], open: e.target.value },
                                                         }))
                                                     }
+                                                    disabled={tempAvailability[day].closed} 
                                                 />
                                                 <input
                                                     type="time"
-                                                    className="form-control"
-                                                    name="setAvailability"
+                                                    className="form-control me-2"
                                                     value={tempAvailability[day].close || ""}
                                                     onChange={(e) =>
                                                         setTempAvailability((prev) => ({
@@ -1027,9 +1025,31 @@ export default function AdminSchedulingSetting() {
                                                             [day]: { ...prev[day], close: e.target.value },
                                                         }))
                                                     }
+                                                    disabled={tempAvailability[day].closed} 
                                                 />
+
+                                                <div className="form-check">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="form-check-input"
+                                                        id={`closed-${day}`}
+                                                        checked={tempAvailability[day].closed || false}
+                                                        onChange={(e) =>
+                                                            setTempAvailability((prev) => ({
+                                                                ...prev,
+                                                                [day]: e.target.checked
+                                                                    ? { open: "", close: "", closed: true }
+                                                                    : { open: "", close: "", closed: false },
+                                                            }))
+                                                        }
+                                                    />
+                                                    <label className="form-check-label" htmlFor={`closed-${day}`}>
+                                                        Closed
+                                                    </label>
+                                                </div>
                                             </div>
                                         ))}
+
                                     </div>
 
                                     <div className="modal-footer">

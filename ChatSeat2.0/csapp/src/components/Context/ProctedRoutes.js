@@ -15,7 +15,7 @@ export default function ProtectedRoute({ requiredRole }) {
     }
 
     if (requiredRole && userRole !== requiredRole) {
-        return <Navigate to="/unauthorized" replace />;
+        return <Navigate to="/" replace />;
     }
 
 
