@@ -4,11 +4,14 @@ import { toast } from "react-toastify";
 import { supabase } from "../supabaseClient";
 import { useDispatch } from "react-redux";
 import { setloggedInUserSuccess } from "../state/loggedInUser"; 
-
+import { useAuth } from "./Context/AuthContext"; 
 
 export default function Login() {
+
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { setUser: setAuthUser } = useAuth();
     const [user, setUser] = useState({ email: "", password: ""}); // Combined to make more practical and streamlined
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -82,6 +85,16 @@ export default function Login() {
                     role,
                 })
             );
+
+            // update AuthContext user so that it knows that user is logged in
+            setAuthUser({
+                ...authedUser,
+                firstName: profile?.first_name ?? null,
+                lastName: profile?.last_name ?? null,
+                role
+            });
+
+
             // Redirect based on role
             if (role === "admin") {
                 navigate("/admindashboard");

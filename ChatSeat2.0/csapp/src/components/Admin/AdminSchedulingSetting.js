@@ -1013,7 +1013,7 @@ export default function AdminSchedulingSetting() {
                                                             [day]: { ...prev[day], open: e.target.value },
                                                         }))
                                                     }
-                                                    disabled={tempAvailability[day].closed} // disable if closed
+                                                    disabled={tempAvailability[day].closed} 
                                                 />
                                                 <input
                                                     type="time"
@@ -1025,7 +1025,7 @@ export default function AdminSchedulingSetting() {
                                                             [day]: { ...prev[day], close: e.target.value },
                                                         }))
                                                     }
-                                                    disabled={tempAvailability[day].closed} // disable if closed
+                                                    disabled={tempAvailability[day].closed} 
                                                 />
 
                                                 <div className="form-check">
