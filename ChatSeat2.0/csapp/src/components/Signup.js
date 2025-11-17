@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { supabase } from "../supabaseClient";
@@ -38,13 +38,10 @@ const signupUser = async ({
     lastName,
     phoneNumber,
 }) => {
-    // Default user role
-    const defaultRole = "listener";
     // Validate input
     const { data, error } = await supabase.auth.signUp({
         email,
-        password,
-        options: { data: { role: defaultRole } }
+        password
     });
 
     // If there's an error during signup, throw an error
@@ -59,8 +56,7 @@ const signupUser = async ({
         {
             first_name: firstName,
             last_name: lastName,
-            phone: phoneNumber,
-            role: defaultRole,
+            phone: phoneNumber
         },
     ).eq('email', email);
 

@@ -20,7 +20,7 @@ export const fetchAllUsers = async () => {
 };
 
 
-function UserTable({ userlist, currentuser, onApprove, onDeactivate, onReactivate }) {
+function UserTable({ userlist, searchrole, onApprove, onDeactivate, onReactivate }) {
     return (
         <table className="table">
             <thead className="text-left">
@@ -39,12 +39,13 @@ function UserTable({ userlist, currentuser, onApprove, onDeactivate, onReactivat
                     const user_approver = user.approved_by ? userlist.find(u => u.profile_id === user.approved_by) : null;
                     const isPending = !user.approved_by;
 
-                    return (
+                    return (searchrole === "all" ? true : (user.role === searchrole)) ? (
                     <tr key={user.profile_id} className="border-t">
                         <td className="p-3">{user.first_name} {user.last_name}</td>
                         <td className="p-3">{user.email}</td>
                         <td className="p-3">{user.phone}</td>
                             {!user_approver ? (
+
                                 <td className="p-3">Not yet approved</td>
                             ) : (
                                 <td className="p-3">
@@ -69,7 +70,7 @@ function UserTable({ userlist, currentuser, onApprove, onDeactivate, onReactivat
                                 <button
                                     type="button"
                                     className="btn btn-success"
-                                    onClick={() => onApprove(user.profile_id, currentuser.id)}
+                                    onClick={() => onApprove(user.profile_id)}
                                 >
                                     Approve
                                 </button>
@@ -85,7 +86,7 @@ function UserTable({ userlist, currentuser, onApprove, onDeactivate, onReactivat
                             )}
                         </td>
                     </tr>
-                    );
+                    ) : null;
                 })}
             </tbody>
         </table>
@@ -260,6 +261,7 @@ function AdminTable({ userlist, onDeactivate, onReactivate }) {
     );
 }
 
+
 export default function AdminViewUsers() {
     const { user, getActiveLink, handleLogout, closeOffcanvas } = useDashboardNav();
     const [userlist, setUserlist] = useState([]);
@@ -302,11 +304,11 @@ export default function AdminViewUsers() {
 
     const filtereduserListLength = filteredUsers.length;
 
-    const approveUser = async (newuserID, approverID) => {
+    const approveUser = async (newuserID) => {
         const { error: profileError } = await supabase
             .from("user_profiles")
             .update({
-                approved_by: approverID,
+                approved_by: user.id,
                 role: "listener",
             })
             .eq("profile_id", newuserID);
@@ -387,7 +389,7 @@ export default function AdminViewUsers() {
                                 name="roles"
                                 onChange={(e) => setSearchrole(e.target.value)}>
                                 <option value="pending">Pending Users</option>
-                                <option value="listener">Listener</option>
+                                <option value="listener">Listeners</option>
                                 <option value="coordinator">Coordinators</option>
                                 <option value="admin">Admins</option>
                                 <option value="all">All Users</option>
@@ -401,20 +403,20 @@ export default function AdminViewUsers() {
                                 </h5>
                             ) : searchrole === "admin" ? (
                                 <AdminTable
-                                    userlist={filteredUsers}
+                                    userlist={userlist}
                                     onDeactivate={deactivateUser}
                                     onReactivate={reactivateUser}
                                 />
                             ) : searchrole === "coordinator" ? (
                                 <CoordinatorTable
-                                    userlist={filteredUsers}
+                                    userlist={userlist}
                                     onDeactivate={deactivateUser}
                                     onReactivate={reactivateUser}
                                 />
                             ) : (
                                 <UserTable
-                                    userlist={filteredUsers}
-                                    currentuser={user}
+                                    userlist={userlist}
+                                    searchrole={searchrole}
                                     onApprove={approveUser}
                                     onDeactivate={deactivateUser}
                                     onReactivate={reactivateUser}
