@@ -60,6 +60,9 @@ export default function Venues() {
                     .map((b) => {
 
                         const loc = locs?.find((l) => l.location_id === b.location_id);
+
+                        if (loc?.location_name === "FULL DAY UNAVAILABLE") return null;
+
                         const eventDate = new Date(`${b.booking_date}T00:00:00`);
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);

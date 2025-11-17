@@ -59,7 +59,7 @@ export default function Home() {
                                 Does this sound like you?
                             </p>
                             <p className="mb-0">
-                                If you would like to volunteer as a Listener, then you will need to <Link to="login">sign in</Link> and proceed to the page for Listeners.
+                                If you would like to volunteer as a Listener, then you will need to <Link to="login">sign in</Link> and once approved as a Listener you can login in and proceed to the page for Listeners.
                                 On this page you will find some helpful information, a booking calendar and a place where you can chat with other Listeners.
 
                             </p>
@@ -75,7 +75,7 @@ export default function Home() {
                                 So, who would be a good Coordinator? Someone who enjoys negotiating with potential venue "managers" and has good organisational skills.
                             </p>
                             <p className="mb-0">
-                                If you would like to volunteer as a Coordinator, then you will need to <Link to="login">sign in</Link> and proceed to the page for Coordinators.
+                                If you would like to volunteer as a Coordinator, then you will need to <Link to="login">sign in</Link> and once approved as a Coordinator you can login in and proceed to the page for Coordinators.
                                 On this page you will find some helpful information, and a place where you can chat with other Coordinators.
                             </p>
                         </div>
@@ -88,11 +88,13 @@ export default function Home() {
                         <div className="bg-primary-subtle p-4 rounded-3 shadow-sm border-start border-4 border-primary h-100">
                             <h3 className="h5 fw-semibold text-primary mb-2">About the Chat Seats</h3>
                             <p className="mb-2">
-                                We’ll be setting up Chat seats in various venues. 
+                                We’ll be setting up Chat seats in various venues.
                                 You can go to the venues options to see where Chat seats currently operate.
+
                             </p>
                             <p className="mb-0">
                                 If you would like a Chat Seat to open in a different location then please email us via the “Have a Chat” tab.
+                                We are also in the process of setting up virtual Chat Seats which may be more convenient for some of you.
                             </p>
                         </div>
                     </div>

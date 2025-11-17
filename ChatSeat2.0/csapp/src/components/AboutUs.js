@@ -90,9 +90,6 @@ export default function AboutUs() {
                     </p>
                  
                     <div className="mt-4 d-flex justify-content-center gap-3 flex-wrap">
-                        <button onClick={() => navigate("/signup")} className="btn btn-primary px-4">
-                            Become a Listener
-                        </button>
                         <button className="btn btn-outline-success px-4" data-bs-toggle="collapse" data-bs-target="#creditsCollapse">
                             Learn More
                         </button>

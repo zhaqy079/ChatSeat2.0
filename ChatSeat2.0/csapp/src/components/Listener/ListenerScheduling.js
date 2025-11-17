@@ -333,10 +333,9 @@ export default function ListenerScheduling() {
                                 <p>No upcoming bookings.</p>
                             ) : (
 
-                                //<div className="row upcoming-scroll-container">
                                 <div className="d-flex flex-wrap gap-3 upcoming-scroll-container justify-content-center">
                                     {events
-                                        .filter(e => new Date(e.start) > new Date())
+                                        .filter(e => new Date(e.start) > new Date() && e.title !== "FULL DAY UNAVAILABLE" )
                                         .sort((a, b) => new Date(a.start) - new Date(b.start))
                                         .map(e => {
                                             const isBooked = e.listener_ids.includes(user?.id);
