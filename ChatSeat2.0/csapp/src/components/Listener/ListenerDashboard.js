@@ -94,7 +94,7 @@ export default function ListenerDashboard() {
                                     <div className="col-12 col-md-6">
                                         <div className="card border-success bg-success-subtle p-3 h-100">
                                             <h5 className="intro-title text-success mb-3">Tools and Support</h5>
-                                            <p>Use the <strong>Booking tab</strong> to choose your Chat Seat venue and time.</p>
+                                            <p>Use the <strong>Scheduling tab</strong> to choose your Chat Seat venue and time.</p>
                                             <p>Use the <strong>Chat room</strong> to exchange ideas with other Listeners.</p>
                                             <p>Provide your <strong>Feedback</strong> through the <strong>Feedback tab</strong>.</p>
                                         </div>

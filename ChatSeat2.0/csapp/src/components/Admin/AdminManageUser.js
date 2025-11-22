@@ -1,7 +1,7 @@
 import AdminSidebar from "./AdminSidebar";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import {useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 
 // Requests a user from the database
@@ -34,34 +34,39 @@ export const fetchLocations = async () => {
 };
 
 // Supabase delete user
-const deleteUser = async (userID, navigate) => {
+const deleteUser = async (authUserID, navigate) => {
     const confirmed = window.confirm("Are you sure you want to delete this user? \n There is no way to undo this action. ");
 
-    if (confirmed) {
-        const profError = await supabase
-            .from('user_profiles')
-            .delete()
-            .eq('profile_id', userID)
+    if (!confirmed) return;
 
-        if (profError.error) {
-            console.log("Profile Error: ", profError);
-            alert("Failed to completely delete user.");
-            return;
-        }
-        console.log("User deleted.");
+    const { error: profErr } = await supabase
+        .from("user_profiles")
+        .delete()
+        .eq("auth_id", authUserID);
 
-        navigate("/adminViewUsers");
-    } else {
-        console.log("Action canceled.");
+    if (profErr) {
+        alert("Failed to delete profile.");
+        return;
     }
 
+    const { error: authErr } = await supabase.functions.invoke("delete-user", {
+        body: { user_id: authUserID }
+    });
+
+    if (authErr) {
+        alert("Failed to delete auth user:" + authErr.message);
+        return;
+    }
+
+    alert("User deleted completely!");
+    navigate("/adminViewUsers");
 };
 
 
 export default function AdminManageUser() {
     const currentuser = useSelector((state) => state.loggedInUser?.success);
     const navigate = useNavigate();
-    const [user, setUser] = useState(null); 
+    const [user, setUser] = useState(null);
     const [locationlist, setLocationlist] = useState([]);
     const [isSaving, setIsSaving] = useState(false);
     const { id } = useParams();
@@ -78,7 +83,7 @@ export default function AdminManageUser() {
                     : [data.admin_profiles];
             }
 
-            
+
             let coordProfiles = [];
             if (data.coordinator_profiles) {
                 coordProfiles = Array.isArray(data.coordinator_profiles)
@@ -151,69 +156,69 @@ export default function AdminManageUser() {
         setIsSaving(true);
 
         try {
-        // protect
-        if (!currentuser || !currentuser.id) {
-            alert("Current user not loaded yet. Please refresh or re-login.");
-            return;
-        }
-        if (!user) {
-            alert("User data not loaded yet.");
-            return;
-        }
-
-        const formData = new FormData(event.target);
-        const isAdmin = formData.get('admin') === 'on';
-        const updateLocationIds = locationlist
-            .filter(location => formData.get(location.location_id.toString()) === 'on')
-            .map(location => location.location_id);
-
-        const currentlyAdmin = user.admin_profiles.length > 0;
-
-        if (isAdmin !== currentlyAdmin) {
-            await updateAdmin(isAdmin);
-        }
-
-        // Loops through locations for promotions/demotions
-        for (const location of locationlist) {
-            const currentCoordinator = (user.coordinator_profiles || []).some(
-                (coord) => coord.location_id === location.location_id
-            );
-            const coordinatorState = updateLocationIds.includes(location.location_id);
-            // User privileges setting
-            if (coordinatorState && !currentCoordinator) {
-                await updateCoord(true, location.location_id); 
-            } else if (!coordinatorState && currentCoordinator) {
-                await updateCoord(false, location.location_id); 
+            // protect
+            if (!currentuser || !currentuser.id) {
+                alert("Current user not loaded yet. Please refresh or re-login.");
+                return;
             }
-        }
+            if (!user) {
+                alert("User data not loaded yet.");
+                return;
+            }
 
-        // User role update
-        let roleResult = null;
+            const formData = new FormData(event.target);
+            const isAdmin = formData.get('admin') === 'on';
+            const updateLocationIds = locationlist
+                .filter(location => formData.get(location.location_id.toString()) === 'on')
+                .map(location => location.location_id);
 
-        if (isAdmin === true) {
-            if (user.role !== 'admin') {
+            const currentlyAdmin = user.admin_profiles.length > 0;
+
+            if (isAdmin !== currentlyAdmin) {
+                await updateAdmin(isAdmin);
+            }
+
+            // Loops through locations for promotions/demotions
+            for (const location of locationlist) {
+                const currentCoordinator = (user.coordinator_profiles || []).some(
+                    (coord) => coord.location_id === location.location_id
+                );
+                const coordinatorState = updateLocationIds.includes(location.location_id);
+                // User privileges setting
+                if (coordinatorState && !currentCoordinator) {
+                    await updateCoord(true, location.location_id);
+                } else if (!coordinatorState && currentCoordinator) {
+                    await updateCoord(false, location.location_id);
+                }
+            }
+
+            // User role update
+            let roleResult = null;
+
+            if (isAdmin === true) {
+                if (user.role !== 'admin') {
+                    roleResult = await supabase
+                        .from('user_profiles')
+                        .update({ role: 'admin' })
+                        .eq('profile_id', user.profile_id);
+                }
+            } else if (updateLocationIds.length > 0) {
+                if (user.role !== 'coordinator') {
+                    roleResult = await supabase
+                        .from('user_profiles')
+                        .update({ role: 'coordinator' })
+                        .eq('profile_id', user.profile_id);
+                }
+            } else if (user.role !== 'listener') {
                 roleResult = await supabase
                     .from('user_profiles')
-                    .update({ role: 'admin' })
+                    .update({ role: 'listener' })
                     .eq('profile_id', user.profile_id);
             }
-        } else if (updateLocationIds.length > 0) {
-            if (user.role !== 'coordinator') {
-                roleResult = await supabase
-                    .from('user_profiles')
-                    .update({ role: 'coordinator' })
-                    .eq('profile_id', user.profile_id);
-            }
-        } else if (user.role !== 'listener') {
-            roleResult = await supabase
-                .from('user_profiles')
-                .update({ role: 'listener' })
-                .eq('profile_id', user.profile_id);
-        }
 
-        if (roleResult && roleResult.error) {
-            console.log("User role update response: ", roleResult.error);
-        }
+            if (roleResult && roleResult.error) {
+                console.log("User role update response: ", roleResult.error);
+            }
 
             await getUser();
             alert("Updated successfully!");
@@ -287,7 +292,7 @@ export default function AdminManageUser() {
                                             <th scope="col" className="text-nowrap">Location Inactive</th>
                                             <th scope="col" className="text-center text-nowrap">Make Coordinator</th>
                                         </tr>
-         
+
                                     </thead>
                                     <tbody>
                                         {locationlist.map((location) => (
@@ -320,40 +325,40 @@ export default function AdminManageUser() {
 
                                 </table>
                             </div>
-  
+
                             <hr className="mt-3 mb-4" />
 
                             <h5 className="intro-title mb-3 mt-4"> Admin Privileges</h5>
                             <div className="ms-3 mb-4">
-                            <label>
-                                        <strong>{" "}Admin:{" "}
-                                            <input type="checkbox" name="admin" defaultChecked={isCurrentlyAdmin}
-                                                className="form-check-input"/></strong>
+                                <label>
+                                    <strong>{" "}Admin:{" "}
+                                        <input type="checkbox" name="admin" defaultChecked={isCurrentlyAdmin}
+                                            className="form-check-input" /></strong>
                                 </label>
                             </div>
                             <hr className="mt-3 mb-4" />
 
                             <div className="d-flex align-items-center">
                                 <div className="ms-auto">
-                                        <button
-                                            type="submit"
-                                            className="btn btn-info me-2 col"
-                                            id="updateSubmit"
-                                            disabled={isSaving}
-                                        >
-                                            {isSaving ? "Updating..." : "Update Privileges"}
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="btn btn-danger fw-bold col"
-                                            onClick={() => deleteUser(user.profile_id, navigate)}
-                                        >
-                                            DELETE USER
-                                        </button>
+                                    <button
+                                        type="submit"
+                                        className="btn btn-info me-2 col"
+                                        id="updateSubmit"
+                                        disabled={isSaving}
+                                    >
+                                        {isSaving ? "Updating..." : "Update Privileges"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger fw-bold col"
+                                        onClick={() => deleteUser(user.auth_id, navigate)}
+                                    >
+                                        DELETE USER
+                                    </button>
                                 </div>
                             </div>
                         </form>
-                    )}                    
+                    )}
                 </div>
             </div>
         </div>

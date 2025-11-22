@@ -56,7 +56,8 @@ const signupUser = async ({
         {
             first_name: firstName,
             last_name: lastName,
-            phone: phoneNumber
+            phone: phoneNumber,
+            auth_id: user.id
         },
     ).eq('email', email);
 
@@ -94,15 +95,15 @@ export default function Signup() {
     };
 
     return (
-    // Signup Page Form Page, keep same design with Login page
+        // Signup Page Form Page, keep same design with Login page
         <div className="min-vh-100 d-flex flex-column">
             <div className="flex-grow-1 d-flex align-items-center justify-content-center login-page">
                 <div className="bg-white shadow p-4 p-md-5 rounded-3">
                     <h2 className="fw-bold text-center mb-4 intro-title">
-                        Create an Account 
+                        Create an Account
                     </h2>
 
-                    <form onSubmit={handleSubmit(onSubmit)} noValidate> 
+                    <form onSubmit={handleSubmit(onSubmit)} noValidate>
                         <div className="mb-3">
                             <label className="form-label fw-semibold">First Name</label>
                             <input
@@ -191,15 +192,15 @@ export default function Signup() {
                             >
                                 Back to Home
                             </button>
-                            
-                            
+
+
                             <button
                                 type="button"
                                 className="btn btn-link p-0"
                                 onClick={() => navigate("/login")}
                             >
                                 Already have an account?
-                                 Log In
+                                Log In
                             </button>
                         </div>
                     </form>
