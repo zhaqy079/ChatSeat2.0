@@ -34,7 +34,7 @@ export const fetchLocations = async () => {
 };
 
 // Supabase delete user
-const deleteUser = async (authUserID, navigate) => {
+const deleteUser = async (user, navigate) => {
     const confirmed = window.confirm("Are you sure you want to delete this user? \n There is no way to undo this action. ");
 
     if (!confirmed) return;
@@ -42,15 +42,20 @@ const deleteUser = async (authUserID, navigate) => {
     const { error: profErr } = await supabase
         .from("user_profiles")
         .delete()
-        .eq("auth_id", authUserID);
+        .eq("profile_id", user.profile_id);
 
     if (profErr) {
         alert("Failed to delete profile.");
         return;
     }
+    if (!user.auth_id) {
+        alert("User profile deleted (no linked auth account).");
+        navigate("/adminViewUsers");
+        return;
+    }
 
     const { error: authErr } = await supabase.functions.invoke("delete-user", {
-        body: { user_id: authUserID }
+        body: { user_id: user.auth_id }
     });
 
     if (authErr) {
@@ -351,7 +356,7 @@ export default function AdminManageUser() {
                                     <button
                                         type="button"
                                         className="btn btn-danger fw-bold col"
-                                        onClick={() => deleteUser(user.auth_id, navigate)}
+                                        onClick={() => deleteUser(user, navigate)}
                                     >
                                         DELETE USER
                                     </button>
