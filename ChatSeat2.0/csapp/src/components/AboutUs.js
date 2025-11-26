@@ -111,7 +111,7 @@ export default function AboutUs() {
                                     style={{ lineHeight: 1.8, fontSize: "0.95rem" }}
                                 >
                                     <li><strong>Project:</strong> ChatSeat 2.0 Scheduling Platform Revamp</li>
-                                    <li><strong>Client:</strong> Dr. Tricia Wilkins</li>
+                                    <li><strong>Client:</strong> Dr. Tricia Vilkinas</li>
                                     <li><strong>Supervisor:</strong> Dr. Douglas Kelly</li>
                                     <li><strong>Current Team:</strong> Qianting Zhang, Jordon Cursaro, Callum Malycha</li>
                                     <li><strong>Contact:</strong> qiantingzhang978@gmail.com · Jorcursa@gmail.com · callummalycha@gmail.com</li>
