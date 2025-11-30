@@ -42,7 +42,7 @@ export default function CoordinatorAppointments() {
                 // Fetch all user profiles
                 const { data: allProfiles } = await supabase
                     .from("user_profiles")
-                    .select("profile_id, first_name, last_name");
+                    .select("profile_id, first_name");
 
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
@@ -67,7 +67,7 @@ export default function CoordinatorAppointments() {
 
                         const bookedUsers = listenerIds.map(id => {
                             const profile = allProfiles.find(p => p.profile_id === id);
-                            return profile ? `${profile.first_name} ${profile.last_name}` : null;
+                            return profile ? `${profile.first_name}` : null;
                         }).filter(Boolean);
 
                         const startTime = b.start_time ? b.start_time.slice(0, 5) : "00:00";

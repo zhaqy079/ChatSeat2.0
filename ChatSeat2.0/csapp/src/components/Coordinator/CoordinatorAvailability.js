@@ -39,7 +39,7 @@ export default function CoordinatorAvailability() {
                 // Fetch all user profiles
                 const { data: allProfiles } = await supabase
                     .from("user_profiles")
-                    .select("profile_id, first_name, last_name");
+                    .select("profile_id, first_name");
 
                 // Map bookings to calendar events
                 const calendarEvents = bookings.map((b) => {
@@ -64,7 +64,7 @@ export default function CoordinatorAvailability() {
                     // Map IDs to user names
                     const bookedUsers = listenerIds.map(id => {
                         const profile = allProfiles.find(p => p.profile_id === id);
-                        return profile ? { id, name: `${profile.first_name} ${profile.last_name}` } : null;
+                        return profile ? { id, name: `${profile.first_name}` } : null;
                     }).filter(Boolean);
 
                     const displayName = isUnavailable
