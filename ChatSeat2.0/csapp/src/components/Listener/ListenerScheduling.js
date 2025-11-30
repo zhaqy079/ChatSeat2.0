@@ -77,7 +77,7 @@ export default function ListenerScheduling() {
             // Fetch all user profiles at once
             const { data: allProfiles } = await supabase
                 .from("user_profiles")
-                .select("profile_id, first_name, last_name");
+                .select("profile_id, first_name");
 
             const calendarEvents = bookings.map((b) => {
                 const loc = locs.find((l) => l.location_id === b.location_id);
@@ -102,7 +102,7 @@ export default function ListenerScheduling() {
                 // Map the listener IDs to names
                 const bookedUsers = listenerIds.map(id => {
                     const profile = allProfiles.find(p => p.profile_id === id);
-                    return profile ? { id, name: `${profile.first_name} ${profile.last_name}` } : null;
+                    return profile ? { id, name: `${profile.first_name}` } : null;
                 }).filter(Boolean);
 
                 const displayName = isUnavailable
