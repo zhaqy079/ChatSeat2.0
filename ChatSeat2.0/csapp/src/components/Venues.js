@@ -53,8 +53,12 @@ export default function Venues() {
                     .from("user_profiles")
                     .select("profile_id, first_name");
 
+                // Venues only display future 14 days
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
+                const endOfRange = new Date(today);
+                endOfRange.setDate(today.getDate() + 13);
+                endOfRange.setHours(23, 59, 59, 999);
 
                 const appointmentsList = bookings
                     .map((b) => {
@@ -64,10 +68,9 @@ export default function Venues() {
                         if (loc?.location_name === "FULL DAY UNAVAILABLE") return null;
 
                         const eventDate = new Date(`${b.booking_date}T00:00:00`);
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
+                        eventDate.setHours(0, 0, 0, 0);
 
-                        if (eventDate < today) return null;
+                        if (eventDate < today || eventDate > endOfRange) return null;
 
 
                         let listenerIds = [];
@@ -134,7 +137,7 @@ export default function Venues() {
                 <div className="bg-white shadow p-4 mb-6 rounded">
                     {/*Display each loaction with map*/}
                     {groupedByLocation.length === 0 ? (
-                        <p className="text-muted">No upcoming slots found.</p>
+                        <p className="text-muted">No upcoming slots found in the next 14 days.</p>
                     ) : (
                         groupedByLocation.map((group) => {
                             const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(
